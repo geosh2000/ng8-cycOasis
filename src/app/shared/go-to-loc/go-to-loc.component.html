@@ -1,0 +1,7 @@
+<mat-form-field class="example-form-field" style='height:10px; margin-top: -23px'>
+    <mat-label>Ir a Localizador</mat-label>
+    <input matInput type="text" [(ngModel)]="value" (keyup.enter)="goTo(value)">
+    <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="goTo(value)">
+      <mat-icon>search</mat-icon>
+    </button>
+</mat-form-field>

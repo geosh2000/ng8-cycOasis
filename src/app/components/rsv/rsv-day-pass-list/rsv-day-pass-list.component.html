@@ -1,0 +1,159 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">Gerencia</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+    <div class="container-fluid">
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span><h1 class="display-3">Listado de DayPass CyC</h1></span>
+                        <p class="lead">Consulta y da seguimiento a tus dayPass generadas en Roiback</p>
+                    </div>
+                </div>
+            </div>
+            <div class="container d-flex justify-content-between p-2">
+                <mat-card [style.width.px]="280">
+                    <div class="d-flex justify-content-between">
+                        <mat-card-content>
+                            <mat-form-field>
+                                <input matInput placeholder="Nombre / confirmacion" [(ngModel)]="search['searchString']" [disabled]="!search['locFlag']">
+                            </mat-form-field>
+                        </mat-card-content>
+                        <div class="p-2 align-content-center">
+                            <ui-switch size="small" name='exist' [(ngModel)]="search['locFlag']"></ui-switch>
+                        </div>
+                    </div>
+                </mat-card>
+                <mat-card [style.width.px]="230">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-between">
+                            <mat-form-field [style.width.px]="150">
+                                <input matInput placeholder="Fecha Creacion" id="created" [autoClose]="false" (click)="search['dtCreatedFlag'] ? dC.toggle() : search['dtCreatedFlag']=search['dtCreatedFlag']" name="dp" ngbDatepicker #dC="ngbDatepicker" [dayTemplate]="tdC" (dateSelect)="onDateSelection($event, dC, 'created')"
+                                    autocomplete="off" readonly [disabled]="!search['dtCreatedFlag']">
+                                <ng-template #tdC let-date="date" let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                    </span>
+                                </ng-template>
+                            </mat-form-field>
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="small" name='exist' [(ngModel)]="search['dtCreatedFlag']"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card [style.width.px]="230">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-between">
+                            <mat-form-field [style.width.px]="150">
+                                <input matInput placeholder="Fecha Llegada" id="arrival" [autoClose]="false" (click)="search['dtArrivalFlag'] ? dA.toggle() : search['dtArrivalFlag']=search['dtCreatedFlag']" name="dp" ngbDatepicker #dA="ngbDatepicker" [dayTemplate]="tdA" (dateSelect)="onDateSelection($event, dA, 'arrival')"
+                                    autocomplete="off" readonly [disabled]="!search['dtArrivalFlag']">
+                                <ng-template #tdA let-date="date" let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                    </span>
+                                </ng-template>
+                            </mat-form-field>
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="small" name='exist' [(ngModel)]="search['dtArrivalFlag']"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card [style.width.px]="280">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group row">
+                                <app-search-asesor (result)="onSelected( $event )" [matStyle]="true" [disableInput]="!search['asesorFlag']" inputClass="pl-2 mat-input-element mat-form-field-autofill-control cdk-text-field-autofill-monitored" [currentUser]="currentUser" [active]="2"
+                                    udn="self" placeholder="Nombre Asesor..."></app-search-asesor>
+                            </div>
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="small" name='exist' [(ngModel)]="search['asesorFlag']"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="container d-flex justify-content-end p-2">
+
+                <div class="m-1">
+                    <ui-switch size="small" name='nr_overdue' [(ngModel)]="search['nr_overdue']" checkedLabel='Vencidas' uncheckedLabel='Vencidas'></ui-switch>
+                </div>
+
+            </div>
+            <div class="container d-flex justify-content-end p-2">
+                <button mat-raised-button color="primary" (click)="searchLocs()">Buscar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <mat-progress-bar mode="buffer" *ngIf="loading['locs']"></mat-progress-bar>
+
+    <div class="container alert alert-danger" role="alert" *ngIf="data.length == 0 && !loading['locs'] && searchFlag">
+        No hay reservaciones para mostrar
+    </div>
+
+    <div class="container-fluid" *ngIf="data.length > 0">
+
+        <ngx-table [configuration]="config" [data]="data" [columns]="columns">
+            <ng-template let-row>
+                <td class="row__email" *ngFor="let item of columns">
+                    <span [ngSwitch]="item['type']">
+                            <span style="font-size: smaller" *ngSwitchCase="'default'">
+                            {{ row[item['key']] }}
+                            </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'npropio'">
+                            {{ row[item['key']] | capitalizado }}
+                            </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'ocup'">
+                            {{ row['a'] }} | {{ row['j'] }} | {{ row['m'] }}
+                            </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'money'">
+                            {{ row[item['key']] | currency:'MXN':'symbol-narrow':'.2-2' }}
+                            </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'date'">
+                            {{ formatDate(row[item['key']], 'DD-MM-YY') }}
+                            </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'nr'">
+                              <mat-chip-list *ngIf="row[item['key']] == 1">
+                                <mat-chip color="accent" selected>NR</mat-chip>
+                              </mat-chip-list>
+                          </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'status'">
+                              <mat-chip-list>
+                                <mat-chip [color]="row[item['key']] == 1 ? (row[item['key']] == null ? 'alert' : row['o'] == 1 ? 'success' : 'primary') : 'accent'" selected>{{row[item['key']] == 1 ? (row[item['key']] == null ? 'En espera' : row['o'] == 1 ? 'Efectivo' : 'Confirmado') : 'Cancelado' }}</mat-chip>
+                              </mat-chip-list>
+                          </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'conf'">
+                              <mat-chip-list>
+                                <mat-chip [color]="row[item['key']] == null ? '' : row[item['key']] == 'r' ? 'primary' : row[item['key']] == 'c' ? 'warn' : row[item['key']] == 'n' ? 'alert' : 'success'" selected>{{row[item['key']] == null ? '-' : row[item['key']]}}</mat-chip>
+                              </mat-chip-list>
+                          </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'link'">
+                              <a mat-raised-button [disabled]="item['status'] == 0" [color]="item['title'] == 'Cancelar' ? 'warn' : item['title'] == 'PDF' ? 'primary' : 'info'" [href]="row[item['key']]" target="_blank" *ngIf="(item['title'] == 'Cancelar' && item['montoPago'] == null && item['status'] == 1) || (item['title'] != 'Cancelar' && row[item['key']] != null)">
+                                {{ item['key'] == 'xldLink' ? 'Cancelar' : item['key'] == 'pdfLink' ? 'PDF' : item['key'] == 'linkTicket_conf' ? row['ticket_conf'] : row['ticket_cancel'] }}
+                              </a>
+                          </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'payLink'">
+                              <a mat-raised-button color="primary" [href]="" target="_blank" *ngIf="row['ticket'] == null && row['status'] == 1">
+                                Send Link
+                              </a>
+                              <a mat-raised-button color="info" [href]="row['linkTicket_pago']" target="_blank" *ngIf="row['ticket'] != null">
+                                {{ row['ticket'] }}
+                              </a>
+                          </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'button'">
+                              <a mat-mini-fab color="primary" [routerLink]="['/rsv',row['masterlocatorid']]" target="_blank">
+                                <mat-icon>open_in_new</mat-icon>
+                              </a>
+                          </span>
+                    </span>
+                </td>
+            </ng-template>
+        </ngx-table>
+
+    </div>
+</div>

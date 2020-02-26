@@ -1,0 +1,67 @@
+<div class="card border-0">
+    <div class="card-body">
+        <div class="row" *ngIf="data">
+            <div class="col-sm-12 col-lg-2 d-flex justify-content-center">
+                <img alt='image' class='img rounded' height="300px" style='margin: auto; cursor: zoom-in' [src]="asesorImage" (error)="noImage()" data-toggle="modal" data-target="#fotoModal">
+            </div>
+            <div class="col-sm-12 col-lg-10">
+                <div class="d-flex align-items-center justify-content-between flex-wrap bg-info">
+                    <div class="p-1">
+                        <h2 class="text-light">{{ data['Nombre'] }}</h2>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-start flex-wrap" *ngIf="_init.checkSingleCredential('hc_edit_detalles')">
+                        <div class="p-1">
+                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editDetail">Editar</button>
+                        </div>
+                        <div class="p-1">
+                            <button type="button" class="btn btn-secondary" (click)="uploadFoto()">Subir Foto</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-1" *ngIf="!loading['data']">
+                    <div class="col-sm-12 col-lg-6">
+                        <ul class="fa-ul">
+                            <li *ngFor="let item of detalles">
+                                <span class="fa-li"><i [class]="item['icon']+' text-info'"></i></span><span [class]="item['class']">{{ data[item['field']] ? data[item['field']] : '__' }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <ul class="fa-ul">
+                            <li *ngFor="let item of contacto">
+                                <span class="fa-li"><i [class]="item['icon']+' text-info'"></i></span><span [class]="item['class']">{{ data[item['field']] ? data[item['field']] : '__' }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center p-4" *ngIf="loading['data']">
+                    <h3>Cargando Detalles <i class="fas fa-spinner fa-pulse text-info"></i></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-upload-image (loadResult)="upldCheck( $event )"></app-upload-image>
+
+<!-- EDITAR DETALLES -->
+<app-edit-details [nombre]="data['Nombre']" [data]="data" element='#editDetail' (save)="saved( $event )"></app-edit-details>
+
+<div class="modal fade" id="fotoModal" tabindex="-1" role="dialog" aria-labelledby="fotoModalLabel" aria-hidden="true" *ngIf="asesor">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fotoModalLabel">{{ data['Nombre'] }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <img alt='image' class='img rounded img-fluid' style='margin: auto;' [src]="asesorImage" (error)="noImage()">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,206 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+
+    <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <span><h1 class="display-3">Cotizador</h1></span>
+                    <p class="lead">Ingresa fechas, cantidad de habitaciones, ocupación y edades de los menores</p>
+                </div>
+                <!-- <div>
+                  <img src="assets/img/bePriceBCO.png" height="150" width="150" alt="">
+              </div> -->
+            </div>
+        </div>
+        <br>
+        <div class='container'>
+            <div class="container-fluid d-flex flex-wrap justify-content-start align-items-baseline">
+                <div class="form d-flex justify-content-start pr-3">
+                    <div class="form-group p-1">
+                        <label for="habs">No. Habs</label>
+                        <select [(ngModel)]="habs" name="habs" id="adults" class="form-control" [style.width.px]="60">
+                      <option value="1" selected>1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                    </select>
+                    </div>
+                    <div class="form-group p-1">
+                        <label for="fechas">Fechas</label>
+                        <div class="input-group">
+                            <input class="form-control" id="fechas" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" [dayTemplate]="t" (dateSelect)="onDateSelection($event, d)" autocomplete="off" [style.width.px]="150">
+                            <ng-template #t let-date="date" let-focused="focused">
+                                <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                        {{ date.day }}
+                      </span>
+                            </ng-template>
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group p-1">
+                        <label for="grupo">Código</label>
+                        <select [(ngModel)]="selectedCode" name="grupo" id="grupo" class="form-control">
+                            <option [value]="gp['grupo']" *ngFor="let gp of groupsTfa">{{ gp['grupo'] }}</option>
+                        </select>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="container p-3 d-flex flex-wrap justify-content-between align-items-baseline">
+            <mat-accordion class="align-self-baseline">
+                <mat-expansion-panel [expanded]="filterExp">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Filtros
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <ng-container *ngFor="let i of habs | fill; index as x">
+                        <app-search-hotel-module #fltr [noHab]="x+1"></app-search-hotel-module>
+                    </ng-container>
+                </mat-expansion-panel>
+            </mat-accordion>
+            <div style="text-align: center" class="p-1">
+                <ui-switch color="green" size="large" name='ch_comida' [(ngModel)]="moneda" checkedLabel='MXN' uncheckedLabel='USD'></ui-switch>
+                <p>
+                    <small>Moneda </small>
+                </p>
+            </div>
+            <div class="p-1">
+                <button class="btn btn-success" type="button" (click)="getCotizacion()" [disabled]="loading['cotizador']">Cotizar <span *ngIf="loading['cotizador']"><i class="fa fa-fw fa-spinner fa-pulse"></i></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="container" *ngIf="resultCot['habs']">
+        <mat-card>
+            <div class="d-flex justify-content-between">
+                <span><h3><i class="fas fa-moon p-1"></i> {{ resultCot['gen']['noches'] }} Noches</h3></span>
+                <span><h3><i class="far fa-calendar-alt p-1"></i> ({{ formatDate(resultCot['gen']['inicio'],'DD MMM \'YY') }}) a ({{ formatDate(resultCot['gen']['fin'],'DD MMM \'YY') }}) </h3></span>
+                <span><h3><i class="fas fa-bed p-1"></i> {{ resultCot['gen']['nh'] }} Habs</h3></span>
+            </div>
+        </mat-card>
+        <mat-accordion class="acc-headers">
+            <ng-container *ngFor="let h of resultCot['habs']">
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header class='d-flex justify-content-between'>
+                        <mat-panel-title>
+                            <div class="d-flex justify-content-start">
+                                <div style="background-size: cover; background-position: center; width: 100px; height: 35px; border-radius: 30px" [style.background-image]="h['hotelUrl']"></div>
+                                <div>{{ h['hotel'] }}</div>
+                            </div>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            <span><span class='pr-1 font-weight-bold'>{{ h['habitacion'] }}</span><span class="text-info">({{ h['habCat']}})</span></span>
+                            <div class="d-flex justify-content-around" [style.width.px]="300">
+                                <ng-container *ngIf="!h['isOk']">
+                                    <div class="text-black-50 font-italic">
+                                        {{ h['no_disp'] ? h['no_disp'] : h['no_occ'] ? h['no_occ'] : h['no_adl'] ? h['no_adl'] : h['no_min'] ? h['no_min'] : h['no_comb'] }}
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="h['isOk']">
+                                    <div class='pr-1' style="text-decoration:line-through">{{ (moneda ? h['mxn_total'] : h['usd_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</div>
+                                    <div class='pr-1 text-success font-weight-bold'>{{ h['desc'] | percent:'.0-0' }}</div>
+                                    <div class="font-weight-bold">
+                                        <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <app-cot-hab-detail [habs]="h['habs']" [moneda]="moneda"></app-cot-hab-detail>
+                    <div class="ml-auto mr-auto d-flex justify-content-center flex-wrap pt-2">
+                        <div [style.width.px]="55" [style.height.px]="30" class="pt-1 pr-2">Dispo:</div>
+                        <mat-chip-list aria-label="Fish selection">
+                            <mat-chip [color]="d['blackout'] == '1' ? 'warn' : 'primary'" selected *ngFor="let d of h['bo']">{{ formatDate(d['fecha'],'DD MMM') }}</mat-chip>
+
+                        </mat-chip-list>
+                    </div>
+                    <mat-action-row *ngIf="h['isOk']">
+                        <button mat-button color="primary" (click)="sendCotizacion(h)">Enviar Cotizacion</button>
+                    </mat-action-row>
+                </mat-expansion-panel>
+            </ng-container>
+        </mat-accordion>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="cotizador" tabindex="-1" role="dialog" aria-labelledby="cotiazadorModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cotiazadorModal">Enviar como cotización</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" [disabled]="loading['cotizando']">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3" *ngIf="!budgetExistTicket || (budgetExistTicket && !budgetNoEdit)">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" [style.width.px]="120">Nombre</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Nombre Cliente" aria-label="Username" aria-describedby="basic-addon1" name="bgName" [(ngModel)]="budgetName">
+                </div>
+
+                <div class="input-group mb-3" *ngIf="!budgetExistTicket || (budgetExistTicket && !budgetNoEdit)">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" [style.width.px]="120">Correo</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="correo cliente" aria-label="Username" aria-describedby="basic-addon1" name="bgMail" [(ngModel)]="budgetMail">
+                </div>
+                <div class="input-group mb-3" *ngIf="!budgetExistTicket || (budgetExistTicket && !budgetNoEdit)">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" [style.width.px]="120">Teléfono</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="+1 555-123-4567" aria-label="Username" aria-describedby="basic-addon1" name="bNumber" [(ngModel)]="budgetNumber">
+                </div>
+                <div class="p-1 d-flex justify-content-center">
+                    <div style="text-align: center" class="p-2">
+                        <ui-switch color="green" size="small" name='exist' [(ngModel)]="budgetExistTicket"></ui-switch>
+                        <p>
+                            <small>Ticket Existente</small>
+                        </p>
+                    </div>
+                    <div style="text-align: center" class="p-2" *ngIf="budgetExistTicket">
+                        <ui-switch color="green" size="small" name='exist' [(ngModel)]="budgetNoEdit"></ui-switch>
+                        <p>
+                            <small>Mismo Cliente</small>
+                        </p>
+                    </div>
+                    <div style="text-align: center" class="p-2">
+                        <ui-switch color="green" size="small" name='idioma' checkedLabel='Esp' uncheckedLabel='Eng' [(ngModel)]="budgetLang"></ui-switch>
+                        <p>
+                            <small>Idioma</small>
+                        </p>
+                    </div>
+                </div>
+                <div class="input-group mb-3" *ngIf="budgetExistTicket">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Ticket</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="# ticket" aria-label="ticket" aria-describedby="basic-addon1" name="bgTicket" [(ngModel)]="budgetTicket">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading['cotizando']">Cancelar</button>
+                <button type="button" class="btn btn-primary" [disabled]="loading['cotizando'] || (budgetExistTicket && budgetTicket=='')" (click)="sendBudget()">Enviar  <span *ngIf="loading['cotizando']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+            </div>
+        </div>
+    </div>
+</div>

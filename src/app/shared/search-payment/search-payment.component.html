@@ -1,0 +1,54 @@
+<div class="col d-flex justify-content-center flex-wrap">
+    <div class="p-1">
+        <mat-form-field>
+            <input matInput placeholder="Referencia / Autorizacion / Operacion" name="mail" [(ngModel)]="mail">
+        </mat-form-field>
+    </div>
+    <div class="p-1">
+        <button mat-raised-button color="primary" (click)="search()" [disabled]="loading['search'] || mail == '' || !mail">Buscar <span *ngIf="loading['search']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+    </div>
+</div>
+<div class="d-flex justify-content-between" *ngIf="data['items'] && data['items'].length > 0 || noResults" [style.max-height.px]="maxHeight" style="overflow: auto">
+    <div class="container alert alert-warning" role="alert" *ngIf="noResults">
+        No se encontraron coincidencias
+    </div>
+    <mat-list class="container" *ngIf="data['items'].length > 0">
+        <ng-container *ngFor="let item of data['items']; index as i">
+            <div class="container d-flex justify-content-between">
+                <mat-chip-list class="m-1 typeWidth">
+                    <mat-chip [color]="item['tipo'] == 'PayPal' ? 'primary' : item['tipo'] == 'Santander' ? 'danger' : item['tipo'] == 'Tpv' ? 'success' : 'info'" selected>{{ item['tipo'] }}</mat-chip>
+                </mat-chip-list>
+                <mat-form-field class="m-1" [style.width.px]="140" style="font-size: smaller !important">
+                    <span class="text-center text-info" matPrefix><i class="fab fa-slack-hash"></i></span>
+                    <input class="ml-2" type="text" matInput placeholder="Operacion" [value]="item['operacion']" readonly>
+                </mat-form-field>
+                <mat-form-field class="m-1" [style.width.px]="80" style="font-size: smaller !important">
+                    <span class="text-center text-info" matPrefix><i class="fas fa-envelope"></i></span>
+                    <input class="ml-2" type="text" matInput placeholder="Complejo" [value]="item['complejo']" readonly>
+                </mat-form-field>
+                <mat-form-field class="m-1" [style.width.px]="80" style="font-size: smaller !important">
+                    <span class="text-center text-info" matPrefix><i class="fas fa-envelope"></i></span>
+                    <input class="ml-2" type="text" matInput placeholder="Referencia" [value]="item['referencia']" readonly>
+                </mat-form-field>
+                <mat-form-field class="m-1" [style.width.px]="120" style="font-size: smaller !important">
+                    <span class="text-center text-info" matPrefix><i class="fas fa-envelope"></i></span>
+                    <input class="ml-2" type="text" matInput placeholder="Monto" [value]="(item['monto'] | currency:'MXN':'symbol-narrow':'.2-2') + ' ' + item['moneda'] " readonly>
+                </mat-form-field>
+                <mat-form-field class="m-1" [style.width.px]="120" style="font-size: smaller !important">
+                    <span class="text-center text-info" matPrefix><i class="fas fa-envelope"></i></span>
+                    <input class="ml-2" type="text" matInput placeholder="Fecha" [value]="item['dtCreated']" readonly>
+                </mat-form-field>
+                <mat-form-field class="m-1" [style.width.px]="120" style="font-size: smaller !important">
+                    <span class="text-center text-info" matPrefix><i class="fas fa-envelope"></i></span>
+                    <input class="ml-2" type="text" matInput placeholder="Saldo" [value]="(item['montoSaldo'] | currency:'MXN':'symbol-narrow':'.2-2') + ' ' + item['moneda'] " readonly>
+                </mat-form-field>
+                <div class="p-2">
+                    <button mat-raised-button color="primary" (click)="select(item)" [disabled]="loading['select'] || item['montoSaldo'] <= 0"><i class="fas fa-check"></i></button>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+        <mat-divider></mat-divider>
+    </mat-list>
+
+</div>

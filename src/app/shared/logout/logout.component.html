@@ -1,0 +1,71 @@
+<!-- Modal -->
+<div class="modal fade" id="logOutModal" tabindex="-1" role="dialog" aria-labelledby="logOutModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="logOutModalLabel">Logout</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body bg-info" *ngIf="!loading['lout']">
+                <p class="text-center">Confirma tus horarios para mañana y pasado mañana</p>
+                <div class="d-flex justify-content-center">
+                    <table class='table-sm table-bordered' id="horario">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" class="text-center p-2" *ngFor="let item of hData">{{ printDate(item['Fecha'], 'dddd DD MMM \'YY') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center p-2" *ngFor="let item of hData">
+                                    <p>j: {{ item['Ausentismo'] ? item['Ausentismo'] : (item['js'] == item['je'] ? 'Descanso' : printDate(item['js'], 'HH:mm') + ' - ' + printDate(item['je'], 'HH:mm')) }}</p>
+                                    <p *ngIf="!item['Ausentismo']">c: {{ item['cs'] == item['ce'] ? 'NA' : printDate(item['cs'], 'HH:mm') + ' - ' + printDate(item['ce'], 'HH:mm') }}</p>
+                                    <p *ngIf="!item['Ausentismo'] && (item['x1s'] != item['x1e'])">x1: {{ item['x1s'] == item['x1e'] ? 'NA' : printDate(item['x1s'], 'HH:mm') + ' - ' + printDate(item['x1e'], 'HH:mm') }}</p>
+                                    <p *ngIf="!item['Ausentismo'] && (item['x2s'] != item['x2e'])">x2: {{ item['x2s'] == item['x2e'] ? 'NA' : printDate(item['x2s'], 'HH:mm') + ' - ' + printDate(item['x2e'], 'HH:mm') }}</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <!-- <div class="form-check mb-2 mr-sm-2">
+                        <input class="form-check-input" [(ngModel)]="accept" type="checkbox" id="inlineFormCheck">
+                        <label class="form-check-label" for="inlineFormCheck">
+              Confirmo mis horarios
+            </label>
+                    </div> -->
+                    <mat-checkbox [(ngModel)]="accept">Confirmo mis horarios</mat-checkbox>
+                </div>
+            </div>
+            <div class="modal-body" *ngIf="loading['lout']">
+                <h1>Logging out... <i class="fas fa-spinner fa-pulse text-danger"></i></h1>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading['lout']">Cancelar</button>
+                <button type="button" class="btn btn-danger" (click)="confirmLO() " *ngIf="accept" [disabled]="loading['lout']">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="logOutConfirmModal" tabindex="-1" role="dialog" aria-labelledby="logOutConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="logOutModalLabel">Logout</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center">¡Hasta Pronto!</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading['lout']">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,405 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<div class="d-flex justify-content-center p-5" *ngIf="showContents && loading['loc']">
+    <mat-spinner></mat-spinner>
+</div>
+<div class="container-fluid" *ngIf="showContents && !loading['loc'] && data['items'].length == 0">
+    <div class="alert alert-danger" role="alert">
+        <p>No hay items para mostrar</p>
+    </div>
+</div>
+<div class="container-fluid" id="thisPaperConfirmView" *ngIf="showContents && !loading['loc'] && data['items'].length > 0">
+    <div class="container-fluid" *ngIf="data['items'][0]['isQuote'] == '1'">
+        <div class="alert alert-info" role="alert">
+            <p>El localizador no ha recibido pago por lo que no se ha mandado a confirmación</p>
+        </div>
+    </div>
+    <!-- <div class='container bg-light text-dark'>
+            <app-search-loc (selected)="selectLoc($event)" [maxHeight]="200"></app-search-loc>
+        </div> -->
+
+    <!-- ====================== INICIO CUADRO PRINCIPAL ====================== -->
+    <div class="container mainFrame p-2" *ngIf="data['items'][0]['isQuote'] != '1'">
+
+        <!-- ====================== INICIO TITULAR ====================== -->
+        <div class="p-0 row m-0" [style.height.px]="90">
+            <div class="locFrame col-3">
+                <b>{{ data['items'][0]['itemLocatorId'] }}</b>
+            </div>
+            <div class="col-7" matTooltipPosition="above" [matTooltip]="data['master']['nombreCliente']">
+                <div>
+                    <h2 class="text-truncate"><b>{{ data['master']['nombreCliente'] }}</b></h2>
+                </div>
+                <p style="color: darkgrey">Creada el <b>{{ formatDate(data['items'][0]['dtCreated'], 'DD MMM YYYY HH:mm') }} hrs.</b> por <b><a [href]="mailTo(data)">{{ data['items'][0]['creador'] }}</a></b></p>
+
+            </div>
+            <div class="col-2">
+                <button mat-button color="primary" (click)="printP()"><mat-icon>print</mat-icon> Imprimir</button>
+                <mat-chip-list aria-label="Fish selection">
+                    <mat-chip color="primary" selected>{{ data['items'][0]['Servicio'] }}</mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+        <!-- ====================== FIN TITULAR ====================== -->
+
+        <!-- ====================== INICIO CUERPO MEDIO ====================== -->
+        <div class="container m-2 row">
+
+            <!-- ====================== INICIO CUADRO ITEMS ====================== -->
+            <div class="itemsFrame col-9 pb-4">
+                <div class="d-flex justify-content-end p-1">
+                </div>
+                <div class="container p-1 bg-light">
+                    <div class="container d-flex justify-content-start align-items-center" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}">
+                        <div class='p-4'>
+                            <h2>{{ data['items'][0]['tipoServicio'] }}</h2>
+                            <h4><span class="text-info" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}">{{ data['items'][0]['categoria'] }}</span></h4>
+                        </div>
+                        <div class='p-1' [style.width.px]="120" [ngClass]="{'iconConfirm': data['items'][0]['isCancel'] == '0', 'iconCancel': data['items'][0]['isCancel'] == '1'}">
+                            <h1>
+                                <mat-icon style="font-size: 70px">{{ data['items'][0]['icon'] }}</mat-icon>
+                            </h1>
+                        </div>
+                    </div>
+                    <hr class="hrItems">
+                    <div class="container d-flex justify-content-lg-between p-2 align-items-center ml-auto mr-auto" *ngIf="data['items'][0]['tipoServicio'] != 'Auto'">
+                        <div class="rowTitle">
+                            <p class="rowTitleTxt" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}">PAX: </p>
+                        </div>
+                        <div class="d-flex justify-content-lg-between containExtra">
+                            <div class="m-1 text-center ">
+                                <p class="colTitle">Adultos</p>
+                                <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['adultos'] }}</b></p>
+                            </div>
+                            <div class="m-1 text-center " *ngIf="data['items'][0]['Servicio'] == 'DayPass'">
+                                <p class="colTitle">Juniors</p>
+                                <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['juniors'] }}</b></p>
+                            </div>
+                            <div class="m-1 text-center ">
+                                <p class="colTitle">Menores</p>
+                                <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['menores'] }}</b></p>
+                            </div>
+                            <div class="m-1 text-center " *ngIf="data['items'][0]['Servicio'] != 'DayPass'">
+                                <p class="colTitle">Infantes</p>
+                                <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['infantes'] }}</b></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container d-flex justify-content-lg-between p-2 align-items-center ml-auto mr-auto">
+                        <div class="rowTitle">
+                            <p class="rowTitleTxt" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}">Fecha{{ data['items'][0]['Servicio'] == 'Traslados' ? ' llegada' : '' }}: </p>
+                        </div>
+                        <div class="containExtra">
+                            <div class="d-flex justify-content-lg-between containExtra">
+                                <ng-container *ngIf="data['items'][0]['Servicio'] == 'DayPass'">
+                                    <div class="m-1 text-center ">
+                                        <p class="colTitle">Fecha de Servicio</p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ formatDate(data['items'][0]['llegada'], 'ddd DD MMM YYYY') }}</b></p>
+                                    </div>
+                                    <div class="m-1 text-center ">
+                                        <p class="colTitle">Tipo de Servicio</p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['categoria'] }}</b></p>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="data['items'][0]['Servicio'] == 'Tours'">
+                                    <div class="m-1 text-center ">
+                                        <p class="colTitle">Fecha de Servicio</p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ formatDate(data['items'][0]['llegada'], 'ddd DD MMM YYYY') }}</b></p>
+                                    </div>
+                                    <div class="m-1 text-center ">
+                                        <p class="colTitle">Pick-Up <small>(si aplica)</small></p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['pickup'] }}</b></p>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="data['items'][0]['Servicio'] == 'Traslados' || data['items'][0]['tipoServicio'] == 'Auto'">
+                                    <div class="m-1 text-center ">
+                                        <p class="colTitle">Fecha Llegada</p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ formatDate(data['items'][0]['llegada'], 'ddd DD MMM YYYY') }}</b></p>
+                                    </div>
+                                    <div class="m-1 text-center ">
+                                        <p class="colTitle">Hora Llegada</p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['hora_in'] }} hrs.</b></p>
+                                    </div>
+                                    <div class="m-1 text-center " *ngIf="data['items'][0]['Servicio'] == 'Traslados'">
+                                        <p class="colTitle">Vuelo Llegada</p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['vuelo_in'] }}</b></p>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="data['items'][0]['tipoServicio'] == 'Concierto'">
+                                    <div class="m-1 text-center ">
+                                        <p class="colTitle">Fecha Concierto</p>
+                                        <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ formatDate(data['items'][0]['llegada'], 'ddd DD MMM YYYY') }}</b></p>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <div class="alert alert-info text-center" role="alert" *ngIf="data['items'][0]['Servicio'] == 'Traslados'">
+                                <mat-form-field class="example-form-field">
+                                    <input matInput type="text" autocomplete="off" placeholder="Registrar Pickup" [value]="data['items'][0]['dtPickUpIn']" [readonly]="puiRo" #puiV>
+                                    <button mat-button matSuffix mat-icon-button aria-label="Editar" (click)="puiRo = false" *ngIf="puiRo && !loading['pui']">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                    <button mat-button matSuffix mat-icon-button aria-label="Editar" (click)="savePu('pui', puiV)" *ngIf="!puiRo && !loading['pui']">
+                                            <mat-icon>save</mat-icon>
+                                        </button>
+                                    <span *ngIf="loading['pui']">
+                                        <i class="fas fa-spinner fa-pulse"></i>
+                                    </span>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container d-flex justify-content-lg-between p-2 align-items-center ml-auto mr-auto" *ngIf="data['items'][0]['salida'] != null">
+                        <div class="rowTitle">
+                            <p class="rowTitleTxt" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}">Fecha Salida: </p>
+                        </div>
+                        <div class="containExtra">
+                            <div class="d-flex justify-content-lg-between containExtra">
+
+                                <div class="m-1 text-center ">
+                                    <p class="colTitle">Fecha Salida</p>
+                                    <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ formatDate(data['items'][0]['salida'], 'ddd DD MMM YYYY') }}</b></p>
+                                </div>
+                                <div class="m-1 text-center ">
+                                    <p class="colTitle">Hora Salida</p>
+                                    <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['hora_out'] }} hrs.</b></p>
+                                </div>
+                                <div class="m-1 text-center " *ngIf="data['items'][0]['Servicio'] == 'Traslados'">
+                                    <p class="colTitle">Vuelo Salida</p>
+                                    <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['vuelo_out'] }}</b></p>
+                                </div>
+                            </div>
+                            <div class="alert alert-info text-center" role="alert" *ngIf="data['items'][0]['Servicio'] == 'Traslados'">
+                                <mat-form-field class="example-form-field">
+                                    <input matInput type="text" autocomplete="off" placeholder="Registrar Pickup" [value]="data['items'][0]['dtPickUpOut']" [readonly]="puoRo" #puoV>
+                                    <button mat-button matSuffix mat-icon-button aria-label="Editar" (click)="puoRo = false" *ngIf="puoRo && !loading['puo']">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                    <button mat-button matSuffix mat-icon-button aria-label="Editar" (click)="savePu('puo', puoV)" *ngIf="!puoRo && !loading['puo']">
+                                            <mat-icon>save</mat-icon>
+                                        </button>
+                                    <span *ngIf="loading['puo']">
+                                        <i class="fas fa-spinner fa-pulse"></i>
+                                    </span>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container d-flex justify-content-lg-between p-2 align-items-center ml-auto mr-auto" *ngIf="data['items'][0]['Servicio'] == 'Traslados'">
+                        <div class="rowTitle">
+                            <p class="rowTitleTxt" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}">Hotel: </p>
+                        </div>
+                        <div class="d-flex justify-content-center containExtra">
+
+                            <div class="m-1 text-center ">
+                                <p class="colTitle">Recepción</p>
+                                <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['hotel'] }}</b></p>
+                            </div>
+                            <div class="m-1 text-center ">
+                                <p class="colTitle">Zona</p>
+                                <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['Zona'] }}</b></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container d-flex justify-content-lg-between p-2 align-items-center ml-auto mr-auto">
+                        <div class="rowTitle">
+                            <p class="rowTitleTxt" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}">Notas: </p>
+                        </div>
+                        <div class="d-flex justify-content-lg-between containExtra">
+
+                            <div class="m-1 text-center ">
+                                <p class="colData" [ngClass]="{'textXld': data['items'][0]['isCancel'] == '1'}"><b>{{ data['items'][0]['notas'] }}</b></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="hrItems">
+                    <div class="container d-flex justify-content-lg-end align-items-center" style="padding-right: 35px;">
+                        <div class='mr-auto p-2' *ngIf="data['items'][0]['isCancel'] == '1'">
+                            <h3 class="textXld">Cancelacion</h3>
+                            <small class="textXld">({{ formatDate(data['items'][0]['dtCancel'], 'DD MMM \'YY') }} por {{ data['items'][0]['userCancel'] }})</small>
+                        </div>
+                        <ng-container *ngIf="data['items'][0]['confirmOK'] == null && data['items'][0]['isCancel'] != '1'">
+                            <mat-form-field *ngIf="data['items'][0]['confirmOK'] == null && data['items'][0]['isCancel'] != '1'">
+                                <input matInput type="text" placeholder="Clave de Confirmación" [(ngModel)]="confirmation" autocomplete="off">
+                                <button mat-button *ngIf="confirmation" matSuffix mat-icon-button aria-label="Clear" (click)="confirmation=''">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                            </mat-form-field>
+                            <div class="ml-2">
+                                <button mat-raised-button color='success' (click)="sendConfirm(data['items'][0], true)" [disabled]="confirmation == '' || loading['confirm']">Confirmar <span *ngIf="loading['confirm']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="data['items'][0]['confirmCancel'] == null && data['items'][0]['isCancel'] == '1'">
+                            <mat-form-field>
+                                <input matInput type="text" placeholder="Clave de Confirmación" [(ngModel)]="confirmationCancel" autocomplete="off">
+                                <button mat-button *ngIf="confirmationCancel" matSuffix mat-icon-button aria-label="Clear" (click)="confirmationCancel=''">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                            </mat-form-field>
+                            <div class="ml-2">
+                                <button mat-raised-button color='danger' (click)="sendConfirm(data['items'][0], false)" [disabled]="confirmationCancel == '' || loading['confirm']">Confirmar <span *ngIf="loading['confirm']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+                            </div>
+                        </ng-container>
+
+                        <div class='p-2' *ngIf="data['items'][0]['confirmOK'] != null && data['items'][0]['isCancel'] != '1'">
+                            <h3 class="text-primary">{{ data['items'][0]['confirmOK'] }}</h3>
+                            <small class="text-primary">({{ formatDate(data['items'][0]['dtConfirm'], 'DD MMM \'YY') }} por {{ data['items'][0]['userConfirm'] }})</small>
+                        </div>
+                        <div class='p-2' *ngIf="data['items'][0]['confirmCancel'] != null && data['items'][0]['isCancel'] == '1'">
+                            <h3 class="textXld">{{ data['items'][0]['confirmCancel'] }}</h3>
+                            <small class="textXld">({{ formatDate(data['items'][0]['dtConfirmCancel'], 'DD MMM \'YY') }} por {{ data['items'][0]['userConfirmCancel'] }})</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ====================== FIN CUADRO ITEMS ====================== -->
+
+            <!-- ====================== INICIO LATERAL CLIENTE ====================== -->
+            <div class="clientFrame col-3">
+                <hr>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Titular:</b></div>
+                    <div class="clientInfo">{{ data['master']['nombreCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Tel:</b></div>
+                    <div class="clientInfo">{{ data['master']['telCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Correo:</b></div>
+                    <div class="clientInfo">{{ data['master']['correoCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Whatsapp:</b></div>
+                    <div class="clientInfo">{{ data['master']['whatsCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Zendesk:</b></div>
+                    <div class="clientInfo"><a target="_blank" [href]=" data['master']['zdUserId'] | domseguro:'https://oasishoteles.zendesk.com/agent/users/' ">{{ data['master']['zdUserId'] }}</a></div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Fecha:</b></div>
+                    <div class="clientInfo">{{ formatDate(data['items'][0]['llegada'], 'DD MMM YYYY') }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Tarifa:</b></div>
+                    <div class="clientInfo">{{ data['items'][0]['grupo'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Adultos:</b></div>
+                    <div class="clientInfo">{{ data['items'][0]['adultos'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Menores:</b></div>
+                    <div class="clientInfo">{{ data['items'][0]['menores'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Infantes:</b></div>
+                    <div class="clientInfo">{{ data['items'][0]['infantes'] }}</div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Total:</b></div>
+                    <div class="clientInfo">{{ data['items'][0]['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }} {{ data['items'][0]['moneda'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Status:</b></div>
+                    <div class="clientInfo">{{ data['items'][0]['montoPagado'] == data['items'][0]['monto'] ? 'Pagado 100%' : 'Saldo Pendiente' }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Cuenta:</b></div>
+                    <div class="clientInfo" *ngIf="data['payments'][0]">
+                        <span *ngIf="data['payments'][0]['complejo'] == 'Vcm'">VCM</span>
+                        <span *ngIf="data['payments'][0]['complejo'] != 'Vcm'" class="text-danger"><b>Cargo a Oasis ({{ data['payments'][0]['complejo'] ? data['items'][0]['complejo'] : data['items'][0]['hotel'] }})</b></span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Venta:</b></div>
+                    <div class="clientInfo">
+                        <span *ngIf="data['items'][0]['isFree'] == 1">Cortesía</span>
+                        <span *ngIf="data['items'][0]['isFree'] == 0">Venta prepagada</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Pagos:</b></div>
+                    <div class="clientInfo"><button mat-button color="primary" data-toggle="modal" data-target="#vouchers">Ver {{ data['payments'].length }} Vouchers</button></div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Vouchers:</b></div>
+                    <div class="clientInfo">
+                        <a mat-mini-fab color="primary" [href]="hrIndex + '/vouchers/' + viewLoc" target="_blank">
+                            <mat-icon>remove_red_eye</mat-icon>
+                        </a>
+                        <button class="ml-3" mat-mini-fab color="accent" (click)="_upl.build('Voucher '+ viewLoc, viewLoc, 'voucher_'+viewLoc, true, 'voucher')">
+                            <mat-icon>note_add</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- ====================== FIN LATERAL CLIENTE ====================== -->
+        </div>
+        <!-- ====================== FIN CUERPO MEDIO ====================== -->
+
+    </div>
+    <!-- ====================== FIN CUADRO PRINCIPAL ====================== -->
+
+</div>
+<!-- ====================== INICIO VOUCHERS ====================== -->
+<div class="modal fade" id="vouchers" tabindex="-1" role="dialog" aria-labelledby="vouchersLabel" aria-hidden="true" backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vouchersLabel">Vouchers ITEM {{ data['items'][0] ? data['items'][0]['itemLocatorId'] : '' }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Cuenta</th>
+                            <th scope="col">Afiliacion</th>
+                            <th scope="col">Tarjeta</th>
+                            <th scope="col">Monto</th>
+                            <th scope="col">Moneda</th>
+                            <th scope="col">Fecha de Pago</th>
+                            <th scope="col">Operacion</th>
+                            <th scope="col">Autorizacion</th>
+                            <th scope="col">Referencia</th>
+                            <th scope="col">Items relacionados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of data['payments']">
+                            <td>{{ p['tipo'] }}</td>
+                            <td>{{ p['complejo'] }}</td>
+                            <td>{{ p['afiliacion'] }}</td>
+                            <td>{{ p['tarjeta'] }} {{ p['tipoTarjeta'] }}</td>
+                            <td>{{ p['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                            <td>{{ p['moneda'] }}</td>
+                            <td>{{ formatDate(p['dtCreated'], 'DD MMM YYYY') }}<br>{{ formatDate(p['dtCreated'], 'HH:mm') }} hrs</td>
+                            <td>{{ p['operacion'] }}</td>
+                            <td>{{ p['aut'] }}</td>
+                            <td>{{ p['referencia'] }}</td>
+                            <td>
+                                <ng-container *ngFor="let it of p['items']">
+                                    <span>{{ it }}</span><br>
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====================== FIN VOUCHERS  ====================== -->
+<app-upload-image></app-upload-image>

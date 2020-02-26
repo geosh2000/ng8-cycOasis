@@ -1,0 +1,165 @@
+<div class="modal fade" id="addAusentismoModal" tabindex="-1" role="dialog" aria-labelledby="addAusentismoModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAusentismoModalLabel">Asignar Ausentismo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container" *ngIf="loaded; else notLoaded">
+          <form [formGroup]="formAddAusentismo">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="input_tipo">Tipo</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-plane"></i></div>
+                  <select
+                    style="width: 100%"
+                    class="custom-select"
+                    id="input_tipo"
+                    (change)="assignDays($event)"
+                    [formControlName]="'tipo'"
+                    [ngClass]="{ 'is-invalid': !formAddAusentismo.controls['tipo'].valid && !formAddAusentismo.controls['tipo'].pristine }">
+                      <option value='' selected *ngIf="!tiposAus">Cargando...</option>
+                      <ng-container *ngIf="tiposAus">
+                        <option value='' selected *ngIf="!existentAus">Selecciona...</option>
+                        <ng-container *ngFor="let item of tiposAus">
+                          <option [value]="item.id" [attr.days]="item.dias" *ngIf="(item.id == 5 && (diasPendientes.length>0 || motivoSelected != null
+                            )) || (item.id != 5 && (!existentAus || (existentAus && item.id == formAddAusentismo.controls['tipo'].value)))">{{ item.Ausentismo }}</option>
+                        </ng-container>
+                      </ng-container>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-row" *ngIf="formAddAusentismo.controls['tipo'].value == '5'">
+              <div class="form-group col-md-12">
+                <label for="input_tipo">Evento Redimido</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-calendar-check-o"></i></div>
+                  <select
+                    style="width: 100%"
+                    class="custom-select"
+                    id="input_tipo"
+                    (change)="assignDays($event)"
+                    [formControlName]="'motivo'"
+                    [ngClass]="{ 'is-invalid': !formAddAusentismo.controls['motivo'].valid && !formAddAusentismo.controls['motivo'].pristine }">
+                      <ng-container *ngIf="diasPendientes.length > 0; else motivoElse">
+                        <option value="" selected>Selecciona...</option>
+                        <option [value]="item.motivo" [attr.days]="item.available" *ngFor="let item of diasPendientes">{{ item.motivo }} ({{ item.available }})</option>
+                      </ng-container>
+                      <ng-template #motivoElse>
+                        <option [value]="motivoSelected" [attr.days]="100">{{ motivoSelected }}</option>
+                      </ng-template>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="input_dias">Dias</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-hashtag"></i></div>
+                  <input type="number" class="form-control" id="input_dias" [formControlName]="'dias'" min="1" [max]="maxDays" [readonly]="existentAus"
+                  [ngClass]="{ 'is-invalid': !formAddAusentismo.controls['dias'].valid && !formAddAusentismo.controls['dias'].pristine }">
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="input_descansos">Descansos</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-bed"></i></div>
+                    <input type="number" class="form-control" id="input_descansos" [formControlName]="'descansos'" min="0" [max]="10" [readonly]="existentAus"
+                    [ngClass]="{ 'is-invalid': !formAddAusentismo.controls['descansos'].valid && !formAddAusentismo.controls['descansos'].pristine }">
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="input_caso">Caso</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-folder-o"></i></div>
+                  <input type="text" class="form-control" id="input_caso" [formControlName]="'caso'" [readonly]="existentAus"
+                  [ngClass]="{ 'is-invalid': !formAddAusentismo.controls['caso'].valid && !formAddAusentismo.controls['caso'].pristine }">
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="input_start">Inicio</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-calendar"></i></div>
+                  <input
+                    type="date"
+                    daterangepicker
+                    [formControlName]="'inicio'"
+                    [options]="singlePicker"
+                    (selected)="setVal($event.start, 'inicio')"
+                    [ngClass]="{ 'is-invalid': !formAddAusentismo.controls['inicio'].valid && !formAddAusentismo.controls['inicio'].pristine }"
+                    class="form-control uneditable-input" type="text" value=""
+                    id="input_start"
+                    placeholder="Inicio"
+                    *ngIf="!existentAus"
+                    >
+                    <input
+                      type="text"
+                      [formControlName]="'inicio'"
+                      class="form-control uneditable-input" type="text" value=""
+                      id="input_inicio"
+                      placeholder="Fin" readonly=true   *ngIf="existentAus">
+                  </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="input_fin">Fin</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-calendar"></i></div>
+                  <input
+                    type="text"
+                    [formControlName]="'fin'"
+                    class="form-control uneditable-input" type="text" value=""
+                    id="input_fin"
+                    placeholder="Fin" readonly=true>
+                  </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="input_notas">Notas</label>
+                <div class="input-group mb-2 mb-sm-0">
+                  <div class="input-group-addon"><i class="fa fa-fw fa-comment-o"></i></div>
+                  <input type="text" class="form-control" id="input_notas" [formControlName]="'notas'" [readonly]="existentAus"
+                  [ngClass]="{ 'is-invalid': !formAddAusentismo.controls['notas'].valid && !formAddAusentismo.controls['notas'].pristine }">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <ng-template #notLoaded>
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button" class="btn btn-outline-danger"
+          data-toggle="collapse" data-target="#confirmDelete" aria-expanded="false" aria-controls="confirmDelete"
+          *ngIf="existentAus">Eliminar</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-outline-success" (click)="submit()">Guardar</button>
+      </div>
+      <div class="collapse " id="confirmDelete">
+        <div class="alert alert-danger" role="alert">
+          <p>¿Estás seguro que deseas eliminar este ausentismo?</p>
+          <p class="text-right">
+            <small>
+              <button
+                type="button" class="btn btn-sm btn-secondary"
+                data-toggle="collapse" data-target="#confirmDelete" aria-expanded="false" aria-controls="confirmDelete">Cancelar</button>
+              <button type="button" class="btn btn-sm btn-danger">Eliminar</button>
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

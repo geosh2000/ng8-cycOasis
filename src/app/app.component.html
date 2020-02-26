@@ -1,0 +1,28 @@
+<mat-toolbar class='matNavbar p-0' role="heading">
+    <!-- <div>TOOLBAR</div> -->
+    <app-navbar (sideBar)="openSideBar($event)" [sbStatus]="opened" (globalAdv)="openAdv($event)" [advStatus]="advOpened" (lOut)="logout($event)" (tokenStatus)="token = $event" style="width: 100%"></app-navbar>
+</mat-toolbar>
+<mat-sidenav-container class="matContainer">
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" [fixedInViewport]="true" [fixedTopGap]="60">
+        <app-sidebar [showContents]="token" (sideBar)="opened = $event"></app-sidebar>
+        <!-- <div>SIDEBAR</div> -->
+        <mat-toolbar class="footer">
+            <p><small>{{ version }}</small></p>
+        </mat-toolbar>
+    </mat-sidenav>
+
+    <mat-sidenav-content [style.height.px]="0">
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<div class="container-fluid main-container">
+    <!-- <div class="alert alert-danger" role="alert" *ngIf="reloadVer">
+        Existe una nueva versión del CyC. Por favor recarga el sitio para obtenerla.<br> Tu versión: <b>{{ myVersion }}</b>. Versión Actual: <b>{{ actualVersion }}</b>
+    </div> -->
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
+</div>
+
+<app-login></app-login>
+<app-logout (confirm)="confirmLO($event)"></app-logout>
+<!-- <app-new-adv-pdv *ngIf="showContents"></app-new-adv-pdv> -->
+<app-user-preferences *ngIf="token"></app-user-preferences>

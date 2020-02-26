@@ -1,0 +1,49 @@
+<ng-template #infoConntent>
+  <table class="table table-sm table-responsive table-hover" style="font-size: smaller" *ngIf="infoData && infoExcep">
+    <tbody>
+      <tr>
+        <td scope="row">Código:</td>
+        <td class='text-danger'>{{ infoData.code }}</td>
+      </tr>
+      <tr>
+        <td scope="row">Tipo:</td>
+        <td class='text-danger'>{{ infoData.excep }}</td>
+      </tr>
+      <tr>
+        <td scope="row">Nota:</td>
+        <td class='text-danger'>{{ infoData.nota }}</td>
+      </tr>
+      <tr>
+        <td scope="row">Caso:</td>
+        <td class='text-danger'>{{ infoData.caso }}</td>
+      </tr>
+      <tr>
+        <td scope="row">Registró:</td>
+        <td class='text-danger'>{{ infoData.reg }}</td>
+      </tr>
+      <tr>
+        <td scope="row">Fecha:</td>
+        <td class='text-danger'>{{ infoData.lu }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+<button
+  [style.width.px]="btnWidth"
+  [ngClass]="['btn', 'btn-sm', 'btn-block', btnClass]"
+  placement="top" [ngbPopover]="infoConntent" popoverTitle="Excepciones"
+  *ngIf="infoDisplay"
+  >
+      <span class="text-center">
+        <small>{{ displayText }} <i class="fa fa-fw fa-info-circle" ></i></small>
+      </span>
+</button>
+<button
+  [style.width.px]="btnWidth"
+  [ngClass]="['btn', 'btn-sm', 'btn-block', btnClass]"
+  *ngIf="!infoDisplay"
+  >
+      <span class="text-center">
+        <small>{{ displayText }}</small>
+      </span>
+</button>

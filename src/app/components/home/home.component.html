@@ -1,0 +1,76 @@
+<div class="jumbotron" *ngIf="!showContents">
+    <h1 class="display-3">Bienvenido a ComeyCome</h1>
+    <span class="lead">
+  <ul>
+    <li>Consulta tu detalle de ventas</li>
+    <li>Revisa el avance de tus equipos de Supervisión</li>
+    <li>Analiza los KPI's de tu departamento</li>
+    <li>Monitorea la venta en vivo</li>
+    <li>Controla el desborde, abandono y SLA</li>
+    <li>Haz consultas en tiempo real</li>
+    <li>Revisa datos históricos de ventas, nómina, telefonía y performance</li>
+  </ul>
+</span>
+    <hr class="my-4">
+    <p>Para ingresar, es necesario estar dado de alta en el sistema y contar con una cuenta de Oasis Hoteles.</p>
+    <p>Para visitantes externos, es necesario obtener una cuenta personalizada</p>
+</div>
+
+<div class="container-fluid" *ngIf="showContents">
+    <div class="container-fluid">
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="row">
+                    <div class="col-8">
+                        <div>
+                            <span><h1 class="display-3">Home - <small class="text-capitalize font-weight-light">{{ nameShow }}</small></h1></span>
+                            <p class="lead">Consulta el avance de tus ventas, edita tus detalles de contacto, inscríbete a eventos próximos...</p>
+                        </div>
+                    </div>
+                    <div class="col-4" *ngIf="birthday && birthday == 1">
+                        <img src="assets/img/bd.gif" alt="" height="200px">
+                    </div>
+                </div>
+                <ng-container *ngIf="_init.checkSingleCredential('config_showAllUsersHome')">
+                    <br>
+                    <div class="container">
+                        <div class="form-group row">
+                            <app-search-asesor (result)="onSelected( $event )" [currentUser]="currentUser" [active]="2" udn="self" placeholder="Nombre Asesor..."></app-search-asesor>
+                        </div>
+                    </div>
+                </ng-container>
+                <br>
+                <!-- <app-event-display [asesor]='asesorShow' [original]="currentUser.hcInfo.id"></app-event-display> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de horarios -->
+    <app-horarios-semana [asesorName]='nameShow' [asesor]='asesorShow'></app-horarios-semana>
+    <br>
+
+    <!-- Tabla de datos -->
+    <app-personal-data [asesor]='asesorShow' [name]='nameShow'></app-personal-data>
+    <br>
+
+    <!-- CxCs -->
+    <!-- <app-home-cxc-view [asesor]='asesorShow'></app-home-cxc-view> -->
+    <br>
+
+    <!-- Gráficas -->
+    <div class="container" style="overflow: auto">
+        <app-dasboard-comisiones class="p-2" [asesor]="asesorShow"></app-dasboard-comisiones>
+        <app-dasboard-venta-fc [asesor]="asesorShow"></app-dasboard-venta-fc>
+        <app-dasboard-venta-prepago-por-asesor></app-dasboard-venta-prepago-por-asesor>
+        <app-dasboard-venta-al-dia></app-dasboard-venta-al-dia>
+        <!-- <mat-progress-bar mode="buffer" *ngIf="loading['pdvGraph']"></mat-progress-bar>
+        <app-grafica-ventas *ngIf="graphIndex == 'normal'" [asesor]='asesorShow' [name]='nameShow'></app-grafica-ventas>
+        <app-super-chart *ngIf="dataGraph['super'] && graphIndex == 'coordinador'" [data]="dataGraph['super']" [mes]="dataParams['mes']" [anio]="dataParams['anio']" [filterZone]="depAsesorShow['zona']"></app-super-chart>
+        <app-pdv-chart *ngIf="dataGraph['pdv'] && graphIndex == 'supPdv'" [data]="dataGraph['pdv']" [mes]="dataParams['mes']" [anio]="dataParams['anio']" [filterZone]="depAsesorShow['name']"></app-pdv-chart>
+        <app-asesor-pdv-chart *ngIf="dataGraph['asesor'] && graphIndex == 'asesor'" [data]="dataGraph['daily']" [mes]="dataParams['mes']" [anio]="dataParams['anio']" [filterZone]="depAsesorShow['name']"></app-asesor-pdv-chart> -->
+    </div>
+
+    <!-- <button (click)="test()">TEST</button> -->
+
+</div>

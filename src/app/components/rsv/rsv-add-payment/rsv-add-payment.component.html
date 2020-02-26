@@ -1,0 +1,66 @@
+<div class="modal fade" id="rsvAddPayment" tabindex="-1" role="dialog" aria-labelledby="rsvAddPaymentModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rsvAddPaymentModal">Agregar Pago al item {{ item['masterItemLocator'] }}</h5>
+                <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <section class="d-flex flex-wrap justify-content-center p-2">
+                    <ng-container *ngFor="let i of master; index as x">
+                        <mat-checkbox class="p-1" [(ngModel)]="i['checked']" *ngIf="i['e']!='c' && checkSaldo(i)" (change)="chgCheck(x, $event)">{{ i['masterItemLocator'] }}</mat-checkbox>
+                    </ng-container>
+                </section>
+                <ng-container *ngIf="params['items'].length > 0">
+                    <section>
+                        <mat-form-field [style.width.px]="500">
+                            <input matInput placeholder="Referencia" [(ngModel)]="params['referencia']" class="text-center" readonly>
+                        </mat-form-field>
+                    </section>
+                    <section>
+                        <mat-radio-group aria-label="Select an option" [(ngModel)]="params['paymentType']">
+                            <mat-radio-button value="2">Depósito</mat-radio-button>
+                            <mat-radio-button value="0">Paypal</mat-radio-button>
+                            <mat-radio-button value="1">Santander</mat-radio-button>
+                        </mat-radio-group>
+                        <mat-form-field class="ml-2" [style.width.px]="350" *ngIf="params['paymentType'] == 0 || params['paymentType'] == 1">
+                            <input matInput placeholder="Link" [(ngModel)]="params['link']" class="text-center">
+                        </mat-form-field>
+                    </section>
+                    <section>
+                        <div class="d-flex justify-content-center p-1">
+                            <button class="m-1" mat-stroked-button color="primary" (click)="autoPay('all')">Pago Total</button>
+                            <button class="m-1" mat-stroked-button color="accent" (click)="autoPay('night')">1 Noche</button>
+                            <small class="m-1 ml-3">Monto pendiente de items elegidos: <b>{{ params['montoTotalItems'] | currency:'MXN':'symbol-narrow':'.2-2' }} {{ params['moneda'] }}</b></small>
+                        </div>
+                    </section>
+                    <section>
+                        <mat-form-field class="mr-2">
+                            <span matPrefix>$ &nbsp;</span>
+                            <input type="number" matInput placeholder="Monto" [(ngModel)]="params['monto']" (change)="autoPay('custom', $event)">
+                        </mat-form-field>
+                        <mat-radio-group aria-label="Select an option" [(ngModel)]="params['moneda']" [disabled]="true">
+                            <mat-radio-button value="MXN">MXN</mat-radio-button>
+                            <mat-radio-button value="USD">USD</mat-radio-button>
+                        </mat-radio-group>
+                    </section>
+                    <section *ngIf="params['items'].length>1">
+                        <div class="d-flex justify-content-center flex-wrap">
+                            <mat-form-field class="mr-2" *ngFor="let mi of params['items']">
+                                <span matPrefix>$ &nbsp;</span>
+                                <input type="number" step=".01" matInput [placeholder]="'Monto ' + mi " [(ngModel)]="params['montos'][mi]" readonly>
+                            </mat-form-field>
+                        </div>
+                    </section>
+                </ng-container>
+            </div>
+            <div class="modal-footer text-right">
+                <button mat-raised-button color="secondary" type="button" (click)="closeModal()">Cancelar</button>
+                <button mat-raised-button color="primary" type="button" (click)="savePayment()" [disabled]="params['items'].length == 0 || loading['save']"><span *ngIf="!loading['save']">Guardar</span><mat-spinner *ngIf="loading['save']"></mat-spinner>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

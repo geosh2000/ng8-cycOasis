@@ -1,0 +1,379 @@
+<!-- Modal -->
+<div class="modal fade" id="rsvPop" tabindex="-1" role="dialog" aria-labelledby="rsvModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <!-- BEGIN SELECT NEW OR EXISTENT -->
+            <div class="modal-header">
+                <div class="d-flex justify-content-end">
+                    <div class="p-1 mr-3">
+                        <h5 class="modal-title" id="rsvModal">Reservar</h5>
+                    </div>
+                    <div class="p-1 mr-3">
+                        <ui-switch color="#a8b5ff" (change)="chgUser()" size="small" name='exist' [(ngModel)]="isNew" checkedLabel='Nueva' uncheckedLabel='Existente'></ui-switch>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" (click)="chgUser()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!-- END SELECT NEW OR EXISTENT -->
+
+            <div class="modal-body">
+
+                <!-- BEGIN SEARCH APPS -->
+                <app-search-zd-user (selected)="selectedUser($event)" *ngIf="searchUserFlag && isNew"></app-search-zd-user>
+                <app-search-loc (selected)="selectedUser($event)" *ngIf="searchUserFlag && !isNew"></app-search-loc>
+
+                <form [formGroup]="newRsvForm" *ngIf="!searchUserFlag">
+                    <div class='container d-flex justify-content-center'>
+                        <table class="example-full-width" cellspacing="0" [style.width.px]="880">
+                            <tr>
+                                <td>
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Nombre" readonly="true" formControlName="nombreCliente">
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Correo" readonly="true" formControlName="correoCliente">
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Telefono" readonly="true" formControlName="telCliente">
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="ZendeskId" readonly="true" formControlName="zdUserId">
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="example-full-width" *ngIf="!isNew">
+                                        <input matInput placeholder="Localizador" readonly="true" [(ngModel)]="masterLoc" [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class='p-1'>
+                            <button mat-raised-button type="button" (click)="chgUser()" color="accent" *ngIf="isNew">Cambiar Cliente</button>
+                            <button mat-raised-button type="button" (click)="chgUser()" color="accent" *ngIf="!isNew">Cambiar Localizador</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- END SEARCH APPS -->
+
+                <!-- BEGIN RSV HOTEL -->
+                <div *ngIf="!searchUserFlag && tipo == 'hotel'">
+                    <div class="d-flex justify-content-center pb-2">
+                        <div class="p-2" style="background-size: cover; background-position: center; width: 140px; height: 75px; border-radius: 10px" [style.background-image]="data['hotelUrl']"></div>
+                        <div class="p-2">
+                            <h3>{{ data['hotel'] }}</h3>
+                            <p><span class=''>Categoría: {{ data['habitacion'] }}</span><span class="text-info"> ({{ data['habCat']}})</span></p>
+                        </div>
+                    </div>
+                    <app-cot-hab-detail [habs]="data['habs']" [level]="data['lSelected']" (total)="total = $event" [moneda]="moneda" [paymentSelect]="true"></app-cot-hab-detail>
+                    <div class="d-flex justify-content-end pr-3">
+
+                        <div class="font-weight-bold pr-4">
+                            <h4>Total: {{ total | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END RSV HOTEL -->
+
+                <!-- BEGIN RSV DAYPASS -->
+                <div class="d-flex justify-content-center flex-wrap align-items-center " *ngIf="!searchUserFlag && tipo == 'daypass'">
+                    <div class="d-flex justify-content-center pb-2">
+                        <div class="p-2" style="background-size: cover; background-position: center; width: 140px; height: 75px; border-radius: 10px" [style.background-image]="data['hotelUrl']"></div>
+                        <div class="p-2">
+                            <h3>{{ data['hotel'] }}</h3>
+                            <p><span class=''>{{ data['dayPassType'] }}</span></p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end ml-5">
+
+                        <div class="font-weight-bold pr-4">
+                            <h5>Fecha: {{ printDate(data['fecha'], 'ddd DD MMM \'YY') }} </h5>
+                            <h5>para {{ data['adultos'] }} Adultos, {{ data['menores'] }} Menores por <span class="text-primary">{{ (moneda ? data['totalMXN'] : data['totalUSD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} {{ moneda ? 'MXN' : 'USD' }}</span></h5>
+                        </div>
+
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="fechas">Notas (opcional)</label>
+                            <div class="input-group">
+                                <textarea rows="5" cols="120" [(ngModel)]="data['notasHotel']" placeholder="Notas para el Hotel" id="notas"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END RSV DAYPASS -->
+
+                <!-- BEGIN RSV XFER -->
+                <div class="p-2" *ngIf="!searchUserFlag && tipo == 'xfer'">
+                    <div class="d-flex justify-content-center p-2">
+                        <div class="p-2">
+                            <h5>
+                                {{ data['vehiculo'] }}{{ data['isShared'] == '1' ? ' (compartido)' : '' }} a {{ data['Zona'] }} para {{ data['adultos'] }} Adultos, {{ data['menores'] }} Menores y {{ data['infantes'] }} Infantes {{ data['xferType'] == 'abierto' ? ' por ' + data['vehiculo'].substr(-8,10).trim()
+                                : '' }}
+                            </h5>
+                            <h5 class="text-center text-primary">
+                                {{ data['xferType'] }}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center p-2">
+
+                        <div class="font-weight-bold pr-4">
+                            <h6>Fecha: {{ printDate(data['fecha'], 'ddd DD MMM \'YY') }} por <span class="text-primary">{{ (moneda ? data['totalMXN'] : data['totalUSD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} {{ moneda ? 'MXN' : 'USD' }}</span></h6>
+                        </div>
+
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="fechas">Hotel</label>
+                            <div class="input-group">
+                                <input class="form-control" id="hotel" [(ngModel)]="data['hotel']" placeholder="Hotel Destino" id="hotel" name="htl" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-hotel"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="fechas">Hora Llegada</label>
+                            <div class="input-group">
+                                <input class="form-control" id="horaLlegada" [(ngModel)]="data['horaLlegada']" placeholder="24:00" id="horaLlegada" name="hl" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="fechas">Vuelo Llegada</label>
+                            <div class="input-group">
+                                <input class="form-control" id="vueloLlegada" [(ngModel)]="data['vueloLlegada']" placeholder="No. de Vuelo" id="vueloLlegada" name="vl" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-plane-arrival"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="fechas">Aerolínea Llegada</label>
+                            <div class="input-group">
+                                <input class="form-control" id="alLlegada" [(ngModel)]="data['alLlegada']" placeholder="Aerolinea" id="alLlegada" name="all" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-plane"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3" *ngIf="this.data['xferType'] == 'round'">
+                        <div class="form-group p-1">
+                            <label for="fechas">Fecha Salida</label>
+                            <div class="input-group">
+                                <input class="form-control" id="fechas" [minDate]="minDate" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event, d)" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="fechas">Hora Salida</label>
+                            <div class="input-group">
+                                <input class="form-control" id="horaSalida" [(ngModel)]="data['horaSalida']" placeholder="24:00" id="horaSalida" name="hs" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="fechas">Vuelo Salida</label>
+                            <div class="input-group">
+                                <input class="form-control" id="vueloSalida" [(ngModel)]="data['vueloSalida']" placeholder="No. de Vuelo" id="vueloSalida" name="vs" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-plane-departure"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="fechas">Aerolínea Salida</label>
+                            <div class="input-group">
+                                <input class="form-control" id="alSalida" [(ngModel)]="data['alSalida']" placeholder="Aerolinea" id="alSalida" name="als" autocomplete="off" [style.width.px]="150">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-plane"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="fechas">Notas (opcional)</label>
+                            <div class="input-group">
+                                <textarea rows="5" cols="120" [(ngModel)]="data['notasOperador']" placeholder="Notas para el operador" id="notas"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END RSV XFER -->
+
+                <!-- BEGIN RSV Auto -->
+                <div class="p-2" *ngIf="!searchUserFlag && tipo == 'auto'">
+                    <div class="d-flex justify-content-center p-2">
+                        <div class="p-2">
+                            <h5>
+                                {{ data['titulo'] }} ({{ data['dias'] }} dia{{ data['dias'] > 1 ? 's' : ''}})
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center p-2">
+
+                        <div class="font-weight-bold pr-4">
+                            <h6>Fecha: {{ printDate(data['fecha'], 'ddd DD MMM \'YY') }} por <span class="text-primary">{{ (moneda ? data['totalMXN'] : data['totalUSD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} {{ moneda ? 'MXN' : 'USD' }}</span></h6>
+                        </div>
+
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="horaSalida">Entrega Auto:</label>
+                            <div class="input-group">
+                                <select class="form-control" id="horaSalida" [(ngModel)]="data['pickup']" id="horaSalida" name="horaSalida" autocomplete="off" [style.width.px]="300">
+                                        <option *ngFor="let h of data['entrega']; index as i" [value]="h">{{ h }}</option>
+                                    </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="fechas">Notas (opcional)</label>
+                            <div class="input-group">
+                                <textarea rows="5" cols="120" [(ngModel)]="data['notasOperador']" placeholder="Notas para el Operador" id="notas"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- END RSV Auto -->
+
+                <!-- BEGIN RSV TOUR -->
+                <div class="p-2" *ngIf="!searchUserFlag && tipo == 'tour'">
+                    <div class="d-flex justify-content-center p-2">
+                        <div class="p-2">
+                            <h5>
+                                {{ data['titulo'] }} Fecha: {{ printDate(data['fecha'], 'ddd DD MMM \'YY') }} por <span class="text-primary">{{ (moneda ? data['totalMXN'] : data['totalUSD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} {{ moneda ? 'MXN' : 'USD' }}</span>
+                            </h5>
+                        </div>
+
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="horaSalida">Hora Llegada</label>
+                            <div class="input-group">
+                                <select class="form-control" id="horaSalida" [(ngModel)]="data['pickup']" placeholder="24:00" id="horaSalida" name="horaSalida" autocomplete="off" [style.width.px]="300">
+                                    <option *ngFor="let h of data['salidaHora']; index as i" [value]="formatSalida(h) +' hrs. - ' + data['salidaHotel'][i]">{{ formatSalida(h) }} hrs. - {{ data['salidaHotel'][i] }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="adultos">Adultos</label>
+                            <div class="input-group">
+                                <input (change)="calcTotal($event, 'adult')" type="number" min=0 max=10 step=1 class="form-control" id="adultos" [(ngModel)]="data['adultos']" id="adultos" name="adultos" autocomplete="off" [style.width.px]="70">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-male"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="menores">Menores</label>
+                            <div class="input-group">
+                                <input (change)="calcTotal($event, 'menor')" type="number" min=0 max=10 step=1 class="form-control" id="menores" [(ngModel)]="data['menores']" id="menores" name="menores" autocomplete="off" [style.width.px]="70" [readonly]="data['menorUSD'] == null">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-child"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="justify-content-end d-flex">
+                        <small>** Menores: {{ data['menorUSD'] == null ? 'No se aceptan' : data['descripMenores'] }}</small>
+                    </div>
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="fechas">Notas (opcional)</label>
+                            <div class="input-group">
+                                <textarea rows="5" cols="120" [(ngModel)]="data['notasOperador']" placeholder="Notas para el operador" id="notas"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END RSV TOUR -->
+
+                <!-- BEGIN RSV CONCERT -->
+                <div class="p-2" *ngIf="!searchUserFlag && tipo == 'concert'">
+                    <div class="d-flex justify-content-center p-2">
+                        <div class="p-2">
+                            <h5>
+                                {{ data['titulo'] }} Fecha: {{ printDate(data['fecha'], 'ddd DD MMM \'YY') }} por <span class="text-primary">{{ (moneda ? data['totalMXN'] : data['totalUSD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} {{ moneda ? 'MXN' : 'USD' }}</span>
+                            </h5>
+                        </div>
+
+                    </div>
+
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="adultos">Adultos</label>
+                            <div class="input-group">
+                                <input (change)="calcTotal($event, 'adult')" type="number" min=0 max=10 step=1 class="form-control" id="adultos" [(ngModel)]="data['adultos']" id="adultos" name="adultos" autocomplete="off" [style.width.px]="70">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-male"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group p-1">
+                            <label for="menores">Menores</label>
+                            <div class="input-group">
+                                <input (change)="calcTotal($event, 'menor')" type="number" min=0 max=10 step=1 class="form-control" id="menores" [(ngModel)]="data['menores']" id="menores" name="menores" autocomplete="off" [style.width.px]="70" [readonly]="data['menorUSD'] == null">
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fas fa-child"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="justify-content-end d-flex">
+                        <small>** Menores: {{ data['menorUSD'] == null ? 'No se aceptan' : data['descripMenores'] }}</small>
+                    </div>
+                    <div class="form d-flex justify-content-center pr-3">
+                        <div class="form-group p-1">
+                            <label for="fechas">Notas (opcional)</label>
+                            <div class="input-group">
+                                <textarea rows="5" cols="120" [(ngModel)]="data['notasOperador']" placeholder="Notas para el operador" id="notas"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END RSV CONCERT -->
+            </div>
+            <!-- <pre>{{ data | json}}</pre> -->
+            <!-- BEGIN BOTONES COTIZACION Y RESERVA -->
+            <div class="modal-footer">
+                <button type="button" mat-raised-button color="warn" data-dismiss="modal" (click)="chgUser()" [disabled]="loading['save']">Cancelar</button>
+                <button type="button" mat-raised-button color="primary" (click)="saveRsv()" [disabled]="!validateRsv() || newRsvForm.status=='INVALID' || loading['save'] || searchUserFlag">Reservar  <span *ngIf="loading['save']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+            </div>
+
+            <!-- END BOTONES COTIZACION Y RESERVA -->
+        </div>
+    </div>
+</div>

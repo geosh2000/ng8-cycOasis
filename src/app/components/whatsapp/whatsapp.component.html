@@ -1,0 +1,149 @@
+<div id="content" class="p-0" style="width: 865px;">
+    <div class="row" style="height: 710px; padding-left: 15px;">
+        <div class="col-5 p-0">
+            <div class="p-1 waHead row m-0">
+                <div class="col-2">
+                    <div class="avatar user-image"></div>
+                </div>
+                <div class="col-10 pt-2 agent-name">Nombre Agente </div>
+            </div>
+            <div class="chatWdw">
+                <app-conversations [agentId]="agentId" (reloadTkt)="reloadChat($event)" (setTicket)="chgConv($event)"></app-conversations>
+            </div>
+        </div>
+        <div class="col-7 p-0 conversation">
+            <div class="p-1 waHead row m-0">
+                <div class="col-2">
+                    <div class="avatar client-image"></div>
+                </div>
+                <div class="col-7 pt-2">
+                    <p class="text-truncate">{{ _chat.requester }}</p>
+                    <p style="margin-top: -25px; font-size: smaller;"><small>{{ _chat.phone }}</small></p>
+                </div>
+                <div class="col-3" *ngIf="_chat.requester != 'Nombre Cliente'">
+                    <button mat-icon-button color="primary" (click)="getUserInfo(_chat.rqId)" data-toggle="modal" data-target="#userInfo">
+                        <mat-icon>info</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="closeTkt()">
+                        <mat-icon>work_off</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="chatWdw">
+                <app-chat-window [ticket]="ticket" [agentId]="agentId" (reload)="reloadConv()"></app-chat-window>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="userInfo" tabindex="-1" role="dialog" aria-labelledby="userInfoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userInfoLabel">Información del Usuario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <mat-tab-group (selectedTabChange)="tabSelected($event)">
+                    <mat-tab label="Perfil">
+                        <div class="container d-flex justify-content-center" *ngIf="loading['userInfo'] || loading['savingUI']">
+                            <mat-spinner></mat-spinner>
+                        </div>
+                        <div class="container" *ngIf="!loading['userInfo'] && !loading['savingUI']">
+                            <div class="text-center p-2 pt-4">
+                                <mat-form-field style="width: 80%">
+                                    <input matInput [(ngModel)]="userInfo['name']" placeholder="Nombre" #name>
+                                </mat-form-field>
+                                <ng-container *ngIf="loading['name']">
+                                    <span><i class="text-primary fas fa-spinner fa-pulse"></i></span>
+                                </ng-container>
+                                <ng-container *ngIf="!loading['name']">
+                                    <button mat-icon-button color="accent" (click)="userInfo['name'] = originalUserInfo['name']" *ngIf="originalUserInfo['name'] != userInfo['name']">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="primary" (click)="saveUserInfo('name')" *ngIf="originalUserInfo['name'] != userInfo['name']">
+                                        <mat-icon>save</mat-icon>
+                                    </button>
+                                </ng-container>
+                                <br>
+                                <mat-form-field style="width: 80%">
+                                    <input matInput [(ngModel)]="userInfo['email']" placeholder="Correo" #email>
+                                </mat-form-field>
+                                <ng-container *ngIf="loading['email']">
+                                    <span><i class="text-primary fas fa-spinner fa-pulse"></i></span>
+                                </ng-container>
+                                <ng-container *ngIf="!loading['email']">
+                                    <button mat-icon-button color="accent" (click)="userInfo['email'] = originalUserInfo['email']" *ngIf="originalUserInfo['email'] != userInfo['email']">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="primary" (click)="saveUserInfo('email')" *ngIf="originalUserInfo['email'] != userInfo['email']">
+                                        <mat-icon>save</mat-icon>
+                                    </button>
+                                </ng-container>
+                                <br>
+                                <mat-form-field style="width: 80%">
+                                    <input matInput [(ngModel)]="userInfo['phone']" placeholder="Teléfono" #phone>
+                                </mat-form-field>
+                                <ng-container *ngIf="loading['phone_number']">
+                                    <span><i class="text-primary fas fa-spinner fa-pulse"></i></span>
+                                </ng-container>
+                                <ng-container *ngIf="!loading['phone_number']">
+                                    <button mat-icon-button color="accent" (click)="userInfo['phone'] = originalUserInfo['phone']" *ngIf="originalUserInfo['phone'] != userInfo['phone']">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="primary" (click)="saveUserInfo('phone_number')" *ngIf="originalUserInfo['phone'] != userInfo['phone']">
+                                        <mat-icon>save</mat-icon>
+                                    </button>
+                                </ng-container>
+                                <br>
+                                <mat-form-field style="width: 80%">
+                                    <input matInput [(ngModel)]="userInfo['whatsapp']" placeholder="Whatsapp" #whatsapp>
+                                </mat-form-field>
+                                <ng-container *ngIf="loading['whatsapp']">
+                                    <span><i class="text-primary fas fa-spinner fa-pulse"></i></span>
+                                </ng-container>
+                                <ng-container *ngIf="!loading['whatsapp']">
+                                    <button mat-icon-button color="accent" (click)="userInfo['whatsapp'] = originalUserInfo['whatsapp']" *ngIf="originalUserInfo['whatsapp'] != userInfo['whatsapp']">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="primary" (click)="saveUserInfo('whatsapp')" *ngIf="originalUserInfo['whatsapp'] != userInfo['whatsapp']">
+                                        <mat-icon>save</mat-icon>
+                                    </button>
+                                </ng-container>
+
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <span [matBadge]="rsvHistory.length" matBadgeOverlap="false">Reservas</span>
+                        </ng-template>
+                        <div class="container d-flex justify-content-center" *ngIf="loading['rsvHistory']">
+                            <mat-spinner></mat-spinner>
+                        </div>
+                        <div class="container p-2" style="max-height: 465px; overflow: auto;" *ngIf="!loading['rsvHistory']">
+                            <div class="alert alert-primary" role="alert" *ngIf="rsvHistory.length == 0">
+                                Este cliente no cuenta con reservas en CyC
+                            </div>
+                            <ul *ngIf="rsvHistory.length > 0">
+                                <li class="d-flex justify-content-lg-between m-1" *ngFor="let r of rsvHistory">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip>{{ r.ml }}
+                                        </mat-chip>
+                                        <mat-chip style='width:200px' [color]="r.st == 'R' ? 'success' : r.st == 'Q' ? 'alert' : r.st == 'Exp' ? 'warn' : 'danger'" selected>{{ r.services }}</mat-chip>
+                                        <mat-chip [color]="'primary'" selected><a style="color: white" href="https://cyc-oasishoteles.com/#/rsv2/{{r.ml}}" target="_blank">Ver Rsva</a></mat-chip>
+                                    </mat-chip-list>
+
+                                </li>
+                            </ul>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+
+            </div>
+        </div>
+    </div>
+</div>

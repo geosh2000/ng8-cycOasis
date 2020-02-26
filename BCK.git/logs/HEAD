@@ -1,0 +1,12 @@
+0000000000000000000000000000000000000000 d76ca8f46cad0a28f35fece0557b677e06725b0a Jorge Sanchez <geosh2000@gmail.com> 1581630352 -0500	clone: from https://github.com/geosh2000/cycOasis.git
+d76ca8f46cad0a28f35fece0557b677e06725b0a 247542c1d7c93899841da089e983d0dc6ad0cda9 Jorge Sanchez <geosh2000@gmail.com> 1581630409 -0500	checkout: moving from master to 247542c1d7c93899841da089e983d0dc6ad0cda9
+247542c1d7c93899841da089e983d0dc6ad0cda9 26ef4b11f5e1eb8f46ab28de3e6edc054e2d28f8 Jorge Sanchez <geosh2000@gmail.com> 1581631308 -0500	commit: Juniors en items de hotel
+26ef4b11f5e1eb8f46ab28de3e6edc054e2d28f8 d76ca8f46cad0a28f35fece0557b677e06725b0a Jorge Sanchez <geosh2000@gmail.com> 1581631628 -0500	checkout: moving from 26ef4b11f5e1eb8f46ab28de3e6edc054e2d28f8 to master
+d76ca8f46cad0a28f35fece0557b677e06725b0a 26ef4b11f5e1eb8f46ab28de3e6edc054e2d28f8 Jorge Sanchez <geosh2000@gmail.com> 1581631863 -0500	checkout: moving from master to juniors
+26ef4b11f5e1eb8f46ab28de3e6edc054e2d28f8 0000000000000000000000000000000000000000 Jorge Sanchez <geosh2000@gmail.com> 1581632052 -0500	Branch: renamed refs/heads/juniors to refs/heads/master
+0000000000000000000000000000000000000000 26ef4b11f5e1eb8f46ab28de3e6edc054e2d28f8 Jorge Sanchez <geosh2000@gmail.com> 1581632052 -0500	Branch: renamed refs/heads/juniors to refs/heads/master
+26ef4b11f5e1eb8f46ab28de3e6edc054e2d28f8 85bf05953e384010b9ed3a7b5e42737f78fca343 Jorge Sanchez <geosh2000@gmail.com> 1581715678 -0500	commit: searchbar
+85bf05953e384010b9ed3a7b5e42737f78fca343 85bf05953e384010b9ed3a7b5e42737f78fca343 Jorge Sanchez <geosh2000@gmail.com> 1581715810 -0500	checkout: moving from master to master
+85bf05953e384010b9ed3a7b5e42737f78fca343 e9c0e34d86f5848a6a4ae7f9061b07d6d2e528cf Jorge Sanchez <geosh2000@gmail.com> 1582727341 -0500	commit: Correccion pagos
+e9c0e34d86f5848a6a4ae7f9061b07d6d2e528cf 85bf05953e384010b9ed3a7b5e42737f78fca343 Jorge Sanchez <geosh2000@gmail.com> 1582727642 -0500	checkout: moving from master to juniors
+85bf05953e384010b9ed3a7b5e42737f78fca343 e9c0e34d86f5848a6a4ae7f9061b07d6d2e528cf Jorge Sanchez <geosh2000@gmail.com> 1582727678 -0500	checkout: moving from juniors to master

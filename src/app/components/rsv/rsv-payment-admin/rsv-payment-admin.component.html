@@ -1,0 +1,29 @@
+<div class="modal fade" id="rsvPaymentAdmin" tabindex="-1" role="dialog" aria-labelledby="rsvPaymentAdminModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rsvPaymentAdminModal">Administrador de pagos <b>{{ item['masterItemLocator'] }}</b></h5>
+                <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="d-flex justify-content-center" *ngIf="loading['payments']">
+                    <mat-spinner></mat-spinner>
+                </div>
+                <mat-list *ngIf="dataPayment.length > 0">
+                    <ng-container *ngFor="let p of dataPayment">
+                        <!-- <mat-list-item> -->
+                        <app-rsv-link-payment [item]="p" [pLinks]="pLinks" (linked)="linked($event)"></app-rsv-link-payment>
+                        <!-- </mat-list-item> -->
+                        <mat-divider></mat-divider>
+                    </ng-container>
+                </mat-list>
+            </div>
+            <div class="modal-footer text-right">
+                <button mat-raised-button color="secondary" type="button" (click)="closeModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input id="toCopy" type="text" hidden>

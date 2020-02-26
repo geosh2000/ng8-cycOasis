@@ -1,0 +1,56 @@
+<div class='container-fluid pt-2' style="width: 250px; height: 100%; overflow-x: hidden; overflow: auto">
+    <div class="d-flex justify-content-center" *ngIf="loading['menu']">
+        <mat-spinner></mat-spinner>
+    </div>
+    <ng-container *ngFor="let item of menuData">
+        <ng-container *ngIf="item['sub'].length > 0">
+            <mat-expansion-panel #expPanel [expanded]="!closed[item['id']]" (opened)="closeMenu(expPanel, item['id'])" (closed)="closed[item['id']] = true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{ item['titulo'] }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <mat-list>
+                    <ng-container *ngFor="let sItem of item['sub']">
+                        <ng-container *ngIf="sItem['permiso'] == null || _init.checkSingleCredential(sItem['permiso'])">
+
+                            <mat-list-item class="pad-0" *ngIf="sItem['sub'].length > 0">
+                                <button class="p-0 text-left" style="width: 100%" mat-menu-item [matMenuTriggerFor]="mainMenu"><small>{{ sItem['titulo'] }}</small></button>
+
+                                <mat-menu xPosition="after" #mainMenu="matMenu">
+                                    <ng-container *ngFor="let mainItem of sItem['sub']">
+                                        <ng-container *ngIf="mainItem['permiso'] == null || _init.checkSingleCredential(mainItem['permiso'])">
+                                            <button class="text-left" style="width: 100%" mat-menu-item (click)="sideBar.emit( false )" [routerLink]="mainItem['v2link']" *ngIf="mainItem['v2Active'] == 1"><small>{{ mainItem['titulo'] }}</small></button>
+                                            <button class="text-left" style="width: 100%" mat-menu-item (click)="goTo(mainItem['liga'])" *ngIf="mainItem['v2Active'] != 1"><small>{{ mainItem['titulo'] }} (v1.0)</small></button>
+                                        </ng-container>
+                                    </ng-container>
+                                </mat-menu>
+                            </mat-list-item>
+                            <mat-list-item class="pad-0" *ngIf="sItem['sub'].length == 0">
+                                <!-- <mat-menu> -->
+                                <!-- <button class="p-0 text-left" style="width: 100%" mat-menu-item (click)="sideBar.emit( false )" [routerLink]="sItem['v2link']" *ngIf="sItem['v2Active'] == 1"><small>{{ sItem['titulo'] }}</small></button>
+                                <button class="p-0 text-left" style="width: 100%" mat-menu-item (click)="goTo(sItem['liga'])" *ngIf="sItem['v2Active'] != 1"><small>{{ sItem['titulo'] }} (v1.0)</small></button> -->
+                                <button class="text-left" style="width: 100%" mat-raised-button (click)="sideBar.emit( false )" [routerLink]="sItem['v2link']" *ngIf="sItem['v2Active'] == 1"><small>{{ sItem['titulo'] }}</small></button>
+                                <button class="text-left" style="width: 100%" mat-raised-button (click)="goTo(sItem['liga'])" *ngIf="sItem['v2Active'] != 1"><small class="pl-2">{{ sItem['titulo'] }} (v1.0)</small></button>
+                                <!-- </mat-menu> -->
+                            </mat-list-item>
+                            <mat-divider></mat-divider>
+
+                        </ng-container>
+                    </ng-container>
+
+                </mat-list>
+
+            </mat-expansion-panel>
+        </ng-container>
+    </ng-container>
+
+
+
+
+
+
+
+
+</div>

@@ -1,0 +1,79 @@
+<div class="container-fluid d-flex flex-wrap justify-content-between scale">
+    <ng-container *ngFor="let f of data">
+        <mat-card class="example-card m-1 pl-1 pr-1" [style.width.px]="350" [ngClass]="bgStatus(f)" *ngIf="f['online_time']>0">
+            <mat-card-content>
+                <div class='container d-flex justify-content-lg-around p-0'>
+                    <div mat-card-avatar [style.backgroundImage]="'url(' + f['avatar_url'] + ')'" class="example-header-image"></div>
+                    <div class='p-0'>
+                        <div style="max-width: 220px" class="container d-flex justify-content-start">
+                            <h4 class="text-truncate">{{ f['name'] }}</h4>
+                        </div>
+                        <table style="width: 100%">
+                            <tr>
+                                <td class="text-right">
+                                    <mat-chip-list>
+                                        <mat-chip class="border border-light" color="primary" selected><i class="fas fa-user-circle mr-2"></i> {{ printVal('online_time', f['online_time']) }}</mat-chip>
+                                    </mat-chip-list>
+                                </td>
+                                <td class="text-right">
+                                    <mat-chip-list>
+                                        <mat-chip class="border border-light" color="pause" selected><i class="fas fa-pause-circle mr-2"></i> {{ printVal('away_time', f['away_time']) }}</mat-chip>
+                                    </mat-chip-list>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%">
+                            <tr>
+                                <td class="text-right">
+                                    <mat-chip-list>
+                                        <mat-chip class="border border-light" [style.width.px]="98" color="wrap" selected>
+                                            <i class="fas fa-phone mr-2"></i>
+                                            <span class="text-center" [style.width.%]="100">{{ f['calls_accepted'] }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </td>
+                                <td class="text-right">
+                                    <mat-chip-list>
+                                        <mat-chip class="border border-light" color="call" selected><i class="fas fa-headset mr-2"></i> {{ printVal('total_call_duration', f['total_call_duration']) }}</mat-chip>
+                                    </mat-chip-list>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class='conteiner pt-2'>
+                    <table style="width: 100%">
+                        <tr>
+                            <td class="text-right bg-light" [style.width.px]="115">
+                                <h6 class="text-success"><i class="fab fa-whatsapp"></i> Whatsapp: </h6>
+                            </td>
+                            <td class="text-right">
+                                <mat-chip-list>
+                                    <mat-chip class="border border-light" color="primary" selected><i class="far fa-envelope-open mr-2"></i>{{ f['whatsapp']['chatsAbiertos'] }}</mat-chip>
+                                </mat-chip-list>
+                            </td>
+                            <td class="text-right">
+                                <mat-chip-list>
+                                    <mat-chip class="border border-light" [color]="f['whatsapp']['chatsPendientes'] && f['whatsapp']['chatsPendientes'] > 0 ? 'flash' : 'warn'" selected><i class="fas fa-envelope-open-text mr-2"></i>{{ f['whatsapp']['chatsPendientes'] }}</mat-chip>
+                                </mat-chip-list>
+                            </td>
+                            <td class="text-right">
+                                <mat-chip-list>
+                                    <mat-chip class="border border-light" [color]="f['whatsapp']['chatsPendientes'] && f['whatsapp']['chatsUrgentes'] > 0 ? 'flash' : 'warn'" selected><i class="fas fa-exclamation-circle mr-2"></i>{{ f['whatsapp']['chatsUrgentes'] }}</mat-chip>
+                                </mat-chip-list>
+                            </td>
+                            <td class="text-right">
+                                <mat-chip-list>
+                                    <mat-chip class="border border-light" color="warn" selected><i class="far fa-trash-alt mr-2"></i>{{ f['whatsapp']['chatsPerdidos'] }}</mat-chip>
+                                </mat-chip-list>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </ng-container>
+</div>
+<div class="d-flex justify-content-end">
+    <small>Last Update: {{ lu }}</small>
+</div>

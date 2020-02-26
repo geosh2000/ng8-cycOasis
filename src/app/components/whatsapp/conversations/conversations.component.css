@@ -1,0 +1,81 @@
+.staticBg {
+    background: content-box;
+}
+
+.dayDivider {
+    background: rgb(204, 225, 236);
+    padding: 5px;
+    margin: 10px;
+    border-radius: 5px;
+    width: fit-content;
+    font-size: small;
+}
+
+.inMsg {
+    background: whitesmoke;
+    max-width: 400px;
+    padding: 5px;
+    margin: 10px;
+    margin-right: auto;
+    border-radius: 14px;
+    width: fit-content;
+}
+
+.outMsg {
+    background: #89c385;
+    max-width: 400px;
+    padding: 5px;
+    margin: 10px;
+    margin-left: auto;
+    border-radius: 14px;
+    width: fit-content;
+}
+
+.msgTime {
+    width: fit-content;
+    color: lightslategrey;
+    font-size: 11px;
+    margin-left: auto;
+    margin-right: 5px;
+    margin-top: -19px;
+}
+
+.msgFrame {
+    margin-right: 20px;
+    margin-left: 6px;
+}
+
+.footer {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 55px;
+    background: #afcddf;
+}
+
+textarea {
+    resize: none;
+    overflow: hidden;
+    width: 90%;
+    border-radius: 17px;
+    padding: 6px;
+    overflow: hidden;
+}
+
+.mat-fab {
+    width: 40px;
+    height: 40px;
+}
+
+.mat-button-wrapper {
+    padding: 0px !important;
+}
+
+.mat-list-item {
+    cursor: pointer;
+}
+
+.mOver {
+    background: #e0e0e0;
+}

@@ -1,0 +1,27 @@
+<div class="container-fluid p-0">
+    <div class='container-fluid p-0'>
+        <mat-progress-bar mode="query" *ngIf="loading['services']"></mat-progress-bar>
+        <mat-tab-group (selectedTabChange)="tabChg($event.index)" mat-stretch-tabs [color]="'warn'" *ngIf="!loading['services']">
+            <ng-container *ngFor="let m of products">
+                <mat-tab *ngIf="m['all'] == 1 || _init.checkSingleCredential('app_all_quote')" [id]="m['id']" [disabled]="m['enabled'] != 1">
+                    <ng-template mat-tab-label>
+                        <mat-icon style="margin-right: 8px;">{{ m['icon'] }}</mat-icon>
+                        {{ m['title'] }}
+                    </ng-template>
+
+                </mat-tab>
+            </ng-container>
+        </mat-tab-group>
+    </div>
+</div>
+
+<div class="p-3">
+    <app-cotizador-v2 (rsv)="popReserve($event)" *ngIf="shownIndex == 0"></app-cotizador-v2>
+    <app-cotiza-day-pass (rsv)="popReserve($event)" *ngIf="shownIndex == 1"></app-cotiza-day-pass>
+    <app-cotiza-auto (rsv)="popReserve($event)" *ngIf="shownIndex == 2"></app-cotiza-auto>
+    <app-cotiza-tour (rsv)="popReserve($event)" *ngIf="shownIndex == 3"></app-cotiza-tour>
+    <app-cotiza-xfer (rsv)="popReserve($event)" *ngIf="shownIndex == 4"></app-cotiza-xfer>
+    <app-cotiza-concert (rsv)="popReserve($event)" *ngIf="shownIndex == 8"></app-cotiza-concert>
+</div>
+
+<app-cot-create-rsv></app-cot-create-rsv>

@@ -1,0 +1,51 @@
+<div class="modal fade" id="editDetail" tabindex="-1" role="dialog" aria-labelledby="editDetailLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Editar Detalles - <small>{{ nombre }}</small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" [formGroup]="formDetail">
+
+                    <div class="row">
+                        <div class="col-6" *ngFor="let item of asesorDetailsForm | keys">
+                            <div class="form-group" [ngClass]="{ 'form-control is-invalid': !formDetail.controls[item].valid  }">
+                                <label>{{ item | capitalizado }}</label>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="{{ asesorDetailsForm[item].icon }}"></i></div>
+                                    </div>
+                                    <input *ngIf="asesorDetailsForm[item].tipo=='date'" daterangepicker [formControlName]="item" [options]="singlePicker" (selected)="setVal($event.start, item)" class="form-control uneditable-input" type="text" value="" [readonly]="asesorDetailsForm[item].readonly">
+                                    <input *ngIf="asesorDetailsForm[item].tipo=='text'" [formControlName]="item" class="form-control" type="text" value="" [readonly]="asesorDetailsForm[item].readonly">
+                                    <select *ngIf="asesorDetailsForm[item].tipo=='select' && listProfileLoaded" class="custom-select" style="max-width: 257px; min-width: 257px;" [formControlName]="item">
+                          <option value="">Selecciona...</option>
+                          <option *ngFor="let k of listProfiles | keys" [value]="listProfiles[k]?.id">{{ listProfiles[k].name }}</option>
+                        </select>
+                                </div>
+                            </div>
+                            <div class="col-12 text-warning" *ngIf="formDetail.controls[item].status == 'PENDING'">
+                                <div><small><i class="fa fa-spinner fa-pulse fa-fw"></i>Validando nombre corto...</small></div>
+                            </div>
+                            <div class="col-12 invalid-feedback" *ngIf="formDetail.controls[item].errors?.existe">
+                                <div><small>Ya existe este Nombre Corto / usuario registrado. Verificar con IT</small></div>
+                            </div>
+                            <div class="col-12 invalid-feedback" *ngIf="formDetail.controls[item].errors?.pattern">
+                                <div><small [innerHTML]="asesorDetailsForm[item].pattern"></small></div>
+                            </div>
+                            <div class="col-12 invalid-feedback" *ngIf="formDetail.controls[item].errors?.required">
+                                <div><small>Campo Obligatorio</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row-reverse">
+                        <button [disabled]="formDetail.invalid || submitting" type="button" [ngClass]="{ 'btn-outline-secondary': formDetail.invalid, 'btn-success': !formDetail.invalid }" class="btn" (click)="submit()">Guardar <span *ngIf="submitting"><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,238 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+    <div class="row">
+
+        <!-- FILTERS -->
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header">
+                    Call Statistics
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col d-flex justify-content-between align-items-center flex-wrap">
+
+                            <div class="form-inline d-flex justify-content-center flex-wrap">
+                                <div class="form-group" *ngIf="!monitor">
+                                    <div class="input-group">
+                                        <input class="form-control" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" [dayTemplate]="t" (dateSelect)="onDateSelection($event, d)" autocomplete="off">
+                                        <ng-template #t let-date="date" let-focused="focused">
+                                            <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                       {{ date.day }}
+                     </span>
+                                        </ng-template>
+                                        <div class="input-group-append">
+                                            <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-1 d-flex justify-content-between">
+                                    <!-- Fecha -->
+                                    <div class="p-2 text-center">
+                                        <p>
+                                            <ui-switch color="green" size="small" [(ngModel)]="monitor" (change)="refresh( $event, 'live' )"></ui-switch>
+                                        </p>
+                                        <p><small>Live!</small></p>
+                                    </div>
+                                    <div class="p-2" *ngIf="!monitor">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Group By: {{ groupBy | capitalizado }}
+                  </button>
+                                            <div class="dropdown-menu">
+                                                <button class="dropdown-item" type="button" (click)="chgGB('inDay')">inDay</button>
+                                                <button class="dropdown-item" type="button" (click)="chgGB('hora')">Hora</button>
+                                                <button class="dropdown-item" type="button" (click)="chgGB('dia')">Día</button>
+                                                <button class="dropdown-item" type="button" (click)="chgGB('mes')">Mes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="p-2 d-flex align-items-center" *ngIf="skills">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-info">
+                <span>{{ skillSelected }}</span>
+              </button>
+                                <button type="button" class="btn btn-sm btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item" type="button" (click)="chgDep( item['id'], item['Departamento'] )" *ngFor="let item of skills | orderBy: 'Departamento'; index as i">{{ item['Departamento'] }}</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- RESUMEN -->
+                        <div class=" col d-flex justify-content-center align-items-center p-1 text-center">
+                            <h4 class='text-center'>Resumen</h4>
+                        </div>
+                        <div class="col text-center p-1">
+                            <p class="p-2">Entrantes</p>
+                            <span class="badge badge-primary ml-auto" [style.width.px]="80">{{ (total ? total['ofrecidas'] : 0) | number:'.0-0'}}</span>
+                        </div>
+                        <div class="col text-center p-1">
+                            <p class="p-2">Contestadas</p>
+                            <span class="badge badge-success ml-auto p-2" [style.width.px]="80">
+                              <p>{{ (total ? total['contestadas'] : 0) | number:'.0-0'}}</p>
+                              <p>{{ (total ? (total['contestadas']/total['ofrecidas']*100) : 0) | number:'.0-2'}}%</p>
+                            </span>
+                        </div>
+                        <div class="col text-center p-1">
+                            <p class="p-2">Abandonadas</p>
+                            <span class="badge badge-danger ml-auto p-2" [style.width.px]="80">
+                              <p>{{ (total ? total['abandonadas'] : 0) | number:'.0-0'}}</p>
+                              <p>{{ (total ? (total['abandonadas']/total['ofrecidas']*100) : 0) | number:'.0-2'}}%</p>
+                            </span>
+                        </div>
+                        <div class="col text-center p-1">
+                            <p class="p-2">SLA</p>
+                            <span class="badge badge-warning ml-auto p-2" [style.width.px]="80">
+                              <p><span class="text-info">20 seg</span></p>
+                            <p class="text-dark">{{ (total ? total['sla20']/total['ofrecidas'] : 0) | percent:'1.0-2'}}</p>
+                            </span>
+                            <span class="badge badge-warning ml-auto p-2" [style.width.px]="80">
+                              <p><span class="text-info">30 seg</span></p>
+                            <p class="text-dark">{{ (total ? total['sla30']/total['ofrecidas'] : 0) | percent:'1.0-2'}}</p>
+                            </span>
+                        </div>
+                        <div class="col text-center p-1">
+                            <p class="p-2">Part Desborde</p>
+                            <span class="badge badge-info ml-auto p-2" [style.width.px]="80">
+                              <p>{{ (total ? total['PDV'] : 0) | number:'.0-0'}}</p>
+                              <p>{{ (total ? ((total['PDV'] ? total['PDV'] : 0) / total['contestadas'] * 100) : 0) | number:'.0-2'}}%</p>
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="card-footer text-muted">
+                    Mostrando: <span *ngIf="!loading['data']">{{ dateSelected }}</span><span *ngIf="loading['data']"><i class="fas fa-spinner fa-2x fa-pulse text-primary"></i></span> || Last Update: {{ lu ? printTime(lu, 'DD MMM HH:mm:ss') : 'Unknown'
+                    }} <span *ngIf="monitor">|| Reload in {{ timeCount }} seg.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-8">
+            <!-- CONTENIDO -->
+            <app-graph-call-stats [data]="data" [date]="date" [h]="dataH" [multi]="multi"></app-graph-call-stats>
+        </div>
+        <div class="col-2" *ngIf="dataLive['data']">
+            <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>Online</h3>
+                        <h1>{{ dataLive['data']['current_queue_activity']['agents_online'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2" [ngClass]="{'mat-pause': dataLive['data']['current_queue_activity']['calls_waiting'] > 0}">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>Espera</h3>
+                        <h1>{{ dataLive['data']['current_queue_activity']['calls_waiting'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>AWT</h3>
+                        <h1>{{ dataLive['data']['current_queue_activity']['average_wait_time'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>Longest Wait</h3>
+                        <h1>{{ dataLive['data']['current_queue_activity']['longest_wait_time'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>Wait. CallBacks</h3>
+                        <h1>{{ dataLive['data']['current_queue_activity']['callbacks_waiting'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <!-- <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>CallBacks en espera (widget)</h3>
+                        <h1>{{ dataLive['data']['current_queue_activity']['embeddable_callbacks_waiting'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card> -->
+            <!-- <pre>{{ dataLive | json }}</pre> -->
+        </div>
+        <div class="col-2">
+            <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>Avail</h3>
+                        <h1>{{ dataSum['avail'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2" [ngClass]="{'mat-pause': dataSum['call'] > 2}">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>Away</h3>
+                        <h1>{{ dataSum['pause'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>Wrap</h3>
+                        <h1>{{ dataSum['wrap'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2" [ngClass]="{'mat-pause': dataSum['call'] > 4}">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>En llamada</h3>
+                        <h1>{{ dataSum['call'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>AHT</h3>
+                        <h1>{{ dataSum['aht'] | number:'.0-0' }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <!-- <mat-card class="m-2">
+                <mat-card-content>
+                    <div class="d-flex justify-content-between">
+                        <h3>CallBacks en espera (widget)</h3>
+                        <h1>{{ dataLive['data']['current_queue_activity']['embeddable_callbacks_waiting'] }}</h1>
+                    </div>
+                </mat-card-content>
+            </mat-card> -->
+            <!-- <pre>{{ dataLive | json }}</pre> -->
+        </div>
+    </div>
+
+
+</div>

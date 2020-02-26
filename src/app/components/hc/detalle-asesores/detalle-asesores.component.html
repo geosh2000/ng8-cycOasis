@@ -1,0 +1,80 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+
+    <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <span><h1 class="display-3">Detalle del Asesor</h1></span>
+                    <p class="lead">Busca por Nombre, Usuario, Departamento, Ingreso o Egreso</p>
+                </div>
+                <div>
+                    <img src="assets/img/bePriceBCO.png" height="150" width="150" alt="">
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class='container'>
+            <!-- <div class="form-row align-items-center"> -->
+            <ng-container>
+                <div class="row d-flex justify-content-around">
+                    <div class="p-2">
+                        <div class="form-group row">
+                            <app-search-asesor (result)="onSelected( $event )" [currentUser]="currentUser" udn='self' placeholder="Nombre Asesor..." style="z-index: 100"></app-search-asesor>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class="form-group row">
+                            <app-search-asesor (result)="onSelected( $event )" [currentUser]="currentUser" udn='self' field="departamento_name" placeholder="Departamento..." style="z-index: 100"></app-search-asesor>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <button type="button" class="btn btn-sm btn-success" *ngIf="_init.checkSingleCredential('hc_agregar_asesore')" (click)="addNewAgent('MX')">Agregar Asesor MX</button>
+                    </div>
+                    <!-- <div class="p-2">
+                        <button type="button" class="btn btn-sm btn-success" *ngIf="_init.checkSingleCredential('hc_agregar_asesore')" (click)="addNewAgent('CO')">Agregar Asesor CO</button>
+                    </div> -->
+                </div>
+                <!-- <div class="d-flex justify-content-end">
+                    <div class="p-2">
+                    </div>
+                </div> -->
+            </ng-container>
+            <!-- </div> -->
+        </div>
+    </div>
+    <br>
+    <ng-container *ngIf="selected['id'] > 0">
+        <div class="container" *ngIf="selected['id']">
+            <app-det-detalle [asesor]="selected['id']" *ngIf="_init.checkSingleCredential('hc_detalle_asesores')"></app-det-detalle>
+            <app-det-contrato [asesor]="selected['id']" (showEval)="showEval( $event )" (reload)="reload()" *ngIf="_init.checkSingleCredential('hc_contratos_view')" [time]="now"></app-det-contrato>
+
+            <!-- NO COMPONENT -->
+            <!-- <app-det-salario [asesor]="selected['id']" *ngIf="_init.checkSingleCredential('hc_salarios_display')"></app-det-salario> -->
+
+            <app-det-historial [asesor]="selected['id']" (reload)="reload()" [curAsesor]="currentUser.hcInfo['id']" [time]="now" *ngIf="_init.checkSingleCredential('hc_detalle_asesores')"></app-det-historial>
+
+            <!-- CxCs -->
+            <!-- <app-home-cxc-view [asesor]="selected['id']"></app-home-cxc-view> -->
+
+            <app-det-horario [asesor]="selected['id']" (reload)="reload()" [time]="now" *ngIf="_init.checkSingleCredential('hc_detalle_asesores')"></app-det-horario>
+
+            <!-- Vacaciones -->
+            <app-det-vacaciones [asesor]="selected['id']"></app-det-vacaciones>
+
+            <!-- Dias Pendientes -->
+            <app-det-dias-pendientes [asesor]="selected['id']"></app-det-dias-pendientes>
+        </div>
+
+        <!-- Evaluacion -->
+        <!-- <app-modal-evaluacion-des [openTime]="evalModal['openTime']" [timeLeft]="evalModal['left']" [status]="evalModal['status']" [asesor]="evalModal['asesor']" [contrato]="evalModal['contrato']" [nombre]="evalModal['nombre']" [manager]="evalModal['manager']"
+            [agent]="evalModal['agent']" [superReview]="evalModal['superReview']" [new]="evalModal['new']"></app-modal-evaluacion-des> -->
+
+    </ng-container>
+
+    <!-- AGREGAR ASESOR -->
+    <app-add-new-agent (goTo)="onSelected($event)"></app-add-new-agent>
+
+</div>

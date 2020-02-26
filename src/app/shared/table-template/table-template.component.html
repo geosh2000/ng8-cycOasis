@@ -1,0 +1,34 @@
+<div class="container-fluid" style="overflow: auto;" [ngStyle]="{ 'max-height': windowInHeight}" *ngIf="built">
+  <input type="text" class="form-control col-4" [(ngModel)]="searchStr" placeholder="Filtrar por...">
+  <table class="table table-sm table-responsive-sm table-bordered table-hover table-striped" style="font-size: smaller">
+    <thead>
+      <tr class="text-center">
+        <ng-container *ngFor="let field of confTable | keys">
+          <th scope="col" class="text-center" *ngIf="printField( field, '', 'show' )">{{ printField( field, '', 'title' ) }}</th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of dataTable">
+        <tr *ngIf="filter( item, searchStr )">
+          <ng-container *ngFor="let field of confTable | keys">
+            <td class='text-center' *ngIf="printField( field, '', 'show' )">
+              <span [ngClass]="printField(field,item[field],'style')" *ngIf="printField(field,item[field],'type') == 'span'">
+                  <i [ngClass]="printField( field, item[field], 'faClass' )" *ngIf="printField( field, item[field], 'faShow' )"></i> <span *ngIf="!printField( field, item[field], 'faOnly' )">{{ printField( field, item[field], 'cell' ) }}</span>
+              </span>
+              <button style="font-size: smaller" [ngClass]="printField(field,item[field],'style')" (click)="confTable[field].click( item, item[field] )" *ngIf="printField(field,item[field],'type') == 'button'">
+                  <i [ngClass]="printField( field, item[field], 'faClass' )" *ngIf="printField( field, item[field], 'faShow' )"></i> <span *ngIf="!printField( field, item[field], 'faOnly' )">{{ printField( field, item[field], 'cell' ) }}</span>
+              </button>
+              <!-- <ng-container *ngIf="printField(field,item[field],'type') == 'button'" >
+                <button [ngClass]="printField(field,item[field],'style')" (click)="confTable[field].click( item, item[field] )" ng-bind-html="printField(field,item[field],'html')"></button>
+              </ng-container> -->
+              <a [ngClass]="printField(field,item[field],'style')" *ngIf="printField(field,item[field],'type') == 'a'" [href]="printField( field, item[field], 'link' )+printField( field, item[field], 'cell' )" target="_blank">
+                  <i [ngClass]="printField( field, item[field], 'faClass' )" *ngIf="printField( field, item[field], 'faShow' )"></i> <span *ngIf="!printField( field, item[field], 'faOnly' )">{{ printField( field, item[field], 'cell' ) }}</span>
+              </a>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>

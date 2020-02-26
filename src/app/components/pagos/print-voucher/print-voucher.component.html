@@ -1,0 +1,471 @@
+<mat-spinner *ngIf="loading['voucher']"></mat-spinner>
+
+<ng-container *ngIf="!loading['voucher'] && data['referencia']">
+
+
+    <button mat-button color='primary' (click)="exportPdf()">PDF</button>
+
+    <div id="contentToExport" class="p-10">
+        <!---->
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <!---->
+
+                        <table style="font-size: smaller" border="0" width="292">
+                            <tbody>
+                                <tr>
+                                    <td width="284">
+                                        <p align="center">
+
+                                            <img border="0" src="assets/img/voucher/logo_ss.gif" alt="SANTANDER">
+                                        </p>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td width="284" align="center">CRÉDITO</td>
+                                </tr>
+                                <tr>
+
+                                    <td width="284" align="center">VENTA</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">CENTRAL RESERVAS OASIS</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">(0004)OASIS PALM</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">{{ data['afiliacion'] }}-OASIS PALM LINK</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">BLVD KUKULCAN KM 4 5 SEC C LT 1 , COL.ZONA HOTELERA<br> QR
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">6225VAMA1
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="284">Número De Tarjeta/Cta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exp
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="284">{{ data['tarjeta'] }}&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        xxxx
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="284">CRÉDITO/SANTANDER/MasterCard
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table border="0" width="290">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td width="284">
+                                                        <p align="center"><b><font size="2">- C - O - M - E - R - C - I - O -<br><br></font></b></p>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <table border="0" width="290">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table>
+
+
+                                            <tbody>
+                                                <tr>
+                                                    <td width="284">IMPORTE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                        <b><font size="2">$&nbsp;5,301.53 MXN</font></b></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td width="99">
+                                                        <b><font size="2">APROBADA</font></b></td>
+                                                    <td width="177">
+                                                        <table border="0" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td width="100%">REFERENCIA: <b>341521</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">Oper.: <b>718355539</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">Aut. :<b>085555</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">
+
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+
+
+
+                                                                <tr>
+                                                                    <td width="100%">
+
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">
+
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <table border="0" width="290" height="210">
+
+                            <tbody>
+                                <tr>
+                                    <td width="282">
+                                        <img border="0" src="assets/img/voucher/copia_sello1.gif">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="282" height="17">Fecha: <b>09 / 07 / 2019</b></td>
+                                </tr>
+                                <tr>
+                                    <td width="282" height="17">Hora:&nbsp;&nbsp; <b>20: 18: 55</b></td>
+                                </tr>
+
+
+                                <tr>
+                                    <td width="282" align="left" height="17">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="282" align="center" height="17"></td>
+                                </tr>
+
+                                <tr>
+                                    <td width="282" height="17">
+                                        <p align="center">______________<b><u>[MO/TO]</u></b>______________</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="282" align="center" height="17"><b></b></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+
+                                        <div>
+                                            <img border="0" src="assets/img/voucher/sello_tel.gif" width="213" height="26">
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="282" align="left" height="32"><b>
+          
+          Me obligo en los términos dados de este pagaré</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table border="0" width="250">
+                            <tbody>
+                                <tr>
+                                    <td width="250" align="center">CPMV002-M</td>
+                                </tr>
+                                <tr>
+                                    <td width="250" class="vlegal">
+                                        POR&nbsp;ESTE&nbsp;PAGARÉ&nbsp;ME&nbsp;OBLIGO&nbsp;INCONDICIONALMENTE&nbsp;A&nbsp;PAGAR&nbsp;A&nbsp;LA&nbsp;ORDEN<br> DEL&nbsp;BANCO&nbsp;EMISOR&nbsp;EL&nbsp;IMPORTE&nbsp;DE&nbsp;ESTE&nbsp;TÍTULO&nbsp;EN&nbsp;LOS&nbsp;TÉRMINOS&nbsp;DEL
+                                        <br> CONTRATO&nbsp;SUSCRITO&nbsp;PARA&nbsp;EL&nbsp;USO&nbsp;&nbsp;DE&nbsp;ESTA&nbsp;TARJETA&nbsp;DE&nbsp;CRÉDITO
+                                        <br> EN&nbsp;EL&nbsp;CASO&nbsp;DE&nbsp;OPERACIONES&nbsp;CON&nbsp;TARJETA&nbsp;DE&nbsp;DÉBITO,&nbsp;EXPRESAMENTE
+                                        <br> RECONOZCO&nbsp;Y&nbsp;ACEPTO&nbsp;ESTE&nbsp;RECIBO&nbsp;ES&nbsp;EL&nbsp;COMPROBANTE&nbsp;DE&nbsp;LA&nbsp;OPERACIÓN
+                                        <br> REALIZADA&nbsp;,&nbsp;MISMA&nbsp;QUE&nbsp;SE&nbsp;CONSIGNA&nbsp;&nbsp;EN&nbsp;EL&nbsp;ANVERSO&nbsp;Y&nbsp;TENDRÁ&nbsp;PLENO
+                                        <br> VALOR&nbsp;PROBATORIO&nbsp;Y&nbsp;FUERZA&nbsp;LEGAL,&nbsp;EN&nbsp;VIRTUD&nbsp;DE&nbsp;QUE&nbsp;LO&nbsp;FIRME
+                                        <br> PERSONALMENTE&nbsp;Y/O&nbsp;DIGITE&nbsp;MI&nbsp;NÚMERO&nbsp;DE&nbsp;IDENTIFICACIÓN&nbsp;PERSONAL&nbsp;
+                                        <br> COMO&nbsp;FIRMA&nbsp;ELECTRÓNICA&nbsp;EL&nbsp;CUAL&nbsp;ES&nbsp;EXCLUSIVO&nbsp;DE&nbsp;MI&nbsp;RESPONSABILIDAD
+                                        <br> MANIFESTANDO&nbsp;PLENA&nbsp;CONFORMIDAD&nbsp;AL&nbsp;RESPECTO. </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!---->
+                    </td>
+                    <td width="80">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <!---->
+                        <table border="0" width="292">
+                            <tbody>
+                                <tr>
+                                    <td width="284">
+                                        <p align="center">
+                                            <img border="0" src="assets/img/voucher/logo_ss.gif" alt="SANTANDER">
+                                        </p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="284" align="center">CRÉDITO</td>
+                                </tr>
+                                <tr>
+
+                                    <td width="284" align="center">VENTA</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">CENTRAL RESERVAS OASIS</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">(0004)OASIS PALM</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">7841031-OASIS PALM LINK</td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">BLVD KUKULCAN KM 4 5 SEC C LT 1 , COL.ZONA HOTELERA<br> QR
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="284" align="center">6225VAMA1</td>
+                                </tr>
+
+                                <tr>
+                                    <td width="284">Número De Tarjeta/Cta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exp
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="284">xxxxxxxxxxxx2372&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        1219
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="284">CRÉDITO/SANTANDER/MasterCard
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table border="0" width="290">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td width="284">
+                                                        <p align="center"><b><font size="2">- C - L - I - E - N - T - E -<br><br></font></b></p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
+                        <table border="0" width="290">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table>
+
+
+                                            <tbody>
+                                                <tr>
+                                                    <td width="284">IMPORTE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                        <b><font size="2">$&nbsp;5,301.53 MXN</font></b></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td width="99">
+                                                        <b><font size="2">APROBADA</font></b>
+                                                    </td>
+                                                    <td width="177">
+                                                        <table border="0" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td width="100%">REFERENCIA: <b>341521</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">Oper.: <b>718355539</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">Aut. :<b>085555</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">
+
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td width="100%">
+
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100%">
+
+                                                                        &nbsp;
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table border="0" width="290" height="210">
+
+                            <tbody>
+                                <tr>
+                                    <td width="282">
+                                        <img border="0" src="assets/img/voucher/copia_sello1.gif">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="282" height="17">Fecha: <b>09 / 07 / 2019</b></td>
+                                </tr>
+                                <tr>
+                                    <td width="282" height="17">Hora:&nbsp;&nbsp; <b>20: 18: 55</b></td>
+                                </tr>
+
+
+                                <tr>
+                                    <td width="282" align="left" height="17">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="282" align="center" height="17"></td>
+                                </tr>
+
+                                <tr>
+                                    <td width="282" height="17">
+                                        <p align="center">______________<b><u>[MO/TO]</u></b>______________</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="282" align="center" height="17"><b></b></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+
+                                        <div>
+                                            <img border="0" src="assets/img/voucher/sello_tel.gif" width="213" height="26">
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="282" align="left" height="32"><b>
+                  
+          Me obligo en los términos dados de este pagaré</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table border="0" width="250">
+                            <tbody>
+                                <tr>
+                                    <td width="250" align="center">CPMV002-M</td>
+                                </tr>
+                                <tr>
+                                    <td width="250" class="vlegal">
+                                        POR&nbsp;ESTE&nbsp;PAGARÉ&nbsp;ME&nbsp;OBLIGO&nbsp;INCONDICIONALMENTE&nbsp;A&nbsp;PAGAR&nbsp;A&nbsp;LA&nbsp;ORDEN<br> DEL&nbsp;BANCO&nbsp;EMISOR&nbsp;EL&nbsp;IMPORTE&nbsp;DE&nbsp;ESTE&nbsp;TÍTULO&nbsp;EN&nbsp;LOS&nbsp;TÉRMINOS&nbsp;DEL
+                                        <br> CONTRATO&nbsp;SUSCRITO&nbsp;PARA&nbsp;EL&nbsp;USO&nbsp;&nbsp;DE&nbsp;ESTA&nbsp;TARJETA&nbsp;DE&nbsp;CRÉDITO
+                                        <br> EN&nbsp;EL&nbsp;CASO&nbsp;DE&nbsp;OPERACIONES&nbsp;CON&nbsp;TARJETA&nbsp;DE&nbsp;DÉBITO,&nbsp;EXPRESAMENTE
+                                        <br> RECONOZCO&nbsp;Y&nbsp;ACEPTO&nbsp;ESTE&nbsp;RECIBO&nbsp;ES&nbsp;EL&nbsp;COMPROBANTE&nbsp;DE&nbsp;LA&nbsp;OPERACIÓN
+                                        <br> REALIZADA&nbsp;,&nbsp;MISMA&nbsp;QUE&nbsp;SE&nbsp;CONSIGNA&nbsp;&nbsp;EN&nbsp;EL&nbsp;ANVERSO&nbsp;Y&nbsp;TENDRÁ&nbsp;PLENO
+                                        <br> VALOR&nbsp;PROBATORIO&nbsp;Y&nbsp;FUERZA&nbsp;LEGAL,&nbsp;EN&nbsp;VIRTUD&nbsp;DE&nbsp;QUE&nbsp;LO&nbsp;FIRME
+                                        <br> PERSONALMENTE&nbsp;Y/O&nbsp;DIGITE&nbsp;MI&nbsp;NÚMERO&nbsp;DE&nbsp;IDENTIFICACIÓN&nbsp;PERSONAL&nbsp;
+                                        <br> COMO&nbsp;FIRMA&nbsp;ELECTRÓNICA&nbsp;EL&nbsp;CUAL&nbsp;ES&nbsp;EXCLUSIVO&nbsp;DE&nbsp;MI&nbsp;RESPONSABILIDAD
+                                        <br> MANIFESTANDO&nbsp;PLENA&nbsp;CONFORMIDAD&nbsp;AL&nbsp;RESPECTO.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!---->
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-container>

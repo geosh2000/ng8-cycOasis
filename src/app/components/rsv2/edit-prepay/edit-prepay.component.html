@@ -1,0 +1,47 @@
+<div class="d-flex justify-content-start align-items-center" *ngIf="!editFlag">
+    <div class="productConceptXL"><b>A prepagar:</b></div>
+    <div class="clientInfo"><b class="text-success">{{ i['montoParcial'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b> <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editFlag = true" *ngIf="i['confirmok'] == null"><mat-icon>edit</mat-icon></button></div>
+
+</div>
+<div class="d-flex justify-content-start flex-wrap align-items-center" *ngIf="editFlag">
+    <ng-container *ngIf="!sfFlag">
+        <mat-form-field class="example-full-width">
+            <input style="font-size: 11px" matInput placeholder="Monto a Pagar" [value]="i['isParcial'] == 1 ? i['montoParcial'] : i['monto']" #monto5>
+        </mat-form-field>
+        <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editFlag = false" [disabled]="loading['editMonto']"><mat-icon *ngIf="!loading['editMonto']">cancel</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+        <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editMonto(monto5)" [disabled]="loading['editMonto']"><mat-icon *ngIf="!loading['editMonto']">done</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+        <button style="zoom: 0.8" mat-icon-button color='primary' (click)="sfFlag = true" [disabled]="loading['editMonto']" *ngIf="i['itemType'] == 5 && i['montoPagado'] == 0"><mat-icon *ngIf="!loading['editMonto']">money_off</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+    </ng-container>
+    <ng-container *ngIf="sfFlag">
+        <div class="alert alert-danger" role="alert">
+            Deseas convertir este item en "cortesía"?<br>
+            <mat-form-field class="example-full-width">
+                <input style="font-size: 11px" matInput placeholder="Reservas Relacionadas" #rsvFree>
+            </mat-form-field><br>
+            <ng-container *ngIf="!loading['editMonto']">
+                <button style="zoom: 0.8" mat-icon-button color='warn' (click)="sfFlag = false"><mat-icon *ngIf="!loading['editMonto']">cancel</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                <button style="zoom: 0.8" mat-icon-button color='primary' (click)="setFree(i, rsvFree)" [disabled]="loading['editMonto']"><mat-icon>done</mat-icon></button>
+            </ng-container>
+            <span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span>
+        </div>
+    </ng-container>
+</div>
+<ng-container *ngIf="_init.checkSingleCredential('rsv_adjustMonto')">
+    <div class="d-flex justify-content-start align-items-center" *ngIf="!editTotalFlag">
+        <div class="productConceptXL"><b>Total:</b></div>
+        <div class="clientInfo"><b class="text-success">{{ i['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b> <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editTotalFlag = true" *ngIf="i['confirmok'] == null"><mat-icon>edit</mat-icon></button></div>
+    </div>
+    <div class="d-flex justify-content-start align-items-center" *ngIf="editTotalFlag">
+        <div>
+            <mat-form-field class="example-full-width">
+                <input style="font-size: 11px" type='number' matInput placeholder="Monto Total" [value]="i['monto']" #montoT>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width">
+                <input style="font-size: 11px" matInput placeholder="Comentarios" #commentsT>
+            </mat-form-field>
+        </div>
+        <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editTotalFlag = false" [disabled]="loading['editTotalMonto']"><mat-icon *ngIf="!loading['editTotalMonto']">cancel</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+        <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editTotalMonto(montoT, commentsT)" [disabled]="loading['editTotalMonto']"><mat-icon *ngIf="!loading['editTotalMonto']">done</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+    </div>
+</ng-container>

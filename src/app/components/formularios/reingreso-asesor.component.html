@@ -1,0 +1,207 @@
+<div class="modal fade" id="reingreso" tabindex="-1" role="dialog" aria-labelledby="editDetailLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Reingreso - <small>{{ nombre }}</small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form Cambio Puesto -->
+                <form class="form-group" [formGroup]="formAddAsesor" (ngSubmit)="askCambio()">
+
+                    <div class="row">
+                        <div class='col-6' *ngFor="let item of asesorDetailsForm">
+                            <div class="form-group">
+                                <ng-container *ngIf="item.show">
+                                    <label>{{ item.name | capitalizado }}</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="{{ item.icon }}"></i></div>
+                                        </div>
+                                        <input class="form-control" placeholder="yyyy-mm-dd" *ngIf="item.tipo=='date'" [formControlName]="item.name" (click)="dpContrato.toggle()" [ngClass]="{ 'is-invalid': !formAddAsesor.controls[item.name].valid && !formAddAsesor.controls[item.name].pristine }"
+                                            name="dpContrato" ngbDatepicker #dpContrato="ngbDatepicker" class="form-control uneditable-input" type="text" value="">
+                                        <input *ngIf="item.tipo=='text'" [formControlName]="item.name" [ngClass]="{ 'is-invalid': !formAddAsesor.controls[item.name].valid && !formAddAsesor.controls[item.name].pristine }" class="form-control" type="text" value="" [readonly]="item.readonly">
+                                        <select *ngIf="item.tipo=='select' && listProfileLoaded" class="custom-select" [ngClass]="{ 'is-invalid': !formAddAsesor.controls[item.name].valid && !formAddAsesor.controls[item.name].pristine }" [formControlName]="item.name">
+                <option value="">Selecciona...</option>
+                <option *ngFor="let k of listProfiles | keys" [value]="listProfiles[k]?.id">{{ listProfiles[k].name }}</option>
+              </select>
+                                        <select *ngIf="item.tipo=='select2' && listProfileLoaded" class="custom-select" [ngClass]="{ 'is-invalid': !formAddAsesor.controls[item.name].valid && !formAddAsesor.controls[item.name].pristine }" [formControlName]="item.name">
+                <option value="">Selecciona...</option>
+                <option *ngFor="let k of listContrato | keys" [value]="listContrato[k]?.id">{{ listContrato[k].name }}</option>
+              </select>
+                                    </div>
+                                    <div class="text-warning" *ngIf="formAddAsesor.controls[item.name].status == 'PENDING'">
+                                        <div><small><i class="fa fa-spinner fa-pulse fa-fw"></i>Validando nombre corto...</small></div>
+                                    </div>
+                                    <div class="text-danger" *ngIf="formAddAsesor.controls[item.name].errors?.existe && !formAddAsesor.controls[item.name].pristine">
+                                        <div><small>Ya existe este Nombre Corto / usuario registrado. Verificar con IT</small></div>
+                                    </div>
+                                    <div class="text-danger" *ngIf="formAddAsesor.controls[item.name].errors?.pattern && !formAddAsesor.controls[item.name].pristine">
+                                        <div><small [innerHTML]="item.pattern"></small></div>
+                                    </div>
+                                    <div class="text-danger" *ngIf="formAddAsesor.controls[item.name].errors?.required && !formAddAsesor.controls[item.name].pristine">
+                                        <div><small>Campo Obligatorio</small></div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <!-- Fecha Ingreso -->
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>Fecha de Re-Ingreso</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                                    </div>
+                                    <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaCambio" (click)="d.toggle()" name="d" ngbDatepicker #d="ngbDatepicker" class="form-control uneditable-input" type="text" value="" [readonly]="true">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ciudad -->
+                        <div *ngIf="flagLoading['ciudad']">
+                            <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group" *ngIf="formAddAsesor.controls['fechaCambio'].valid && flagExists['ciudad'] && !flagLoading['ciudad']">
+                                <label>Ciudad</label>
+                                <div class="input-group">
+                                    <!-- <select #cPFciudad class="custom-select" id="form_cP_ciudad" ngModel name="ciudad" (ngModelChange)="puestoChange( cPFfecha.value, mainInput, 'ciudad', $event.id)"> -->
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-map-marker fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="ciudad">
+            <option value="">Selecciona...</option>
+            <option *ngFor="let ciudad of listOptions.ciudad" [value]="ciudad.id">{{ ciudad.name }}</option>
+          </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Oficina -->
+                        <div *ngIf="flagLoading['oficina']">
+                            <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group" *ngIf="formAddAsesor.controls['ciudad'].valid && flagExists['oficina'] && !flagLoading['oficina']">
+                                <label>Oficina</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-building-o fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="oficina">
+            <option value="">Selecciona...</option>
+            <option *ngFor="let oficina of listOptions.oficina" [value]="oficina.id">{{ oficina.name }}</option>
+          </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Departamento -->
+                        <div *ngIf="flagLoading['departamento']">
+                            <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group" *ngIf="formAddAsesor.controls['ciudad'].valid && flagExists['departamento'] && !flagLoading['departamento']">
+                                <label>Departamento</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-users fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="departamento">
+            <option value="">Selecciona...</option>
+            <option *ngFor="let departamento of listOptions.departamento" [value]="departamento.id">{{ departamento.name }}</option>
+          </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Puesto -->
+                        <div *ngIf="flagLoading['puesto']">
+                            <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group" *ngIf="formAddAsesor.controls['ciudad'].valid && flagExists['puesto'] && !flagLoading['puesto']">
+                                <label>Puesto</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-user fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="puesto">
+            <option value="">Selecciona...</option>
+            <option *ngFor="let puesto of listOptions.puesto" [ngValue]="puesto.id">{{ puesto.name }}</option>
+          </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group" *ngIf="formAddAsesor.controls['puesto'].valid">
+                                <label>Salario Puesto</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-usd fa-fw"></i></div>
+                                    </div>
+                                    <input class="form-control uneditable-input" type="text" [value]="formAddAsesor.controls['puesto'].value['salario']" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group" [ngClass]="{ 'is-invalid': !formAddAsesor.controls['factor'].valid && !formAddAsesor.controls['factor'].pristine }" *ngIf="formAddAsesor.controls['puesto'].valid">
+                                <label>Factor Salarial</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-percent fa-fw"></i></div>
+                                    </div>
+                                    <input formControlName="factor" class="form-control" type="text">
+                                </div>
+                                <div class="invalid-feedback" *ngIf="formAddAsesor.controls['factor'].errors?.pattern">
+                                    <div><small>1 para 100% || de 0 a 1.99</small></div>
+                                </div>
+                                <div class="invalid-feedback" *ngIf="formAddAsesor.controls['factor'].errors?.required">
+                                    <div><small>Campo Obligatorio</small></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group" *ngIf="formAddAsesor.controls['puesto'].valid">
+                                <label>Salario Establecido</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-usd fa-fw"></i></div>
+                                    </div>
+                                    <input class="form-control uneditable-input" type="text" id="salarioEstablecido" [value]="(formAddAsesor.controls['puesto'].value['salario']*formAddAsesor.controls['factor'].value)" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="alert alert-danger" role="alert" *ngIf="saveAlert">
+                        <span><strong>Hubo un error en el proceso</strong></span><br>
+                        <span>
+        {{ errorMsg }}
+      </span><br>
+                        <span>Por favor notifícalo a WFM</span>
+                    </div>
+                    <div class="d-flex flex-row-reverse">
+                        <!-- <button
+              type="button"
+              [ngClass]="{ 'btn-outline-secondary': formAddAsesor.invalid, 'btn-success': !formAddAsesor.invalid }"
+              class="btn"
+              (click)="submit()">Enviar  <i class="fa fa-spinner fa-pulse fa-fw" *ngIf="retrieving"></i></button> -->
+                        <button [disabled]="formAddAsesor.invalid || retrieving" type="button" [ngClass]="{ 'btn-outline-secondary': formAddAsesor.invalid, 'btn-success': !formAddAsesor.invalid }" class="btn" (click)="submit()">Enviar  <span *ngIf="retrieving"><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

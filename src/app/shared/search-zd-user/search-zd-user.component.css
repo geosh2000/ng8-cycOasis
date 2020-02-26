@@ -1,0 +1,7 @@
+.text-sm {
+    font-size: 13px;
+}
+
+.mat-radio-button~.mat-radio-button {
+    margin-left: 16px;
+}

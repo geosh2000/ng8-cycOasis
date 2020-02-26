@@ -1,0 +1,98 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+
+<div *ngIf="showContents">
+    <div class="container-fluid">
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span><h1 class="display-3">Asignación de Supervisores para Asesores CC</h1></span>
+                        <p class="lead">Consulta y modifica la asignación de asesores a los Supervisores</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class='container d-flex justify-content-start flex-wrap'>
+                <div class="form-group p-1" [style.width.px]="190">
+                    <div class="input-group">
+                        <input readonly daterangepicker [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setDate($event.start)">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group p-1" [style.width.px]="190">
+                    <div class="input-group">
+                        <select class="form-control" [(ngModel)]="selectedCountry">
+                          <option value=''>País...</option>
+                          <option value='CO'>CO</option>
+                          <option value='MX'>MX</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <button class="btn btn-success" (click)="search()" [disabled]="loading['data'] || !selectedCountry || !selectedDate">Consultar <span *ngIf="loading['data']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+                </div>
+            </div>
+            <div class="container" *ngIf="supList.length > 0">
+                <select2 [data]="supListFilter | orderBy: 'text'" (valueChanged)="selectedVal($event)" [options]="selectOptions" width="600"></select2>
+            </div>
+        </div>
+
+        <div class="container" *ngIf="loading['data']">
+            <h1>Loading... <i class="fas fa-spinner fa-pulse text-info"></i></h1>
+        </div>
+
+        <div class="container-fluid" *ngIf="!loading['data'] && asesorList.length > 0">
+            <div class="row">
+                <div class="col-3 border">
+                    <div class="panel panel-default p-1">
+                        <div class="d-flex justify-content-between">
+                            <h4>Todo</h4>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Filtro" [(ngModel)]="filterText">
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <ng-container *ngFor="let item of asesorList | orderBy: 'displayNameShort'">
+                                <li style="background: #f3dcc6" draggable [dragData]="item" class="list-group-item text-truncate" *ngIf="isFilter(item.displayNameShort+' '+item.Departamento)">{{item.displayNameShort}} ({{ item.Departamento }})</li>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <ng-container *ngFor="let sup of supList">
+                            <div class="col col-sm-4 border" *ngIf="selectedSups.indexOf(sup['asesor']) >= 0 || selectedSups.length == 0">
+                                <div class="panel panel-default p-1" droppable [dragOverClass]="'dragOver'" (onDrop)="onItemDrop($event, sup['asesor'])">
+                                    <div class="panel-heading">
+                                        <h6>{{ sup['Nombre'] }}</h6>
+                                    </div>
+                                    <div class="panel-body">
+                                        <li style="color: white; mix-blend-mode: difference;" [style.background]="item['color'] ? item['color'] : '#f3c6f3'" draggable *ngFor="let item of asesorAssign[sup['asesor']] | orderBy: 'displayNameShort'" [dragData]="item" class="list-group-item text-truncate">{{item.displayNameShort}}</li>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="col-3 border">
+                    <div class="panel panel-default p-1" droppable [dragOverClass]="'dragOver'" (onDrop)="onItemDrop($event, 'none')">
+                        <div class="panel-heading">
+                            <h4>Sin Asignar</h4>
+                        </div>
+                        <div class="panel-body">
+                            <li style="color: white; mix-blend-mode: difference;" [style.background]="item['color'] ? item['color'] : 'rgb(167, 161, 252)'" draggable *ngFor="let item of asesorAssign['none'] | orderBy: 'displayNameShort'" [dragData]="item" class="list-group-item text-truncate">{{item.displayNameShort}}</li>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

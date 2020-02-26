@@ -1,0 +1,96 @@
+<div class="d-flex justify-content-start flex-wrap pb-1 border-bottom border-warning">
+    <div class="form d-flex justify-content-start flex-wrap align-items-center  pr-3">
+        <div class="p-1 pr-5">
+            <h1>Hab. {{ noHab }}</h1>
+        </div>
+        <div class="form-group p-1">
+            <label for="adults">Adultos</label>
+            <select [(ngModel)]="adults" name="adults" id="adults" class="form-control" [style.width.px]="60">
+                          <option value="1" selected>1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                        </select>
+        </div>
+        <div class="form-group p-1">
+            <label for="menores">Menores</label>
+            <select [(ngModel)]="min" name="min" id="menores" class="form-control" [style.width.px]="60">
+                          <option value="0" selected>0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                        </select>
+        </div>
+    </div>
+    <div class="form-row" *ngIf="min > 0">
+        <div class="form-group p-1" *ngIf="min > 0">
+            <label for="edad1" class="text-center">Edad 1</label>
+            <select [(ngModel)]="e1" name="e1" id="edad1" class="form-control" [style.width.px]="80">
+                          <option value="0" selected>0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                          <option value="13">13</option>
+                          <option value="14">14</option>
+                          <option value="15">15</option>
+                          <option value="16">16</option>
+                          <option value="17">17</option>
+                        </select>
+        </div>
+        <div class="form-group p-1" *ngIf="min > 1">
+            <label for="edad2" class="text-center">2</label>
+            <select [(ngModel)]="e2" name="e2" id="edad2" class="form-control" [style.width.px]="80">
+                          <option value="0" selected>0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                          <option value="13">13</option>
+                          <option value="14">14</option>
+                          <option value="15">15</option>
+                          <option value="16">16</option>
+                          <option value="17">17</option>
+                        </select>
+        </div>
+        <div class="form-group p-1" *ngIf="min > 2">
+            <label for="edad3" class="text-center">3</label>
+            <select [(ngModel)]="e3" name="e3" id="edad3" class="form-control" [style.width.px]="80">
+                          <option value="0" selected>0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                          <option value="13">13</option>
+                          <option value="14">14</option>
+                          <option value="15">15</option>
+                          <option value="16">16</option>
+                          <option value="17">17</option>
+                        </select>
+        </div>
+    </div>
+</div>

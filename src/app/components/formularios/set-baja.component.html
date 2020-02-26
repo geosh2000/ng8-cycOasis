@@ -1,0 +1,120 @@
+<!-- Form Set Baja -->
+<div class="modal fade" id="bajaSolicitud" tabindex="-1" role="dialog" aria-labelledby="bajaSolicitud" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bajaSolicitudTitle">{{ tipo ? 'Registrar' : 'Solicitar' }} Baja <small>{{ nombre }}</small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" [formGroup]="formSetBaja">
+
+                    <!-- ID -->
+                    <div class="form-group row">
+                        <label class="col-4 col-form-label">id</label>
+                        <div class="col-8 input-group">
+                            <span class="input-group-prepend">
+                          <span class="input-group-text"><i class="far fa-address-card fa-fw"></i></span>
+                            </span>
+                            <input formControlName="id" class="form-control uneditable-input" type="text" value="" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Fecha Baja -->
+                    <div class="form-group row">
+                        <label class="col-4 col-form-label">Fecha de Baja</label>
+                        <div class="col-8 text-center">
+                            <ngb-datepicker (select)="setValDP($event, 'fechaBaja')"></ngb-datepicker>
+                        </div>
+                    </div>
+
+                    <!-- Comentarios -->
+                    <div class="form-group row" [ngClass]="{ 'has-danger': !formSetBaja.controls['comentarios'].valid }" *ngIf="formSetBaja.controls['fechaBaja'].valid">
+                        <label class="col-4 col-form-label">Comentarios</label>
+                        <div class="col-8 input-group">
+                            <span class="input-group-prepend">
+                          <span class="input-group-text"><i class="fas fa-comments fa-fw"></i></span>
+                            </span>
+                            <input formControlName="comentarios" class="form-control" type="text" value="">
+                        </div>
+                        <div class="col-12 form-control-feedback" *ngIf="formSetBaja.controls['comentarios']._errors?.required">
+                            <div><small>Es importante que ingreses tus comentarios de la solicitud</small></div>
+                        </div>
+                    </div>
+
+                    <!-- Recontratable -->
+                    <div class="form-group row" [ngClass]="{ 'has-danger': !formSetBaja.controls['recontratable'].valid }" *ngIf="formSetBaja.controls['fechaBaja'].valid">
+                        <label class="col-4 col-form-label"></label>
+                        <div class="col-8 input-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" formControlName="recontratable" [indeterminate]="true" id="ch1">
+                                <span class="custom-control-indicator"></span>
+                                <label class="custom-control-label" for="ch1">Recontratable</label>
+                            </div>
+                        </div>
+                        <div class="col-12 form-control-feedback" *ngIf="formSetBaja.controls['recontratable']._errors?.indeterminate">
+                            <div><small>Elige si el asesor será o no recontratable</small></div>
+                        </div>
+                    </div>
+
+                    <!-- Reemplazable -->
+                    <div class="form-group row" [ngClass]="{ 'has-danger': !formSetBaja.controls['reemplazable'].valid }" *ngIf="formSetBaja.controls['fechaBaja'].valid">
+                        <label class="col-4 col-form-label"></label>
+                        <div class="col-8 input-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" formControlName="reemplazable" [indeterminate]="true" id="ch2">
+                                <span class="custom-control-indicator"></span>
+                                <label class="custom-control-label" for="ch2">Reemplazable</label>
+                            </div>
+                        </div>
+                        <div class="col-12 form-control-feedback" *ngIf="formSetBaja.controls['reemplazable']._errors?.indeterminate">
+                            <div><small>Elige si la vacante será o no reemplazable</small></div>
+                        </div>
+                    </div>
+
+
+                    <!-- Fecha Liberacion -->
+                    <!-- <div class="form-group row"> -->
+                    <div class="form-group row" [ngClass]="{ 'has-danger': !formSetBaja.controls['fechaLiberacion'].valid }" *ngIf="formSetBaja.controls['reemplazable'].value == true">
+                        <label class="col-4 col-form-label">Fecha Liberación</label>
+                        <div class="col-8 text-center">
+                            <ngb-datepicker (select)="setValDP($event, 'fechaLiberacion')"></ngb-datepicker>
+                        </div>
+                        <div class="col-12 is-invalid" *ngIf="formSetBaja.controls['fechaLiberacion']._errors?.required">
+                            <div><small>La fecha de liberación es requerida cuando la vacante es reemplazable</small></div>
+                        </div>
+                        <div class="col-12 is-invalid" *ngIf="formSetBaja.controls['fechaLiberacion']._errors?.lessFechaLiberacion">
+                            <div><small>La fecha de liberación debe ser menor o igual a la fecha de Baja</small></div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" role="alert" *ngIf="saveAlert">
+                        <span><strong>Hubo un error en el proceso</strong></span><br>
+                        <span>
+                        {{ errorMsg }}
+                      </span><br>
+                        <span>Por favor notifícalo a WFM</span>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" [ngClass]="{ 'btn-outline-secondary': formSetBaja.invalid, 'btn-success': !formSetBaja.invalid }" class="btn" (click)="formSetBaja['value']['reemplazable'] ? submitBaja() : confirmReemp = true" [disabled]="retrieving || formSetBaja.invalid"
+                            *ngIf="!confirmReemp">{{ titleSubmit }} <span *ngIf="retrieving"><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button>
+                        <div class="col-12 animated flipInX" *ngIf="confirmReemp">
+                            <div class="alert alert-warning d-flex justify-content-end" role="alert">
+                                <div class="" style="font-size:smaller">
+                                    <p>Al seleccionar la opción de <b>No Reemplazable</b> la plaza se desactivará, haciendo que el HeadCount se reduzca</p>
+                                    <p>¿Deseas continuar?</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <button type="button" class="btn btn-block btn-danger" (click)="confirmReemp = false"><i class="fas fa-times"></i></button>
+                                    <button type="button" class="btn btn-block btn-success" (click)="submitBaja()"><i class="fas fa-check"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

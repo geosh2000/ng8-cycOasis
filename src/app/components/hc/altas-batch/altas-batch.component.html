@@ -1,0 +1,61 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+
+    <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <span><h1 class="display-3">Agregar Asesores (Batch)</h1></span>
+                    <p class="lead">Realiza las altas a través de la subida de un archivo de Excel</p>
+                </div>
+                <div>
+                    <img src="assets/img/bePriceBCO.png" height="150" width="150" alt="">
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class='container d-flex justify-content-start'>
+            <div class="p-2">
+                <form [formGroup]="imageForm">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label class="sr-only" for="formUploadImage">Archivo</label>
+                            <input (change)="setImagePath( )" type="file" class="form-control mb-2 mb-sm-0" id="formUploadImage" placeholder="Archivo" #imageFile formControlName="imageFile">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class='p-2'>
+                <button class="btn btn-success" (click)="submit()" [disabled]="loading['upload']">Subir <span *ngIf="loading['upload']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+            </div>
+            <div class='p-2 text-center'>
+                <button class="btn btn-info" (click)="dwlFormat()">Descargar Formato</button>
+            </div>
+        </div>
+        <iframe id="dwlFrame" src="assets/img/bePriceBCO.png" style="display:none;"></iframe>
+    </div>
+
+    <div class="container d-flex justify-content-center" *ngIf="loading['building']">
+        <h1>{{ loading['upload'] ? 'Subiendo' : 'Construyendo' }}... <i class="fas fa-spinner fa-pulse"></i></h1>
+    </div>
+    <div class="container" *ngIf="xlsData.length > 0">
+        <nav class="navbar fixed-bottom navbar-light alert alert-info m-0 d">
+            <div class="container-fluid d-flex justify-content-between">
+                <div class="p-1">Registros subidos: <span class="badge badge-pill badge-info">{{ xlsData.length }}</span></div>
+                <div class="p-1">Omitidos: <span class="badge badge-pill badge-secondary">{{ summary['omited'] }}</span></div>
+                <div class="p-1">Ingresos: <span class="badge badge-pill badge-success">{{ summary['ingresos'] }}</span></div>
+                <div class="p-1">Reingresos: <span class="badge badge-pill badge-warning">{{ summary['reingresos'] }}</span></div>
+                <div class="p-1">Errores: <span class="badge badge-pill badge-danger">{{ summary['error'] }}</span></div>
+                <div class='p-1 d-flex justify-content-end'>
+                    <button class="btn btn-sm btn-success" (click)="nextRegSubmit( {status:true, index:0}, true )" [disabled]="loading['submitAll'] || summary['error'] > 0 || summary['regs'] == 0">Guardar <span *ngIf="loading['submitAll']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+                </div>
+            </div>
+        </nav>
+        <app-batch-asesor-form #batchCmp *ngFor="let form of xlsData; index as i" (done)="nextRegSubmit( $event )" (omitir)="deleteReg( $event, i )" [profiles]="listProfiles" [item]="form" [vacantes]="vacantesList" [selectVacIndex]="selectVacIndex" [selectedVac]="selectedVac"
+            [resetFlag]="resetFlag" [saving]="saving" [resetVac]="resetVac" [i]="i" (changeVac)="onVacSelect($event['val'], $event['i'])"></app-batch-asesor-form>
+
+    </div>
+
+</div>

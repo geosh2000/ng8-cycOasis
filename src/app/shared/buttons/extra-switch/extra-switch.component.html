@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-center">
+  <div class="p-1">
+    <span style="font-size:smaller" *ngIf="!loading['change']">P.Nómina</span>
+    <span style="font-size:smaller" *ngIf="loading['change']"><i class="fas fa-spinner fa-pulse text-info"></i></span>
+  </div>
+  <div class="p-1">
+    <ui-switch
+      color="green"
+      size= "small"
+      name='extra'
+      (change)="chgPayment( $event )"
+      [(ngModel)]="payment"
+      [disabled]="loading['change'] || (tipo=='dt' && code != 'DT')"
+    ></ui-switch>
+  </div>
+</div>

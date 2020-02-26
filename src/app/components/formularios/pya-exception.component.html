@@ -1,0 +1,105 @@
+<div class="modal fade" id="pyaExceptModal" tabindex="-1" role="dialog" aria-labelledby="pyaExceptModalLabel" aria-hidden="false" data-backdrop='false' data-keyboard="false">
+  <form (ngSubmit)="saveExc()" #formulario="ngForm" novalidate>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pyaExceptModalLabel">{{ name }} <small>- {{ printTime(fecha, 'DD MMM \'YY') }}</small></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" [disabled]="loading['save'] || loading['delete']">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="loading['existent']">
+            <div class="container text-center">
+              <h1><i class="fas fa-spinner fa-4x fa-pulse text-info"></i></h1>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!loading['existent']">
+
+              <div class="row align-self-center">
+                <div class="col-3 d-flex justify-content-between align-items-center">
+                  <div class="p-1 align-self-center">
+                    <span [ngClass]="{'text-muted': tipo, 'text-primary font-weight-bold': !tipo}">RT</span>
+                  </div>
+                  <div class="p-1 align-self-center">
+                    <ui-switch
+                    color="green"
+                    size= "small"
+                    [(ngModel)]="tipo"
+                    name="tipo"
+                    (change)="refresh( $event )"
+                    ></ui-switch>
+                  </div>
+                  <div class="p-1 align-self-center">
+                    <span [ngClass]="{'text-muted': !tipo, 'text-primary font-weight-bold': tipo}">Aus</span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="selectType">{{ tipo ? 'Ausentismo' : 'Retardo' }}</label>
+                      <select [(ngModel)]="tipoExc" name="tipoAus" id="selectType" class="form-control" required>
+                        <ng-container *ngIf="loading['types']">
+                          <option selected>Loading... <i class="fas fa-spinner fa-fw fa-pulse"></i></option>
+                        </ng-container>
+                        <ng-container *ngIf="types && !loading['types']">
+                          <option selected>Selecciona...</option>
+                          <option [value]="item.id" *ngFor="let item of types">{{ item.name }}</option>
+                        </ng-container>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="caso">Caso</label>
+                      <input type="text" [(ngModel)]="caso" name="caso" class="form-control" id="caso" placeholder="Caso" minlength="6" [required]="caseReq()" pattern="[1-9]{1}[0-9]+" #formCaso="ngModel">
+                      <div class="text-danger" *ngIf="formulario.invalid && !formulario.pristine && formCaso.invalid">
+                        <p *ngIf="formCaso.errors?.required"><small>*Debes escribir un caso</small></p>
+                        <p *ngIf="formCaso.errors?.minlength"><small>*El caso debe tener al menos 6 dígitos</small></p>
+                        <p *ngIf="formCaso.errors?.pattern"><small>*Debe contener sólo dígitos y no puede iniciar con el 0</small></p>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label for="notas">Notas</label>
+                    <input type="text" [(ngModel)]="notas" name="notas" class="form-control" id="notas" placeholder="Comentarios de la excepcion..." required #formNotes="ngModel">
+                    <div class="text-danger" *ngIf="formulario.invalid && !formulario.pristine && formNotes.invalid">
+                      <p *ngIf="formNotes.errors?.required"><small>*Las notas son obligatorias</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <div class="row" *ngIf="changed != null">
+              <div class="col-lg-12 text-right">
+                <small>* Ultima edición por {{ changed }} el {{ printTime(lu, 'DD MMM \'YY')}}</small>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="modal-footer">
+          <div class="container">
+            <div class="row">
+              <div class="col d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary m-1" data-dismiss="modal" [disabled]="loading['save'] || loading['delete']">Cancelar</button>
+                <button type="button" class="btn btn-danger m-1" (click)="confirmDel()" [disabled]="loading['save'] || loading['delete']">Borrar <span *ngIf="loading['delete']"><i class="fas fa-spinner fa-fw fa-pulse"></i></span></button>
+                <button type="button" class="btn btn-success m-1" (click)="saveExc()" [disabled]="formulario.invalid || loading['save']">Guardar<span *ngIf="loading['save']"><i class="fas fa-spinner fa-fw fa-pulse"></i></span></button>
+              </div>
+            </div>
+            <div class="row p-2">
+              <div class="col">
+                <div class="alert alert-warning text-right" role="alert" *ngIf="flagDel">
+                  <p>Realmente deseas eliminar la excepción?</p>
+                  <button type="button" class="btn btn-sm btn-secondary" (click)="delete( false )" [disabled]="loading['save'] || loading['delete']">Cancelar</button> <button type="button" class="btn btn-sm btn-danger" (click)="delete()" [disabled]="loading['save'] || loading['delete']">Sí <span *ngIf="loading['delete']"><i class="fas fa-spinner fa-fw fa-pulse"></i></span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

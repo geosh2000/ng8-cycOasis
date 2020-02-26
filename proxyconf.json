@@ -1,0 +1,17 @@
+{
+    "/api/rf": {
+        "target": "https://cyc-oasishoteles.com",
+        "secure": false,
+        "changeOrigin": true
+    },
+    "/ng2/json": {
+        "target": "https://cyc-oasishoteles.com",
+        "secure": false,
+        "changeOrigin": true
+    },
+    "/formatos": {
+        "target": "https://cyc-oasishoteles.com",
+        "secure": false,
+        "changeOrigin": true
+    }
+}

@@ -1,0 +1,65 @@
+<!-- Static navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark blueBkg sticky-top">
+
+    <!-- HOME AND RESPONSIVE MENU BUTTON -->
+    <a class="navbar-brand" [routerLink]="currentUser && currentUser['credentials']['viewOnlyAffiliates'] == 1 ? ['/afiliados'] : ['/home']" style="cursor: pointer">
+        <img src="assets/img/CyC.png" width="30" height="30" alt="" *ngIf="!bd || bd == 0">
+        <img src="assets/img/birthday.png" height="50" alt="" *ngIf="bd && bd == 1">
+    </a>
+    <div *ngIf="currentUser && currentUser['credentials']['viewOnlyAffiliates'] != 1">
+        <button class="btn btn-sm btn-light" (click)="openSideBar()">Menu <span *ngIf="!sbStatus"><i class="far fa-arrow-alt-circle-right"></i></span><span *ngIf="sbStatus"><i class="far fa-arrow-alt-circle-left"></i></span></button>
+    </div>
+    <div class="ml-2" *ngIf="currentUser && currentUser['credentials']['app_cotizador'] == 1">
+        <button class="btn btn-sm btn-success text-light" [routerLink]="['/cotizador']">Cotizar</button>
+    </div>
+    <div *ngIf="currentUser && currentUser['credentials']['viewOnlyAffiliates'] == 1">
+        <button class="btn btn-sm btn-light" [routerLink]="['/afiliados']">Ver Reporte</button>
+    </div>
+    <!-- <div class="navbar-toggler">
+        <app-countdown [small]="true"></app-countdown>
+    </div> -->
+
+    <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button> -->
+
+    <!-- NAVBAR -->
+    <div class="navbar-collapse" style="flex-basis: 0 !important" id="navbarSupportedContent">
+
+        <div class="ml-auto d-flex justify-content-end">
+            <!-- <div class="p-1" *ngIf="currentUser && currentUser['credentials']['viewOnlyAffiliates'] != 1">
+                <app-countdown></app-countdown>
+            </div>
+            <div class="p-1" *ngIf="currentUser && currentUser['credentials']['viewOnlyAffiliates'] != 1">
+                <app-pbx-status [asesor]="currentUser.username"></app-pbx-status>
+            </div> -->
+            <!-- <div class="p-1" *ngIf="currentUser && currentUser['credentials']['viewOnlyAffiliates'] != 1">
+                <button class="btn btn-sm btn-secondary" (click)="openGlobal()">Avisos PDV</button>
+            </div> -->
+            <!-- <div class="p-1">
+                <app-rrobin></app-rrobin>
+            </div> -->
+            <div class="p-1">
+                <app-go-to-loc></app-go-to-loc>
+            </div>
+            <div class="p-1">
+                <button type="button" class="btn btn-link text-light" *ngIf="token" id='preferencesNav' data-toggle="modal" data-target="#preferencesModal">
+                    <i class="fas fa-cogs"></i>
+                </button>
+            </div>
+            <div class="p-1">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#loginModal" *ngIf="!token">
+                  <i class="fas fa-sign-in-alt"></i>
+                </button>
+                <button type="button" class="btn btn-danger" (click)="logout()" *ngIf="token">
+                  <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="alert alert-danger text-center" role="alert" *ngIf="expired">
+    <strong>Tu sesión ha expirado</strong> Para continuar, haz click en el ícono <i class="fa fa-sign-in"></i> del menú
+    <p>Expiration Info: {{ expiration }}</p>
+</div>

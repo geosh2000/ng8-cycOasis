@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="card border-0">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between flex-wrap bg-info">
+        <div class="align-middle p-1">
+          <h3 class="align-middle text-light">Información de Salario</h3>
+        </div>
+        <ng-container *ngIf="data">
+          <div class="d-flex justify-content-end flex-wrap" *ngIf="data.activo == 1">
+            <div class="d-flex align-items-center justify-content-start flex-wrap" *ngIf="_init.checkSingleCredential('hc_salarios_approbe')">
+              <div class="align-middle p-1">
+                <button type="button" class="align-middle btn btn-sm btn-primary" data-toggle="modal" data-target="#salarios">Editar Salarios</button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="!loading['data']">
+        <div class="d-flex justify-content-center flex-wrap" *ngIf="data">
+          <div class="m-2 p-1 text-center ">
+            <h5>Ingreso</h5>
+            <p>{{ printDate(data.Ingreso, 'DD MMM \'YY') }}</p>
+          </div>
+          <div class="m-2 p-1 text-center ">
+            <h5>Status</h5>
+            <p><span class="badge badge-pill" [ngClass]="{'badge-success': data.activo == 1,'badge-danger': data.activo == 0}">{{ data.activo == 1 ? 'Activo' : 'Inactivo'}}</span></p>
+          </div>
+          <div class="m-2 p-1 text-center ">
+            <h5>Egreso</h5>
+            <p>{{ data.activo == 1 ? '-' : printDate(data.Egreso, 'DD MMM \'YY') }}</p>
+          </div>
+          <div class="m-2 p-1 text-center ">
+            <h5>Recontratable</h5>
+            <p *ngIf="data.activo==1">-</p>
+            <p *ngIf="data.activo==0"><span class="badge badge-pill" [ngClass]="{'badge-success': data.recontratable == 1,'badge-danger': data.recontratable == 0,'badge-secondary': data.recontratable == null}">{{ data.recontratable == 1 ? 'Recontratable' : data.recontratable == 0 ? 'No-recontratable' : 'Sin Información'}}</span></p>
+          </div>
+          <div class="m-2 p-1 text-center ">
+            <h5>Contrato (inicio)</h5>
+            <p>{{ printDate(data.inicio, 'DD MMM \'YY') }}</p>
+          </div>
+          <div class="m-2 p-1 text-center ">
+            <h5>Contrato (fin)</h5>
+            <p>{{ data.activo == 1 ? (data.fin ? printDate(data.fin, 'DD MMM \'YY') : '-') : printDate(data.Egreso, 'DD MMM \'YY') }}</p>
+            <p *ngIf="data.vencido == 1"><span class="badge badge-pill badge-danger">Vencido</span></p>
+          </div>
+          <div class="m-2 p-1 text-center ">
+            <h5>Tipo Contrato</h5>
+            <p><span class="badge badge-pill" [ngClass]="{'badge-secondary': data.activo == 1 && data.tipo != 1 && data.tipo != 2,'badge-warning': data.activo == 1 && data.tipo == 1,'badge-success': data.activo == 1 && data.tipo == 2,'badge-danger': data.activo == 0}">{{ data.activo == 1 ? (data.tipo == 1 ? 'Temporal' : data.tipo == 2 ? 'Indefinido' : 'N/A') : 'Terminado'}}</span></p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap p-4" *ngIf="!data">
+          <div class="alert alert-primary" role="alert">
+            No existe información de salarios para este asesor
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="loading['data']">
+        <div class="text-center p-4">
+          <h3>Cargando Salarios <i class="fas fa-spinner fa-pulse text-info"></i></h3>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <ng-container *ngIf="data">
+
+  </ng-container>
+</div>

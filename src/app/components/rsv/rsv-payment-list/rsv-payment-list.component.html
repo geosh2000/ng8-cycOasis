@@ -1,0 +1,152 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">Gerencia</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+    <div class="container-fluid">
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span><h1 class="display-3">Listado de Pagos</h1></span>
+                        <p class="lead">Consulta y da seguimiento a los pagos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="container d-flex justify-content-between p-2">
+                <mat-card [style.width.px]="350">
+                    <div class="d-flex justify-content-between">
+                        <mat-card-content>
+                            <mat-form-field>
+                                <input matInput placeholder="Op. / auth / ref. / monto" [(ngModel)]="search['searchString']" [disabled]="!search['locFlag']">
+                            </mat-form-field>
+                        </mat-card-content>
+                        <div class="p-2 align-content-center">
+                            <ui-switch size="small" name='exist' [(ngModel)]="search['locFlag']"></ui-switch>
+                        </div>
+                    </div>
+                </mat-card>
+                <!-- <mat-card [style.width.px]="230">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-between">
+                            <mat-form-field [style.width.px]="150">
+                                <input matInput placeholder="Fecha Creacion" id="created" [autoClose]="false" (click)="search['dtCreatedFlag'] ? dC.toggle() : search['dtCreatedFlag']=search['dtCreatedFlag']" name="dp" ngbDatepicker #dC="ngbDatepicker" [dayTemplate]="tdC" (dateSelect)="onDateSelection($event, dC, 'created')"
+                                    autocomplete="off" readonly [disabled]="!search['dtCreatedFlag']">
+                                <ng-template #tdC let-date="date" let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                      {{ date.day }}
+                                  </span>
+                                </ng-template>
+                            </mat-form-field>
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="small" name='exist' [(ngModel)]="search['dtCreatedFlag']"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card> -->
+                <mat-card [style.width.px]="230">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-between">
+                            <mat-form-field [style.width.px]="150">
+                                <input matInput placeholder="Fecha Pago" id="arrival" [autoClose]="false" (click)="search['dtArrivalFlag'] ? dA.toggle() : search['dtArrivalFlag']=search['dtCreatedFlag']" name="dp" ngbDatepicker #dA="ngbDatepicker" [dayTemplate]="tdA" (dateSelect)="onDateSelection($event, dA, 'arrival')"
+                                    autocomplete="off" readonly [disabled]="!search['dtArrivalFlag']">
+                                <ng-template #tdA let-date="date" let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                      {{ date.day }}
+                                  </span>
+                                </ng-template>
+                            </mat-form-field>
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="small" name='exist' [(ngModel)]="search['dtArrivalFlag']"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="container d-flex justify-content-end p-2">
+                <app-xls-download class="mr-auto" tableId="listPaymentsTable" [rawFlag]="false" [isJs]="false" shName="pagos" bkName="pagosContactCenter" *ngIf="data.length > 0"></app-xls-download>
+                <button mat-raised-button class="mr-2" color="alert" (click)="_regP.openModal()" *ngIf="_init.checkSingleCredential('rsv_paymentReg')">Registrar Pago</button>
+                <button mat-raised-button color="primary" (click)="searchLocs()">Buscar</button>
+            </div>
+
+        </div>
+
+        <mat-progress-bar mode="buffer" *ngIf="loading['locs']"></mat-progress-bar>
+
+        <div class="container alert alert-danger" role="alert" *ngIf="data.length == 0 && !loading['locs'] && searchFlag">
+            No hay reservaciones para mostrar
+        </div>
+
+        <div class="container-fluid" *ngIf="data.length > 0">
+            <div class="d-flex justify-content-end">
+                <button mat-raised-button color="accent" (click)="toggle('rows',1000)">Show All</button>
+            </div>
+            <ngx-table [configuration]="config" id="listPaymentsTable" [data]="data" [columns]="columns">
+                <ng-template let-row>
+                    <td class="row__email" *ngFor="let item of columns">
+                        <span [ngSwitch]="item['type']">
+                          <span [matTooltip]="row[item['key']]" matTooltipPosition="above" style="font-size: smaller; max-width: 110px" class="d-inline-block text-truncate ml-auto mr-auto" *ngSwitchCase="'default'">
+                          {{ row[item['key']] }}
+                          </span>
+                        <span [matTooltip]="row[item['key']]" matTooltipPosition="above" class="d-inline-block" style="font-size: smaller" *ngSwitchCase="'npropio'">
+                          {{ row[item['key']] | capitalizado }}
+                          </span>
+                        <span [matTooltip]="row[item['key']]" matTooltipPosition="above" class="d-inline-block" style="font-size: smaller" *ngSwitchCase="'ocup'">
+                          {{ row['a'] }} | {{ row['j'] }} | {{ row['m'] }}
+                          </span>
+                        <span [matTooltip]="row[item['key']]" matTooltipPosition="above" class="d-inline-block text-truncate" style="font-size: smaller" *ngSwitchCase="'ref'">
+                          "{{ row[item['key']] }}"
+                          </span>
+                        <span [matTooltip]="row[item['key']]" matTooltipPosition="above" class="d-inline-block" style="font-size: smaller" *ngSwitchCase="'money'">
+                          {{ row[item['key']] | currency:'MXN':'symbol-narrow':'.2-2' }}
+                          </span>
+                        <span [matTooltip]="row[item['key']]" matTooltipPosition="above" class="d-inline-block" style="font-size: smaller" *ngSwitchCase="'date'">
+                          {{ row[item['key']] == null ? '' : formatDate(row[item['key']], 'YYYY-MM-DD') }}
+                          </span>
+                        <span class="d-inline-block" style="font-size: smaller" *ngSwitchCase="'prov'">
+                            <mat-chip-list>
+                              <mat-chip color="primary" selected *ngIf="row[item['key']] == 'PayPal'">Paypal</mat-chip>
+                              <mat-chip color="danger" selected *ngIf="row[item['key']] == 'Santander'">Santander</mat-chip>
+                              <mat-chip color="info" selected *ngIf="row[item['key']] == 'Deposito'">Deposito</mat-chip>
+                              <mat-chip color="success" selected *ngIf="row[item['key']] == 'Tpv'">TPV</mat-chip>
+                            </mat-chip-list>
+                        </span>
+                        <span style="font-size: smaller" class="d-inline-block text-center" *ngSwitchCase="'status'">
+                            <mat-chip-list>
+                              <mat-chip [color]="row[item['key']] == 'PDT' ? 'accent' : row[item['key']] == 'Agregar' ? 'warn' : row[item['key']] == 'PH' ? 'info' : row[item['key']] == 'PDT' ? 'pdt' : 'success'" selected>{{row[item['key']]}}</mat-chip>
+                            </mat-chip-list>
+                        </span>
+                        <span style="font-size: smaller" class="d-inline-block text-center" *ngSwitchCase="'consist'">
+                            <mat-chip-list *ngIf="row['paymentId'] != null">
+                              <mat-chip [color]="row[item['key']] == 1 ? 'success' :  'alert'" selected><mat-icon *ngIf="row[item['key']] == 1">done</mat-icon><mat-icon *ngIf="row[item['key']] == 0">error_outline</mat-icon></mat-chip>
+                            </mat-chip-list>
+                        </span>
+                        <span style="font-size: smaller" class="d-inline-block text-center" *ngSwitchCase="'posib'">
+                            <mat-chip-list *ngIf="row[item['key']] == 1">
+                              <mat-chip color="alert" selected><mat-icon>notifications_active</mat-icon></mat-chip>
+                            </mat-chip-list>
+                        </span>
+                        <span style="font-size: smaller" class="d-inline-block" *ngSwitchCase="'ticket'">
+                          <a [href]="row[item['key']] | domseguro:'https://oasishoteles.zendesk.com/tickets/'" target="_blank" *ngIf="row[item['key']] != null && row[item['key']] != 0">
+                            #{{ row[item['key']] }}
+                          </a>
+                        </span>
+                        <span style="font-size: smaller" class="d-inline-block" *ngSwitchCase="'locs'">
+                          <!-- <a [routerLink]="['/rsv',row['master']]"  target="_blank">
+                            {{ row[item['key']] }}
+                          </a> -->
+                        </span>
+                        <span style="font-size: smaller" class="d-inline-block" *ngSwitchCase="'button'">
+                            <button mat-mini-fab color="primary" (click)="_linkP.openModal(row['operacion'])" [disabled]="!_init.checkSingleCredential('rsv_paymentLinkAny')">
+                              <mat-icon>link</mat-icon>
+                            </button>
+                        </span>
+                        </span>
+                    </td>
+                </ng-template>
+            </ngx-table>
+
+        </div>
+    </div>
+    <app-rsv-payment-registry></app-rsv-payment-registry>
+    <app-rsv-link-any-payment (linked)="linked($event)"></app-rsv-link-any-payment>

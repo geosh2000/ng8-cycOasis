@@ -1,0 +1,381 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<div class="d-flex justify-content-center p-5" *ngIf="showContents && loading['loc']">
+    <mat-spinner></mat-spinner>
+</div>
+<div class="container-fluid" *ngIf="showContents && !loading['loc'] && data['items'].length == 0">
+    <div class="alert alert-danger" role="alert">
+        <p>El localizador no existe o no tiene items agregados</p>
+    </div>
+</div>
+<div class="container-fluid" *ngIf="showContents && !loading['loc'] && data['items'].length > 0">
+    <!-- <div class='container bg-light text-dark'>
+        <app-search-loc (selected)="selectLoc($event)" [maxHeight]="200"></app-search-loc>
+    </div> -->
+
+    <!-- ====================== INICIO CUADRO PRINCIPAL ====================== -->
+    <div class="container mainFrame p-2">
+
+        <!-- ====================== INICIO TITULAR ====================== -->
+        <div class="p-0 row m-0" [style.height.px]="90">
+            <div class="locFrame col-2">
+                <b>{{ data['master']['masterlocatorid'] }}</b>
+            </div>
+            <div class="col-8" matTooltipPosition="above" [matTooltip]="data['master']['nombreCliente']">
+                <div>
+                    <h2 class="text-truncate"><b>{{ data['master']['nombreCliente'] }}</b></h2>
+                </div>
+                <p>Creada el <b>{{ formatDate(data['master']['dtCreated'], 'DD MMM YYYY HH:mm') }} hrs.</b> por <b>{{ data['master']['creador'] }}</b></p>
+            </div>
+            <div class="col-2 d-flex justify-content-end text-center">
+                <mat-chip-list aria-label="Fish selection">
+                    <mat-chip [color]="rsvType == 'Cotizacion' ? 'alert' : rsvType == 'Reserva' ? 'primary' : 'danger'" selected>{{ rsvType }}</mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+        <!-- ====================== FIN TITULAR ====================== -->
+
+        <!-- ====================== INICIO CUERPO MEDIO ====================== -->
+        <div class="container m-2 row">
+
+            <!-- ====================== INICIO CUADRO ITEMS ====================== -->
+            <div class="itemsFrame col-9 pb-4">
+                <div class="d-flex justify-content-end p-1">
+                    <!-- <button mat-button style="zoom: 0.8" color="warn"><mat-icon>edit</mat-icon> Modificar</button> -->
+                    <button mat-button style="zoom: 0.8" color="primary" (click)="_regP.openModal()" *ngIf="_init.checkSingleCredential('rsv_paymentReg')"><mat-icon>play_for_work</mat-icon> Registrar Pago</button>
+                    <!-- <button mat-button style="zoom: 0.8" color="primary" (click)="_linkP.openModal( data['master'] )"><mat-icon>link</mat-icon> Ligar</button> -->
+                    <button mat-button style="zoom: 0.8" color="primary" (click)="_payment.openModal( data['master']['zdUserId'], data['items'] )"><mat-icon>payment</mat-icon> Saldar</button>
+                </div>
+                <div class="container p-1 bg-light">
+                    <div class="container row rowItemNoBorder">
+                        <div class="col-4"></div>
+                        <div class="col-2 text-center"><b>Conf.</b></div>
+                        <div class="col-2 text-center"><b>Total</b></div>
+                        <div class="col-4 text-center row">
+                            <div class="col-6 text-right text-success"><small>Saldo Prepago</small></div>
+                            <div class="col-6 text-right">Saldo Total</div>
+                        </div>
+                    </div>
+                    <hr class="hrItems">
+                    <mat-accordion>
+                        <mat-expansion-panel *ngFor="let i of data['items']">
+                            <mat-expansion-panel-header>
+                                <div class="container row rowItem">
+                                    <div class="col-4 text-truncate" [matTooltip]="i['tipoServicio']" matTooltipPosition="above">
+                                        <button mat-icon-button color="primary">
+                                            <span class="mr-2">{{ i['itemLocatorId'] }}</span>
+                                            <mat-icon>{{ i['icon'] }}</mat-icon><span class="ml-2">{{ i['tipoServicio'] }}</span>
+                                        </button>
+                                    </div>
+                                    <ng-container *ngIf="i['isCancel'] == 0">
+                                        <div class="col-2 mt-auto mb-auto text-center text-truncate p-0" [ngClass]="colorConfirm(i['confirm'], isVigente(i['vigencia']), i['isQuote'] == 1)" [matTooltip]="i['confirm']" [matTooltipPosition]="'above'">
+                                            <span class="badge badge-pill badge-success" *ngIf="i['tipoPago'] == 'PT'">PT</span>
+                                            <span class="badge badge-pill badge-info" *ngIf="i['tipoPago'] == 'PP'">PP</span>
+                                            <span class="badge badge-pill badge-primary" *ngIf="i['tipoPago'] == 'PH'">PH</span>
+                                            <span class="badge badge-pill badge-alert" *ngIf="i['tipoPago'] == 'PDT'">PDT</span> {{ i['isQuote'] == 1 && !isVigente(i['vigencia']) ? 'Expirada' : i['confirm'] }}
+                                        </div>
+                                        <div class="col-2 mt-auto mb-auto text-right">{{ i['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</div>
+                                        <div class="col-4 mt-auto mb-auto text-right row">
+                                            <div class="col-6 text-right">
+                                                <p [ngClass]="{'text-danger': (i['montoParcial'] - i['montoPagado']) > 0, 'text-success': (i['montoParcial'] - i['montoPagado']) <= 0}"><small>{{ (i['montoParcial'] - i['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</small></p>
+                                                <p style="font-size: 10px" class='text-success'>(paid: {{ (i['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }})</p>
+                                            </div>
+                                            <div class="col-6 text-right" [ngClass]="{'text-danger': (i['monto'] - i['montoPagado']) > 0, 'text-success': (i['monto'] - i['montoPagado']) <= 0}"><b>{{ (i['monto'] - i['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="i['isCancel'] == 1">
+                                        <div class="col-8 mt-auto mb-auto text-center itemCancelled">Item Cancelado conf. {{ i['confirmCancel'] ? i['confirmCancel'] : 'Pendiente' }}</div>
+                                    </ng-container>
+                                </div>
+                            </mat-expansion-panel-header>
+
+                            <div class="alert" [ngClass]="{'alert-danger': !isVigente(i['vigencia']), 'alert-warning': isVigente(i['vigencia'])}" role="alert" *ngIf="i['isQuote'] == 1">
+                                <span *ngIf="isVigente(i['vigencia'])">Cotización expira el {{ formatDate(i['vigencia'], 'DD MMM YYYY HH:mm', true) }} hrs</span>
+                                <span *ngIf="!isVigente(i['vigencia'])">Cotización expirada. Venció el {{ formatDate(i['vigencia'], 'DD MMM YYYY HH:mm', true) }} hrs</span>
+                            </div>
+                            <div class="alert alert-info" role="alert" *ngIf="i['isFree'] == 1">
+                                Item marcado como cortesía, relacionado con reservas {{ i['cieloRelates'] }}
+                            </div>
+                            <app-edit-monto-parcial [i]="i" (confSent)="getHistory(mlTicket)" (saveMonto)="saveMonto( $event )" (saveName)="saveName( $event )" (uplImg)="uplImg($event)"></app-edit-monto-parcial>
+                            <div class="container d-flex justify-content-end">
+                                <div class="mr-auto"><span class="productConceptXL">Notas: </span><span class="clientInfo">{{ i['notas'] }}</span></div>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)"><mat-icon>remove_circle</mat-icon> Cancelar</button>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="reactivate(i)" *ngIf="_init.checkSingleCredential('rsv_reactivate') && !isVigente(i['vigencia']) && i['isQuote'] == 1 && i['isCancel'] == 0"><ng-container *ngIf="loading['reactivate']"><span><i class="fas fa-spinner fa-pulse"></i></span></ng-container><ng-container *ngIf="!loading['reactivate']"><mat-icon>alarm_add</mat-icon> Reactivar</ng-container></button>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="confirmItem(i)" *ngIf="i['isQuote'] == 0 && i['confirmOK'] == null"><mat-icon>done_outline</mat-icon> Confirmar</button>
+                            </div>
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+
+
+
+                    <hr class="hrItems">
+                    <div class="container row rowItemNoBorder" style="padding-right: 35px;">
+                        <div class="col-4"><b>TOTAL {{ data['master']['moneda'] }}</b></div>
+                        <div class="col-2"></div>
+                        <div class="col-2 text-right"><b>{{ data['master']['montoTotal'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                        <div class="col-4 text-right row">
+                            <div class="col-6 text-right" [ngClass]="{'text-danger': getDiff(data['master']['montoParcialTotal'], data['master']['montoPagadoTotal']) > 0, 'text-success': getDiff(data['master']['montoParcialTotal'], data['master']['montoPagadoTotal']) <= 0}"><b><small>{{ getDiff(data['master']['montoParcialTotal'], data['master']['montoPagadoTotal']) | currency:'MXN':'symbol-narrow':'.2-2' }}</small></b></div>
+                            <div class="col-6 text-right" [ngClass]="{'text-danger': getDiff(data['master']['montoTotal'], data['master']['montoPagadoTotal']) > 0, 'text-success': getDiff(data['master']['montoTotal'], data['master']['montoPagadoTotal']) <= 0}"><b>{{ getDiff(data['master']['montoTotal'], data['master']['montoPagadoTotal']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ====================== FIN CUADRO ITEMS ====================== -->
+
+            <!-- ====================== INICIO LATERAL CLIENTE ====================== -->
+            <div class="clientFrame col-3">
+                <hr>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Titular:</b></div>
+                    <div class="clientInfo">{{ data['master']['nombreCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Tel:</b></div>
+                    <div class="clientInfo">{{ data['master']['telCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Correo:</b></div>
+                    <div class="clientInfo">{{ data['master']['correoCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Whatsapp:</b></div>
+                    <div class="clientInfo">{{ data['master']['whatsCliente'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Zendesk:</b></div>
+                    <div class="clientInfo"><a target="_blank" [href]=" data['master']['zdUserId'] | domseguro:'https://oasishoteles.zendesk.com/agent/users/' ">{{ data['master']['zdUserId'] }}</a></div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Llegada:</b></div>
+                    <div class="clientInfo">{{ formatDate(data['master']['llegada'], 'DD MMM YYYY') }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Grupo:</b></div>
+                    <div class="clientInfo">{{ data['master']['grupos'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>FDP:</b></div>
+                    <div class="clientInfo">{{ data['master']['tiposPago'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Tickets:</b></div>
+                    <div class="clientInfo">
+                        <p *ngFor="let t of data['master']['tickets']"><a target="_blank" [href]=" t | domseguro:'https://oasishoteles.zendesk.com/tickets/' ">{{ t }}</a></p>
+                    </div>
+                </div>
+                <hr>
+                <ng-container *ngIf="rsvHistory.length > 1">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="clientConcept"><b>Reservas:</b></div>
+                        <div class="clientInfo">
+                            <ul>
+                                <ng-container *ngFor="let rh of rsvHistory">
+                                    <ng-container *ngIf="rh.ml != data['master']['masterlocatorid']">
+                                        <li *ngIf="rh.st != 'X'" [ngClass]="{'text-warning': rh.st == 'Q', 'text-success': rh.st == 'R','text-info': rh.st == 'Exp'}"><a href="/#/rsv2/{{ rh.ml }}" target="_blank">{{ rh.ml }} ({{ rh.services }})</a></li>
+                                        <li *ngIf="rh.st == 'X'" class='text-danger'><del><a href="/#/rsv2/{{ rh.ml }}" target="_blank">{{ rh.ml }} ({{ rh.services }})</a></del></li>
+                                    </ng-container>
+                                </ng-container>
+                            </ul>
+                            <ng-container *ngIf="loading['rsvHistory']">
+                                <mat-progress-bar mode="buffer"></mat-progress-bar>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <hr>
+                </ng-container>
+                <ng-container *ngIf="data['master']['payments'] != null">
+
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="clientConcept"><b>Pagos:</b></div>
+                        <div class="clientInfo">
+                            <button mat-button data-toggle="modal" data-target="#paymentSummary">Ver pagos</button>
+                        </div>
+                    </div>
+                    <hr>
+                </ng-container>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>Comision:</b></div>
+                    <div class="clientInfo">{{ data['master']['comision'] | currency:'MXN':'symbol-narrow':'.2-2' }} MXN</div>
+                </div>
+            </div>
+            <!-- ====================== FIN LATERAL CLIENTE ====================== -->
+        </div>
+        <!-- ====================== FIN CUERPO MEDIO ====================== -->
+
+        <div class="container p-2">
+            <div class="form d-flex justify-content-between align-items-center pr-3">
+                <div class="form-group p-1">
+                    <div class="input-group">
+                        <textarea rows="4" cols="136" [(ngModel)]="comment" placeholder="Agrega notas a la reserva" id="notas"></textarea>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <button mat-raised-button color='primary' (click)="sendComment()" [disabled]="comment==''"><span *ngIf="!loading['comment']">Enviar</span><span *ngIf="loading['comment']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                </div>
+            </div>
+            <div class="container d-flex justify-content-lg-center" *ngIf="loading['history']">
+                <mat-spinner></mat-spinner>
+            </div>
+            <mat-list *ngIf="!loading['history']">
+                <ng-container *ngFor="let c of history">
+                    <!-- <mat-list-item> -->
+                    <div class="container row  p-2">
+                        <div class="ml-3" [style.width.px]="130">
+                            <small><b>{{ formatDate(c['Fecha'], 'ddd DD MMM YYYY') }} <span class="text-info">{{ formatDate(c['Fecha'], 'HH:mm') }} hrs</span>:</b></small>
+                        </div>
+                        <div class="col pl-0">
+                            <span class="text-secondary" [innerHTML]="c['msg']"></span>
+                        </div>
+                    </div>
+
+                    <!-- </mat-list-item> -->
+                    <mat-divider></mat-divider>
+                </ng-container>
+            </mat-list>
+        </div>
+    </div>
+    <!-- ====================== FIN CUADRO PRINCIPAL ====================== -->
+
+</div>
+
+<!-- ====================== CONFIRMAR CANCELACION ====================== -->
+<div class="modal fade" id="cancelConfirm" tabindex="-1" role="dialog" aria-labelledby="cancelConfirmLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelConfirmLabel">Confirmar cancelación</h5>
+
+            </div>
+            <div class="modal-body">
+                <div>
+                    Estás seguro que deseas cancelar este item?
+                </div>
+                <br>
+                <!-- <mat-horizontal-stepper [linear]="true" #stepper *ngIf="maxPenalidad>0">
+                    <mat-step [stepControl]="penaltyXld">
+                        <ng-template matStepLabel>Ingresa el monto de penalidad</ng-template>
+                        <div class='conainer p-1 d-flex justify-content-center'>
+                            <mat-form-field>
+                                <input matInput #postalCode type='number' [max]="maxPenalidad" placeholder="Monto Penalidad" [(ngModel)]="xldPenalidad" autocomplete="off">
+                                <mat-hint align="end">A reembolsar: {{ (maxPenalidad - xldPenalidad) | currency:'MXN':'symbol-narrow':'.2-2'}}</mat-hint>
+                            </mat-form-field>
+                        </div>
+                        <div class="d-flex justify-content-end p-2">
+                            <button mat-raised-button class="m-1" color="danger" (click)="closeCancelModal( stepper )" [disabled]="loading['checkOut']">Cancelar</button>
+                            <button mat-raised-button matStepperPrevious [disabled]="true">Back</button>
+                            <button mat-raised-button color="primary" (click)="setPenalty(stepper)" [disabled]="xldPenalidad<0">Next</button>
+                        </div>
+                    </mat-step>
+                    <mat-step [stepControl]="penaltyXld">
+                        <ng-template matStepLabel>Ingresa el monto de penalidad</ng-template>
+                        <div class='conainer p-1 d-flex justify-content-center' *ngIf="loading['rlPay']">
+                            <mat-spinner></mat-spinner>
+                        </div>
+                        <div class='conainer p-1 d-flex justify-content-center' *ngIf="!loading['rlPay']">
+                            <pre>{{ rlPayments | json }}</pre>
+                        </div>
+                        <div class="d-flex justify-content-end p-2">
+                            <button mat-raised-button class="m-1" color="danger" (click)="closeCancelModal( stepper )" [disabled]="loading['checkOut']">Cancelar</button>
+                            <button mat-raised-button matStepperPrevious>Back</button>
+                            <button mat-raised-button color="primary" (click)="stepper.next()" [disabled]="maxPenalidad>=0">Next</button>
+                        </div>
+                    </mat-step>
+                </mat-horizontal-stepper> -->
+
+            </div>
+            <!-- <div class="modal-footer" *ngIf="!xldPenalidad"> -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="loading['cancel']">Cerrar</button>
+                <!-- <button type="button" class="btn btn-danger" (click)="confirmCancel()" [disabled]="loading['cancel'] || (maxPenalidad>=0 && (!xldPenalidad || (maxPenalidad - xldPenalidad)<0))"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button> -->
+                <button type="button" class="btn btn-danger" (click)="confirmCancel()" [disabled]="loading['cancel']"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====================== FIN CONFIRMAR CANCELACION ====================== -->
+
+<!-- ====================== INGRESAR CONFIRMACION ====================== -->
+<div class="modal fade" id="regConfirm" tabindex="-1" role="dialog" aria-labelledby="regConfirmLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="regConfirmLabel">Confirmar Reserva</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="confNum" class="col-sm-4 col-form-label">Confirmacion</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="confNum" [(ngModel)]="confirm['confirm']" placeholder="Clave Confirmacion">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="notasConf" class="col-sm-4 col-form-label">Notas</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="notasConf" [(ngModel)]="confirm['notas']" placeholder="Anotaciones">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading['cancel']">Cerrar</button>
+                <button type="button" class="btn btn-danger" (click)="saveConfirm()" [disabled]="confirm['confirm'] == '' || confirm['notas'] == '' || loading['cancel']"><span *ngIf="!loading['confirm']">Aceptar</span><span *ngIf="loading['confirm']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====================== FIN INGRESAR CONFIRMACION  ====================== -->
+
+<!-- ====================== MODAL DE PAGO ====================== -->
+<app-do-payment (paid)="paid($event)" [ml]="viewLoc"></app-do-payment>
+<!-- ====================== FIN MODAL DE PAGO ====================== -->
+
+<!-- ====================== MODAL DE VOUCHER ====================== -->
+<app-upload-image (loadResult)="imgLoaded($event)"></app-upload-image>
+<!-- ====================== FIN MODAL DE VOUCHER ====================== -->
+
+<!-- ====================== MODAL DE LINK PAYMENT ====================== -->
+<app-rsv-link-payment-direct (linked)="linked($event)"></app-rsv-link-payment-direct>
+<!-- ====================== FIN MODAL DE LINK PAYMENT ====================== -->
+
+<!-- ====================== MODAL DE REG PAYMENT ====================== -->
+<app-rsv-payment-registry></app-rsv-payment-registry>
+<!-- ====================== FIN MODAL DE REG PAYMENT ====================== -->
+
+<!-- ====================== MODAL SUMMARY PAYMENT ====================== -->
+<div class="modal fade" id="paymentSummary" tabindex="-1" role="dialog" aria-labelledby="paymentSummaryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentSummaryLabel">Resumen de Pagos {{ data['master']['masterlocator'] }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-sm table-bordered table-hover table-striped text-sm" *ngIf="data['master']['payments']">
+                    <thead>
+                        <tr>
+                            <th *ngFor="let t of data['master']['payments'][0] | keys">{{ t }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of data['master']['payments']" [ngClass]="{'text-danger': p['monto'] < 0}">
+                            <td *ngFor="let c of p | keys">
+                                {{ p[c] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====================== FIN MODAL DE REG PAYMENT ====================== -->

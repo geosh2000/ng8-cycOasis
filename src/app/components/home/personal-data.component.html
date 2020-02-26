@@ -1,0 +1,96 @@
+<div class="container">
+  <div class="d-flex justify-content-center" *ngIf="personalDataLoading">
+    <span><i class="fas fa-spinner fa-4x fa-pulse text-info"></i></span>
+  </div>
+  <table class="table table-sm table-bordered table-striped" *ngIf="!personalDataLoading">
+    <thead>
+      <tr>
+        <th class="text-center">id</th>
+        <th class="text-center">Nombre</th>
+        <th class="text-center">Usuario</th>
+        <th class="text-center">Tel 1</th>
+        <th class="text-center">Tel 2</th>
+        <th class="text-center">Correo</th>
+        <th class="text-center">Vigencia Pasaporte</th>
+        <th class="text-center">Vigencia Visa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="!personalDataLoading && !saveDataLoading">
+        <td>{{ asesor }}</td>
+        <td class="text-capitalize">{{ name }}</td>
+        <td>{{ username }}</td>
+        <td>
+          <form class="form-inline">
+            <div class="form-group" style="width: 100%">
+              <div class="input-group">
+                <input class="form-control" placeholder="Telefono 1"
+                       name="tel1" [(ngModel)]="personales['Telefono1']">
+              </div>
+            </div>
+          </form>
+        </td>
+        <td>
+          <form class="form-inline">
+            <div class="form-group" style="width: 100%">
+              <div class="input-group">
+                <input class="form-control" placeholder="Telefono 2"
+                       name="tel2" [(ngModel)]="personales['Telefono2']">
+              </div>
+            </div>
+          </form>
+        </td>
+        <td>
+          <form class="form-inline">
+            <div class="form-group" style="width: 100%">
+              <div class="input-group">
+                <input class="form-control" placeholder="Correo Personal"
+                       name="correo" [(ngModel)]="personales['correo_personal']">
+              </div>
+            </div>
+          </form>
+        </td>
+        <td>
+          <form class="form-inline">
+            <div class="form-group" style="width: 100%">
+              <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                       name="pasaporte" [(ngModel)]="personales['Vigencia_Pasaporte']" ngbDatepicker #pasaporte="ngbDatepicker">
+                <button class="input-group-addon" (click)="pasaporte.toggle()" type="button">
+                  <i class="far fa-calendar-alt"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </td>
+        <td>
+          <form class="form-inline">
+            <div class="form-group" style="width: 100%">
+              <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                       name="visa" [(ngModel)]="personales['Vigencia_Visa']" ngbDatepicker #visa="ngbDatepicker">
+                <button class="input-group-addon" (click)="visa.toggle()" type="button">
+                  <i class="far fa-calendar-alt"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </td>
+        <td>
+          <button type="button" class="btn btn-success" [disabled]="saveDataLoading" (click)="submitPersonalData()">
+            <p *ngIf="!saveDataLoading"><i class="far fa-save"></i></p>
+            <p *ngIf="saveDataLoading"><i class="fas fa-spinner fa-pulse"></i></p>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="personalDataLoading || saveDataLoading">
+        <td>{{ asesor }}</td>
+        <td class="text-capitalize">{{ name }}</td>
+        <td colspan=100 class="text-center">
+          <p> Loading... <i class="fas fa-spinner fa-pulse"></i></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

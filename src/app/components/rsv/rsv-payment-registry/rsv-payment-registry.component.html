@@ -1,0 +1,58 @@
+<div class="modal fade" id="rsvRegPayment" tabindex="-1" role="dialog" aria-labelledby="rsvRegPaymentModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rsvRegPaymentModal">Registro de Pago (PayPal / Depósito)</h5>
+                <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form [formGroup]="newPayment" (ngSubmit)="savePayment()">
+                <div class="modal-body text-center">
+                    <ng-container>
+                        <section class="p-3">
+                            <mat-radio-group class="p-3 m-1 border border-info" aria-label="Select an option" formControlName="proveedor" (change)="chg('proveedor', $event)">
+                                <mat-radio-button value="Deposito" *ngIf="_init.checkSingleCredential('payment_dep')">Depósito</mat-radio-button>
+                                <mat-radio-button value="PayPal" *ngIf="_init.checkSingleCredential('payment_pp')">Paypal</mat-radio-button>
+                                <mat-radio-button value="Tpv" *ngIf="_init.checkSingleCredential('payment_tpv')">TPV</mat-radio-button>
+                            </mat-radio-group>
+                            <mat-radio-group class="p-3 m-1 border border-info" aria-label="Select an option" formControlName="complejo" (change)="chg('complejo', $event)" [disabled]="this.newPayment.controls['proveedor'].errors && this.newPayment.controls['proveedor'].errors['required']">
+                                <mat-radio-button value="Cancun">Cancun</mat-radio-button>
+                                <mat-radio-button value="Palm">Palm</mat-radio-button>
+                                <mat-radio-button value="Smart">Smart</mat-radio-button>
+                                <mat-radio-button value="Vcm">VCM</mat-radio-button>
+                            </mat-radio-group>
+                        </section>
+                        <section>
+                            <mat-form-field [style.width.px]="250">
+                                <input matInput placeholder="Referencia" formControlName="referencia" class="pl-2 text-center">
+                            </mat-form-field>
+                            <mat-form-field [style.width.px]="250" class="ml-2">
+                                <input matInput placeholder="Operacion" formControlName="operacion" class="pl-2 text-center">
+                            </mat-form-field>
+                            <mat-form-field [style.width.px]="250" class="ml-2">
+                                <input matInput placeholder="Autorizacion" formControlName="aut" class="pl-2 text-center">
+                            </mat-form-field>
+                        </section>
+                        <section>
+                            <mat-form-field class="mr-2">
+                                <span matPrefix>$ &nbsp;</span>
+                                <input type="number" matInput placeholder="Monto" formControlName="monto">
+                            </mat-form-field>
+
+                            <mat-radio-group aria-label="Select an option" formControlName="moneda">
+                                <mat-radio-button value="MXN">MXN</mat-radio-button>
+                                <mat-radio-button value="USD">USD</mat-radio-button>
+                            </mat-radio-group>
+                        </section>
+                    </ng-container>
+                </div>
+                <div class="modal-footer text-right">
+                    <button mat-raised-button color="secondary" type="button" (click)="closeModal()">Cancelar</button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="loading['save'] || !this.newPayment.valid"><span *ngIf="!loading['save']">Guardar</span><mat-spinner *ngIf="loading['save']"></mat-spinner>
+              </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

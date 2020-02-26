@@ -1,0 +1,238 @@
+<div class="card" [ngClass]="{'border-success': form.valid}" [matBadge]="form.controls['Pais'].value" matBadgeOverlap="true" matBadgeColor="primary" matBadgePosition="before">
+    <div class="overlay" *ngIf="saving && !saved"></div>
+    <div class="loading-container bg-light" *ngIf="saving && !saved">
+        <h1>Guardando registro <i class="fas fa-spinner fa-pulse"></i></h1>
+    </div>
+    <div class="card-body">
+
+        <div class="alert alert-info" role="alert" *ngIf="form.controls['Nombre_Separado'].errors?.same">
+            <h3><b>{{ form.controls['Nombre_Separado'].value }} {{ form.controls['Apellidos_Separado'].value }}</b></h3>
+            <p>Este registro ya se dio de alta... si necesitas un cambio de puesto consúltalo con WFM</p>
+        </div>
+
+        <div class="alert alert-success" role="alert" *ngIf="saved && successSave">
+            <h3><b>{{ form.controls['Nombre_Separado'].value }} {{ form.controls['Apellidos_Separado'].value }}</b></h3>
+            <p>Registro guardado exitosamente! ID Asesor: <b>{{ newId }}</b></p>
+        </div>
+
+        <div class="alert alert-danger" role="alert" *ngIf="saved && !successSave">
+            <h3><b>{{ form.controls['Nombre_Separado'].value }} {{ form.controls['Apellidos_Separado'].value }}</b></h3>
+            <div class="container-fluid d-flex justify-content-around">
+                <div class="p-1" *ngIf="form.invalid">
+                    <p>Formulario con errores</p>
+                </div>
+                <div class="p-1" *ngIf="form.valid">
+                    <p>Registro con errores</p>
+                    <pre>{{ newError | json }}</pre>
+                </div>
+                <div class="p-1">
+                    <button class="btn btn-info" (click)="review()">Revisar</button>
+                </div>
+            </div>
+        </div>
+
+        <div [ngClass]="{'alert-danger': omitido, 'alert-warning': !omitido}" class="alert" role="alert" *ngIf="form.controls['Nombre_Separado'].errors?.reingreso">
+            <h3><b>{{ form.controls['Nombre_Separado'].value }} {{ form.controls['Apellidos_Separado'].value }}</b></h3>
+            <ng-container *ngIf="!omitido">
+                <p>El asesesor cuenta con un registro en CyC, y su baja fue procesada con fecha <b>{{ existingUser['Egreso'] }}</b></p>
+                <div class="p-0 d-flex justify-content-start">
+                    <button type="button" class="mr-2 btn btn-sm btn-danger" (click)="omitido = true">Omitir</button>
+                    <button type="button" class="mr-2 btn btn-sm btn-info" (click)="reingresoOk()">Reingreso</button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="omitido">
+                <div class="p-0 d-flex justify-content-between">
+                    <p>Este registro ha sido omitido</p>
+                    <button type="button" class="mr-2 btn btn-sm btn-danger" (click)="omitido = false">Deshacer</button>
+                </div>
+            </ng-container>
+        </div>
+
+
+        <form class="form-group" [formGroup]="form" *ngIf="!saved && !form.controls['Nombre_Separado'].errors?.reingreso && !form.controls['Nombre_Separado'].errors?.same">
+            <div class="d-flex justify-content-between flex-wrap">
+
+                <div class="form-group p-1" [style.width.px]="190">
+                    <label for="name_{{ i }}">Nombre(s)</label>
+                    <input (keyup)="revalidate('Apellidos_Separado')" [ngClass]="{'is-invalid': !form.controls['Nombre_Separado'].valid}" type="email" formControlName="Nombre_Separado" class="form-control" id="name_{{ i }}" placeholder="Nombre(s)" [readonly]="reingresoFlag">
+                    <small class="text-warning" style="font-size: xx-small" *ngIf="form.controls['Nombre_Separado'].status == 'PENDING'"><i class="fa fa-spinner fa-pulse fa-fw"></i>Validando nombre completo...</small>
+                    <ng-container *ngIf="!form.controls['Nombre_Separado'].valid">
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Nombre_Separado'].errors?.pattern">Debe coincidir con el formato de mayúsculas y minúsculas. Revisa que no existan dobles espacios</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Nombre_Separado'].errors?.required">Debes ingresar el nombre del asesor</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Nombre_Separado'].errors?.existe">El Nombre ya existe en sistema.<br>¿Es un reingreso?</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Nombre_Separado'].errors?.db">No se pudo validar el nombre en la base de datos</small>
+                        <button type="button" class="btn btn-sm btn-info" (click)="reingreso()" *ngIf="form.controls['Nombre_Separado'].errors?.reingreso" [disabled]="loading['reingreso']">Reingreso</button>
+                    </ng-container>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="190">
+                    <label for="lastName_{{ i }}">Apellido(s)</label>
+                    <input (keyup)="revalidate('Nombre_Separado')" [ngClass]="{'is-invalid': !form.controls['Apellidos_Separado'].valid}" type="email" formControlName="Apellidos_Separado" class="form-control" id="lastName_{{ i }}" placeholder="Apellido(s)" [readonly]="reingresoFlag">
+                    <small class="text-warning" style="font-size: xx-small" *ngIf="form.controls['Apellidos_Separado'].status == 'PENDING'"><i class="fa fa-spinner fa-pulse fa-fw"></i>Validando nombre completo...</small>
+                    <ng-container *ngIf="!form.controls['Apellidos_Separado'].valid">
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Apellidos_Separado'].errors?.pattern">Debe coincidir con el formato de mayúsculas y minúsculas. Revisa que no existan dobles espacios</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Apellidos_Separado'].errors?.required">Debes ingresar los apellidos del asesor</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Apellidos_Separado'].errors?.existe">El Nombre ya existe en sistema.<br>¿Es un reingreso?</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['Apellidos_Separado'].errors?.db">No se pudo validar el nombre en la base de datos</small>
+                        <button type="button" class="btn btn-sm btn-info" (click)="reingreso()" *ngIf="form.controls['Apellidos_Separado'].errors?.reingreso" [disabled]="loading['reingreso']">Reingreso</button>
+                    </ng-container>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="160">
+                    <label for="nCorto_{{ i }}">Nombre Corto</label>
+                    <input [ngClass]="{'is-invalid': !form.controls['N Corto'].valid}" type="email" formControlName="N Corto" class="form-control" id="nCorto_{{ i }}" placeholder="Nombre Corto">
+                    <small class="text-warning" style="font-size: xx-small" *ngIf="form.controls['N Corto'].status == 'PENDING'"><i class="fa fa-spinner fa-pulse fa-fw"></i>Validando nombre corto...</small>
+                    <ng-container *ngIf="!form.controls['N Corto'].valid">
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['N Corto'].errors?.pattern">Debe coincidir con el formato de mayúsculas y minúsculas, sin acentos. Revisa que no existan dobles espacios</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['N Corto'].errors?.required">Debes ingresar los apellidos del asesor</small>
+                        <small class="text-danger" style="font-size: xx-small" *ngIf="form.controls['N Corto'].errors?.existe">El Usuario ya existe en sistema<br></small>
+                        <small class="text-warning" style="font-size: xx-small" *ngIf="form.controls['N Corto'].errors?.different">El Usuario registrado es diferente</small>
+                        <a style="font-size: xx-small" href="/#/detail-asesor/{{ existingUserTmp['id'] }}" target="_blank" *ngIf="form.controls['N Corto'].errors?.existe">Ver Usuario</a>
+                        <div class="p-0 d-flex justify-content-between">
+                            <button type="button" class="p-1 btn btn-sm btn-info" (click)="validateUser( true )" *ngIf="form.controls['N Corto'].errors?.different"><small style="font-size: smaller">Igualar</small></button>
+                            <button type="button" class="p-1 btn btn-sm btn-info" (click)="validateUser( false )" *ngIf="form.controls['N Corto'].errors?.different"><small style="font-size: smaller">Mantener</small></button>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="140">
+                    <label for="num_colab{{ i }}">{{ form.controls['Pais'].value == 'CO' ? 'Matrícula' : '# Colaborador' }}</label>
+                    <input [ngClass]="{'is-invalid': !form.controls['num_colaborador'].valid}" type="email" formControlName="num_colaborador" class="form-control" id="num_colab{{ i }}" placeholder="Num Colaborador">
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['num_colaborador'].valid && form.controls['num_colaborador'].errors?.pattern">Debe coincidir con el formato de mayúsculas y minúsculas, sin acentos</small>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['num_colaborador'].valid && form.controls['num_colaborador'].errors?.required">Debes ingresar los apellidos del asesor</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="155">
+                    <label for="usuario_{{ i }}">{{ form.controls['Pais'].value == 'CO' ? 'Cédula' : 'Usuario' }}</label>
+                    <input [ngClass]="{'is-invalid': !form.controls['Usuario'].valid}" type="email" formControlName="Usuario" class="form-control" id="usuario_{{ i }}" placeholder="Usuario">
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Usuario'].valid && form.controls['Usuario'].errors?.pattern">Sin espacios, solo minúsculas</small>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Usuario'].valid && form.controls['Usuario'].errors?.required">Debes ingresar el usuario sin "@"</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="190">
+                    <label for="correo_{ i }}">Correo Personal</label>
+                    <input [ngClass]="{'is-invalid': !form.controls['correo_personal'].valid}" type="email" formControlName="correo_personal" class="form-control" id="correo_{{ i }}" placeholder="Correo Personal">
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['correo_personal'].valid && form.controls['correo_personal'].errors?.pattern">Debe coincidir con el formato de correo electrónico</small>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['correo_personal'].valid && form.controls['correo_personal'].errors?.required">Debes ingresar los apellidos del asesor</small>
+                </div>
+
+                <!-- </div>
+            <div class="d-flex justify-content-between flex-wrap"> -->
+
+
+                <div class="form-group p-1" [style.width.px]="155">
+                    <label for="tel_{{ i }}">Teléfono</label>
+                    <input [ngClass]="{'is-invalid': !form.controls['Telefono1'].valid}" type="email" formControlName="Telefono1" class="form-control" id="tel_{{ i }}" placeholder="Teléfono">
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Telefono1'].valid && form.controls['Telefono1'].errors?.pattern">Este campo acepta sólo números, sin espacios ni símbolos</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="155">
+                    <label for="movil_{{ i }}">Móvil</label>
+                    <input [ngClass]="{'is-invalid': !form.controls['Telefono2'].valid}" type="email" formControlName="Telefono2" class="form-control" id="movil_{{ i }}" placeholder="Móvil">
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Telefono2'].valid && form.controls['Telefono2'].errors?.pattern">Este campo acepta sólo números, sin espacios ni símbolos</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="190">
+                    <label>F. Nacimiento</label>
+                    <div class="input-group">
+                        <input readonly [ngClass]="{'is-invalid': !form.controls['Fecha_Nacimiento'].valid}" daterangepicker formControlName="Fecha_Nacimiento" [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setVal($event.start, 'Fecha_Nacimiento')">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Fecha_Nacimiento'].valid && form.controls['Fecha_Nacimiento'].errors?.pattern">Debe coincidir con el formato de Fecha YYYY/MM/DD</small>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Fecha_Nacimiento'].valid && form.controls['Fecha_Nacimiento'].errors?.required">Debes ingresar la Fecha de Nacimiento</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="190">
+                    <label>Vigencia Pasaporte <button type="button" class='p-0 pl-1 btn btn-link text-info' (click)="form.controls['Vigencia_Pasaporte'].reset()"><i class="fas fa-times"></i></button></label>
+                    <div class="input-group">
+                        <input readonly [ngClass]="{'is-invalid': !form.controls['Vigencia_Pasaporte'].valid}" daterangepicker formControlName="Vigencia_Pasaporte" [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setVal($event.start, 'Vigencia_Pasaporte')">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Vigencia_Pasaporte'].valid && form.controls['Vigencia_Pasaporte'].errors?.pattern">Debe coincidir con el formato de Fecha YYYY/MM/DD</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="190">
+                    <label>Vigencia Visa <button type="button" class='p-0 pl-1 btn btn-link text-info' (click)="form.controls['Vigencia_Visa'].reset()"><i class="fas fa-times"></i></button></label>
+                    <div class="input-group">
+                        <input readonly [ngClass]="{'is-invalid': !form.controls['Vigencia_Visa'].valid}" daterangepicker formControlName="Vigencia_Visa" [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setVal($event.start, 'Vigencia_Visa')">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Vigencia_Visa'].valid && form.controls['Vigencia_Visa'].errors?.pattern">Debe coincidir con el formato de Fecha YYYY/MM/DD</small>
+                </div>
+
+
+
+            </div>
+            <div class="d-flex justify-content-between flex-wrap">
+
+                <div class="form-group p-1" [style.maxWidth.px]="200">
+                    <label for="contrato{{ i }}">Tipo Contrato</label>
+                    <select class="form-control" (change)="setContrato( $event.target.value )" [ngClass]="{'is-invalid': !form.controls['contrato'].valid}" formControlName="contrato" id="contrato{{ i }}">
+                        <option value=''>Selecciona...</option>
+                        <option value=1>Temporal</option>
+                        <option value=2>Indefinido</option>
+                    </select>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['contrato'].valid && form.controls['contrato'].errors?.required">Debes seleccionar un tipo de contrato</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="190" *ngIf="form.controls['contrato'].value == 1">
+                    <label>Fin Contrato</label>
+                    <div class="input-group">
+                        <input readonly [ngClass]="{'is-invalid': !form.controls['fin_contrato'].valid}" daterangepicker formControlName="fin_contrato" [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setVal($event.start, 'fin_contrato')">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['fin_contrato'].valid && form.controls['fin_contrato'].errors?.pattern">Debe coincidir con el formato de Fecha YYYY/MM/DD</small>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['fin_contrato'].valid && form.controls['fin_contrato'].errors?.required">Debes ingresar la Fecha de Fin de Contrato</small>
+                </div>
+
+                <div class="form-group p-1" [style.width.px]="190">
+                    <label>Ingreso</label>
+                    <div class="input-group">
+                        <input readonly [ngClass]="{'is-invalid': !form.controls['Ingreso'].valid}" daterangepicker formControlName="Ingreso" [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setVal($event.start, 'Ingreso')">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                    </div>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Ingreso'].valid && form.controls['Ingreso'].errors?.pattern">Debe coincidir con el formato de Fecha YYYY/MM/DD</small>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['Ingreso'].valid && form.controls['Ingreso'].errors?.required">Debes ingresar la Fecha de Ingreso</small>
+                </div>
+
+                <div class="form-group p-1" [style.maxWidth.px]="200">
+                    <label for="profile{{ i }}">Profile</label>
+                    <select class="form-control" [ngClass]="{'is-invalid': !form.controls['profile'].valid}" formControlName="profile" id="profile{{ i }}">
+                    <option value=''>Selecciona...</option>
+                    <ng-container *ngFor="let p of profiles">
+                      <option [value]="p.id">{{ p['name'] }}</option>
+                    </ng-container>
+                  </select>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['profile'].valid && form.controls['profile'].errors?.required">Debes seleccionar una perfil</small>
+                </div>
+
+            </div>
+            <div class="d-flex justify-content-between flex-wrap">
+
+                <div class="form-group p-1">
+                    <label for="vacante_{{ i }}">Puesto</label>
+                    <select class="form-control" [ngClass]="{'is-invalid': !form.controls['vacante'].valid}" (change)="onVacSelect($event.target.value, i)" formControlName="vacante" id="vacante_{{ i }}">
+                    <option value=''>Selecciona...</option>
+                    <ng-container *ngFor="let it of vacantes">
+                      <option [value]="it.idMove" *ngIf="(selectedVac.indexOf( it.idMove ) == -1 || (selectedVac.indexOf( it.idMove ) > -1 && it.idMove == form.controls['vacante'].value))&& it.pais == form.controls['Pais'].value && validateDateIn(form.controls['Ingreso'].value, it['lastOut'])">
+                      {{ it['Dep'] }} - {{ it['Ciudad'] }} - {{ it['Oficina'] }} - {{ it['Puesto'] }} - {{ it['COPC'] }} ({{ it['lastOut'] }} -> {{ it['lastName'] ? it['lastName'] : 'Nueva Plaza' }})
+                      </option>
+                    </ng-container>
+                  </select>
+                    <small class="text-danger" style="font-size: xx-small" *ngIf="!form.controls['vacante'].valid && form.controls['vacante'].errors?.required">Debes seleccionar una vacante</small>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

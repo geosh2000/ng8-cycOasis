@@ -1,0 +1,8 @@
+<button mat-mini-fab [color]="rr.st ? 'success' : 'offline'" [matMenuTriggerFor]="menu">
+    <mat-icon *ngIf="!loading">email</mat-icon>
+    <span *ngIf="loading"><i class="fa fa-spinner fa-pulse"></i></span>
+</button>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="login()" [disabled]="rr.st">Login</button>
+    <button mat-menu-item (click)="logout()" [disabled]="!rr.st">Logout</button>
+</mat-menu>

@@ -1,0 +1,59 @@
+<app-search-bar-cotizador (search)="search($event)" [isCode]="true" [groupsTfa]="groupsTfa" [loading]="loading['cotizar']"></app-search-bar-cotizador>
+<div class="container" *ngIf="!loading['cotizar'] && flag">
+    <mat-card style="z-index: -1;">
+        <div class="d-flex justify-content-between">
+            <span><h3><i class="far fa-calendar-alt p-1"></i> {{ formatDate(occup['inicio'],'DD MMM \'YY') }}</h3></span>
+            <span><h3><i class="fas fa-user p-1"></i>{{ occup['adultos'] }} adultos,  {{ occup['menores'] }} menores y {{ occup['infantes'] }} infantes</h3></span>
+        </div>
+    </mat-card>
+    <mat-tab-group>
+        <mat-tab *ngFor="let zone of results | keys">
+            <ng-template mat-tab-label>
+                <mat-icon style="margin-right: 8px;"></mat-icon>
+                {{ results[zone]['Zona'] }}
+            </ng-template>
+            <mat-accordion class="acc-headers">
+                <mat-tab-group mat-stretch-tabs [color]="'warn'">
+                    <mat-tab *ngFor="let service of results[zone]['Types'] | keys">
+                        <ng-template mat-tab-label>
+                            <mat-icon style="margin-right: 8px;"></mat-icon>
+                            {{ service }}
+                        </ng-template>
+                        <mat-accordion class="acc-headers">
+                            <ng-container *ngFor="let h of results[zone]['Types'][service]">
+                                <mat-expansion-panel hideToggle>
+                                    <mat-expansion-panel-header class='exp-height'>
+
+                                        <div class="d-flex justify-content-between container">
+                                            <div class="d-flex justify-content-start p-2">
+                                                <div class="p-2 pl-3" [style.width.px]="200">{{ h['vehiculo'] }}{{ h['isShared'] == '1' ? ' (compartido)' : '' }}</div>
+                                                <span class='p-2 pl-3 font-weight-bold'>Servicio {{ service }} para {{ h['isShared'] != '1' ? (h['minPax'] + ' a ' + h['maxPax']) : occup['pax']}} pax {{ service == 'abierto' ? 'por ' + h['vehiculo'].substr(-8,10).trim() : '' }}</span>
+                                            </div>
+                                            <ng-container *ngIf="(this._search.moneda && h['totalMXN'] == 0) || (!this._search.moneda && h['totalUSD'] == 0)">
+                                                <div class="text-black-50 font-italic p-2 pl-3">
+                                                    {{ h['no_disp'] ? h['no_disp'] : h['no_occ'] ? h['no_occ'] : h['no_adl'] ? h['no_adl'] : h['no_min'] ? h['no_min'] : h['no_comb'] ? h['no_comb'] : this._search.moneda && h['mxn_total'] == 0 ? 'Sin tarifas cargadas' : !this._search.moneda && h['usd_total']
+                                                    == 0 ? 'Sin tarifas cargadas' : 'No Disp'}}
+                                                </div>
+                                            </ng-container>
+
+                                            <div class="d-flex justify-content-around flex-wrap p-2" *ngIf="!(this._search.moneda && h['totalMXN'] == 0) && !(!this._search.moneda && h['totalUSD'] == 0)">
+                                                <div [style.width.px]="130" class="text-right text-success p-2 pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip color='primary' selected><span [style.width.px]="120">{{ (this._search.moneda ? h['totalMXN'] : h['totalUSD']) | currency:(this._search.moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                    <!-- <h4>{{ (this._search.moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(this._search.moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                                </div>
+                                                <button mat-raised-button class="m-1" color="warn" (click)="popReserve(h)" *ngIf="_init.checkSingleCredential('app_cotizador_rsv')">Reservar</button>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel-header>
+                                </mat-expansion-panel>
+                            </ng-container>
+                        </mat-accordion>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-accordion>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>

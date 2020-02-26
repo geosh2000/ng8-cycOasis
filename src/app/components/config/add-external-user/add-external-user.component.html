@@ -1,0 +1,100 @@
+<div class="container">
+
+  <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+    <div class="container">
+      <h1 class="display-3">Usuario Externo</h1>
+      <p class="lead">Ingresa Nombre, Usuario y perfil para el nuevo user.</p>
+      <hr class="my-4">
+      <form class="form-group" [formGroup]="formExternalUser" (ngSubmit)="submit()">
+
+        <div class="form-group row"  *ngFor="let item of formExternalUserDetail | keys" >
+          <ng-container *ngIf="formExternalUserDetail[item].tipo!='checkbox'; else elseBlock">
+            <label class="col-4 col-form-label">{{ formExternalUserDetail[item].title }} <span *ngIf="formExternalUserDetail[item].required">*</span></label>
+            <div class="col-8 input-group">
+              <span class="input-group-addon">
+                <i class="{{ formExternalUserDetail[item].icon }}"></i>
+              </span>
+              <input
+                      [ngClass]="{ 'is-invalid': !formExternalUser.controls[item].valid && !formExternalUser.controls[item].pristine}"
+                *ngIf="formExternalUserDetail[item].tipo=='date'"
+                daterangepicker
+                [formControlName]="item"
+                [options]="singlePicker"
+                (selected)="setVal($event.start, item)"
+                class="form-control uneditable-input" type="text" value="" [readonly]="formExternalUserDetail[item].readonly">
+              <input
+                      [ngClass]="{ 'is-invalid': !formExternalUser.controls[item].valid && !formExternalUser.controls[item].pristine}"
+                *ngIf="formExternalUserDetail[item].tipo=='text'"
+                rows="20"
+                [formControlName]="item"
+                class="form-control" type="text" value="" [readonly]="formExternalUserDetail[item].readonly">
+              <select
+                      [ngClass]="{ 'is-invalid': !formExternalUser.controls[item].valid && !formExternalUser.controls[item].pristine}"
+                      *ngIf="formExternalUserDetail[item].tipo=='select'"
+                      class="custom-select" style="max-width: 257px; min-width: 257px;"
+                      [formControlName]="item"
+                      >
+                <option value="">Selecciona...</option>
+                <option *ngFor="let k of listProfiles | keys" [value]="listProfiles[k]?.id">{{ listProfiles[k].name }}</option>
+              </select>
+              <select
+                      [ngClass]="{ 'is-invalid': !formExternalUser.controls[item].valid && !formExternalUser.controls[item].pristine}"
+                      *ngIf="formExternalUserDetail[item].tipo=='select2'"
+                      class="custom-select" style="max-width: 257px; min-width: 257px;"
+                      [formControlName]="item"
+                      >
+                <option value="">Selecciona...</option>
+                <option value="0">Validación por AD</option>
+                <option value="1">Validación por ComeyCome</option>
+              </select>
+            </div>
+            <div class="col-12 text-warning" *ngIf="formExternalUser.controls[item].status == 'PENDING'">
+              <div><small><i class="fa fa-spinner fa-pulse fa-fw"></i>Validando nombre corto...</small></div>
+            </div>
+            <div class="col-12 text-danger" *ngIf="formExternalUser.controls[item].errors?.existe && !formExternalUser.controls[item].pristine">
+              <div><small>Ya existe este Nombre Corto / usuario registrado. Verificar con IT</small></div>
+            </div>
+            <div class="col-12 text-danger" *ngIf="formExternalUser.controls[item].errors?.pattern && !formExternalUser.controls[item].pristine">
+              <div><small [innerHTML]="formExternalUserDetail[item].pattern"></small></div>
+            </div>
+            <div class="col-12 text-danger" *ngIf="formExternalUser.controls[item].errors?.required && !formExternalUser.controls[item].pristine">
+              <div><small>Campo Obligatorio</small></div>
+            </div>
+          </ng-container>
+          <ng-template #elseBlock>
+
+              <label class="col-4 col-form-label"></label>
+              <div class="col-8 input-group">
+                <label class="custom-control custom-checkbox" >
+                  <input type="checkbox" class="custom-control-input"
+                          [formControlName]="item" [indeterminate]="true">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description">{{ item | capitalizado }}</span>
+                </label>
+              </div>
+              <div class="col-12 text-danger" [ngClass]="{ 'is-invalid': !formExternalUser.controls[item].valid && !formExternalUser.pristine}" *ngIf="formExternalUser.controls[item]._errors?.indeterminate">
+                <div><small class='text-danger'>Elige si el asesor ya ha firmado su CxC</small></div>
+              </div>
+
+          </ng-template>
+        </div>
+        <div class="d-flex flex-row-reverse">
+          <button
+                  [disabled]="formExternalUser.invalid || submitting"
+                  type="submit"
+                  [ngClass]="{ 'btn-outline-secondary': formExternalUser.invalid, 'btn-success': !formExternalUser.invalid }"
+                  class="btn"
+                  >Guardar <span *ngIf="submitting"><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button>
+        </div>
+        <div class="alert alert-danger" role="alert" *ngIf="saveAlert">
+          <span><strong>Hubo un error en el proceso</strong></span><br>
+          <pre>
+            {{ errorMsg | json }}
+          </pre><br>
+          <span>Por favor notifícalo a WFM</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

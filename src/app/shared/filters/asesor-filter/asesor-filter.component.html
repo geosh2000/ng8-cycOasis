@@ -1,0 +1,21 @@
+<div class="row" style="height: 300px">
+  <div class="col-6">
+    <h4 *ngIf="loading['asesores']">Loading <i class="fas fa-spinner fa-pulse"></i></h4>
+    <ss-multiselect-dropdown *ngIf="!loading['asesores'] && supervisores" [options]="supervisores | orderBy: 'name'" [texts]="textSups" [(ngModel)]="selectionSup" [settings]="selectorSettings" (ngModelChange)="selectorChange($event, 'sup')"></ss-multiselect-dropdown>
+    <ss-multiselect-dropdown *ngIf="!loading['asesores'] && asesores" [options]="asesores | orderBy: 'name'" [texts]="textAsesores" [(ngModel)]="selection" [settings]="selectorSettings" (ngModelChange)="selectorChange($event, 'asesor')"></ss-multiselect-dropdown>
+  </div>
+  <div class="col-6 text-info">
+    <div class="d-flex justify-content-start">
+      <div class="p-1">
+        <p class="text-italic text-bold">Asesores Seleccionados</p>
+      </div>
+      <div class="p-1 ml-auto">
+        <button type="button" class="btn btn-sm btn-danger" (click)="closeFilter()">Cerrar <i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <hr>
+    <div style="overflow: auto; height: 241px">
+      <p *ngFor="let item of selection"><span style="font-size: smaller" >{{ nameAsesores[item] }}</span></p>
+    </div>
+  </div>
+</div>

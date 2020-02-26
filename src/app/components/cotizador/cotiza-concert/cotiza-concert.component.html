@@ -1,0 +1,33 @@
+<app-search-bar-cotizador (search)="search($event)" [isDate]="false" [isCode]="true" [pax]="false" [groupsTfa]="groupsTfa" [loading]="loading['cotizar']"></app-search-bar-cotizador>
+<div class="container-fluid d-flex justify-content-between flex-wrap p-2" *ngIf="!loading['cotizar'] && flag">
+    <mat-card class="tour-card m-2" *ngFor="let t of results">
+        <mat-card-header>
+            <div mat-card-avatar class="cardImage" [style.backgroundImage]="'url(' + t['imgUrl'] + ')'"></div>
+            <mat-card-title class="text-info">{{ t['titulo'] }}</mat-card-title>
+            <mat-card-subtitle class="text-info">{{ t['categoria'] }} ({{ t['allotment'] - t['sold'] }} disponibles)</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            <p>{{ t['descripcion'] }}</p>
+
+        </mat-card-content>
+        <mat-card-footer class="p-2 tour-footer">
+            <ng-container *ngIf="t['menorUSD'] != null">
+                <small class='text-success'>** Menores: {{ t['descripMenores'] }}</small>
+            </ng-container>
+            <hr style='margin-top: 1px!important;'>
+            <div class="d-flex justify-content-between">
+                <mat-chip-list>
+                    <mat-chip color="primary" selected>Adulto: {{ (_search['moneda'] ? t['adultMXN'] : t['adultUSD']) | currency:'MXN':'symbol-narrow':'.2-2' }}</mat-chip>
+                    <mat-chip color="warn" selected *ngIf="t['menorUSD'] != null">Menor: {{ (_search['moneda'] ? t['menorMXN'] : t['menorUSD']) | currency:'MXN':'symbol-narrow':'.2-2' }}</mat-chip>
+                    <mat-chip *ngIf="t['menorUSD'] == null">No Menores</mat-chip>
+                </mat-chip-list>
+                <button mat-mini-fab color="success" (click)="popReserve(t)" *ngIf="_init.checkSingleCredential('app_cotizador_rsv') && (t['allotment'] - t['sold']) > 0"><mat-icon>done</mat-icon></button>
+            </div>
+        </mat-card-footer>
+    </mat-card>
+</div>
+<div class="container d-flex justify-content-center" *ngIf="!loading['cotizar'] && flag">
+    <img width="1000" [src]="results[0]['mapUrl']">
+</div>
+<!-- <pre>{{ results | json }}</pre> -->

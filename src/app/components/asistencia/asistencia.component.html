@@ -1,0 +1,197 @@
+<div *ngIf="showContents">
+    <div class="container-fluid">
+
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span><h1 class="display-3">Consulta de Asistencia</h1></span>
+                        <p class="lead">Detalle de horarios, ausentismos, retardos, etc.</p>
+                    </div>
+                    <div>
+                        <img src="assets/img/bePriceBCO.png" height="150" width="150" alt="">
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='ch_jornada' [(ngModel)]="searchBy"></ui-switch>
+                                <p>
+                                    <small *ngIf="searchBy">Depto</small>
+                                    <small *ngIf="!searchBy">Asesor</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-auto" *ngIf="searchBy">
+                            <select class="custom-select mb-2 mr-sm-2 mb-sm-0" (change)="pcrcChange($event)" id="pcrc">
+                              <option selected *ngIf="!deps">Loading... <span *ngIf="loading"><i class="fa fa-fw fa-spinner fa-pulse"></i></span></option>
+                              <option selected *ngIf="deps">Selecciona...</option>
+                              <option [value]="pcrc.id" *ngFor="let pcrc of deps">{{ pcrc.Departamento }}</option>
+                              <option value='MX' *ngIf="deps">Todos MX</option>
+                              <option value='CO' *ngIf="deps">Todos CO</option>
+
+                            </select>
+                        </div>
+                        <div class="m-1" *ngIf=!searchBy>
+                            <button type="button" class="btn btn-outline-warning" (click)="filterExpanded = !filterExpanded" [attr.aria-expanded]="filterExpanded" aria-controls="filterAsesores">
+                              {{ selectedAsesores.length > 0 ? (selectedAsesores.length + (selectedAsesores.length > 1 ? ' seleccionados' : ' seleccionado')) : 'Asesores' }}
+                              <span *ngIf="!filterExpanded"><i class="fas fa-caret-down"></i></span>
+                              <span *ngIf="filterExpanded"><i class="fas fa-caret-up"></i></span>
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <label class="sr-only" for="selectedDate">Fechas</label>
+                            <div class="col-auto input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar fa-fw"></i></span>
+                                </div>
+                                <input daterangepicker (selected)="setVal($event.start, $event.end)" class="form-control mb-2 mb-sm-0" type="text" [value]="searchCriteria['value']" id="selectedDate">
+                            </div>
+                        </div>
+                        <div class="col-auto" *ngIf="asistData">
+                            <input class="form-control mb-2 mb-sm-0" type="text" [(ngModel)]="searchFilter" name="searchFilter" id="filterSearch" placeholder="Filtrar por">
+                        </div>
+                        <div class="col-auto">
+                            <button *ngIf="searchBy" type="submit" class="btn btn-primary m-1" (click)="searchAsistencia( searchCriteria['skill'], searchCriteria['start'], searchCriteria['end'] )" [disabled]="loading || searchCriteria['skill']==''">Consultar <span *ngIf="loading"><i class="fa fa-fw fa-spinner fa-pulse"></i></span></button>
+                            <button *ngIf="!searchBy" type="submit" class="btn btn-primary m-1" (click)="getAsistencia( 0, searchCriteria['start'], searchCriteria['end'], selectedAsesores, true )" [disabled]="loading || !selectedAsesores">Consultar <span *ngIf="loading"><i class="fa fa-fw fa-spinner fa-pulse"></i></span></button>
+                            <button type="submit" class="btn btn-warning m-1" (click)="downloadXLS( 'ausTable', 'ausentismos_'+searchCriteria['start']+'a'+searchCriteria['end'] )" [disabled]="loading || !asistData" *ngIf="asistData && showContents">Descargar</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- FILTER -->
+                <div class="container">
+                    <div class="pt-2" id="filterAsesores" [ngbCollapse]="!filterExpanded">
+                        <div class="card bg-white">
+                            <div class="card-body">
+                                <app-asesor-filter [currentUser]="currentUser" (close)="filterExpanded=!$event" (result)="selectedAsesores=$event"></app-asesor-filter>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='ch_jornada' [(ngModel)]="showOpts['ch_jornada']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">Jornada</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='ch_comida' [(ngModel)]="showOpts['ch_comida']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">Comida</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='ch_x' [(ngModel)]="showOpts['ch_x']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">Horas Extra</small>
+                                </p>
+                            </div>
+                            <div style="text-align: center" class="p-2" *ngIf="showOpts['ch_x']">
+                                <ui-switch color="green" size="small" name='ch_x_p' [(ngModel)]="showOpts['ch_x_p']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">Pago Extra</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='ch_excep' [(ngModel)]="showOpts['ch_excep']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">Excepciones</small>
+                                </p>
+                            </div>
+                            <div style="text-align: center" class="p-2" *ngIf="showOpts['ch_excep']">
+                                <ui-switch color="green" size="small" name='ch_x_p' [(ngModel)]="showOpts['ch_excep_p']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">Pago DT</small>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='ch_ret' [(ngModel)]="showOpts['ch_ret']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">RT</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='ch_sa' [(ngModel)]="showOpts['ch_sa']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">SA</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='sh_p' [(ngModel)]="showOpts['sh_p']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">Cumplimiento</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div style="text-align: center" class="p-2">
+                                <ui-switch color="green" size="small" name='sh_p' [(ngModel)]="showOpts['ch_pdv']"></ui-switch>
+                                <p>
+                                    <small *ngIf="!tdInfo">PDV</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container p-2 d-flex justify-content-left flex-wrap" *ngIf="depLoadFlag">
+                    <div class="m-1" *ngFor="let item of depLoaders | keys">
+                        <button type="button" class="btn" [ngClass]="{'btn-warning': depLoaders[item], 'btn-success': !depLoaders[item]}" style="font-size: smaller"><small>{{ item }} <span *ngIf="depLoaders[item]"><i class="fas fa-spinner fa-pulse"></i></span><span *ngIf="!depLoaders[item]"><i class="fas fa-check"></i></span></small></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-container *ngIf="asistData && showContents">
+    <!-- <div class="border border-secondary container-fluid" style="height: 800px"> -->
+    <table class="table table-fluid table-striped table-bordered table-hover table-sm table-responsive" style="max-height: 700px; overflow: auto" id="ausTable">
+        <thead>
+            <tr>
+                <th style="min-width: 130px;">Asesor</th>
+                <th style="min-width: 130px;">Colaborador</th>
+                <th>Departamento</th>
+                <th>Puesto</th>
+                <th *ngFor="let date of datesData | keys" class="text-center">{{ formatDate( date + ' 10:00:00', 'ddd DD MMM \'YY') }}</th>
+                <th style="min-width: 130px;">Asesor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let rac of orederedKeys">
+                <tr *ngIf="searchFilter.length <= 3 || (searchFilter.length > 3 && (sRep(asistData[rac].Nombre).match( sRep(searchFilter) ) || sRep(asistData[rac].Departamento).match( sRep(searchFilter) ) || sRep(asistData[rac].PuestoName).match( sRep(searchFilter) )))">
+                    <td scope="row"><small>{{ asistData[rac].Nombre }} <a class="cursor: pointer" [routerLink]="['/detalle-asesores',rac]" target="_blank"><i class="fa fa-fw fa-info-circle"></i></a></small></td>
+                    <td class="text-center" scope="row"><small>{{ asistData[rac].Colaborador }}</small></td>
+                    <td scope="row"><small class="text-center">{{ asistData[rac].Departamento }}</small></td>
+                    <td scope="row"><small class="text-center">{{ asistData[rac].PuestoName }}</small></td>
+                    <td *ngFor="let date of datesData | keys" class="text-xs-center" style="max-width: 180px">
+                        <app-jornadas (exception)="_pya.build( $event.asesor, $event.nombre, $event.date, $event.showAll )" [asistData]="asistData[rac].data[date]" [date]="date" [asesor]="rac" [nombre]="asistData[rac].Nombre" (saveHx)="hxSave($event)" [showOpts]="showOpts">
+                        </app-jornadas>
+                    </td>
+                    <td scope="row"><small>{{ asistData[rac].Nombre }} <a class="cursor: pointer" [routerLink]="['/detalle-asesores',rac]" target="_blank"><i class="fa fa-fw fa-info-circle"></i></a></small></td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+    <!-- </div> -->
+    <app-pya-exception (save)="excStatus( $event )"></app-pya-exception>
+</ng-container>

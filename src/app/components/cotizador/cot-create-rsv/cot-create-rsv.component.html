@@ -1,0 +1,37 @@
+<!-- RSV Modal -->
+<app-create-rsv (error)="rsvError($event)" (save)="endRsv($event)"></app-create-rsv>
+<!-- Confirm Rsv Modal -->
+<div class="modal fade" id="confirmRsv" tabindex="-1" role="dialog" aria-labelledby="confirmRsvModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmRsvModal">Reservación Finalizada</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <h3>Localizador creado / modificado:</h3>
+                <h2><b>{{ lastLocCreated }}</b></h2>
+                <br>
+                <div *ngIf="!loading['callTicket']">
+                    <p class="text-alert" *ngIf="!flagSearchTicket && !linkedTicketFlag && updateTicket['ticket'] == ''">No se encontraron tickets de llamada</p>
+                    <p *ngIf="!flagSearchTicket && !linkedTicketFlag && updateTicket['ticket'] != ''">Desea ligar el ticket <b>{{ linkedTicket }}</b> a esta reserva?</p>
+                    <p *ngIf="!flagSearchTicket && linkedTicketFlag && updateTicket['ticket'] != ''"><b>{{ updateTicket['ticket'] != '' ? linkedTicket : 'Sin ticket' }}</b> Ligado</p>
+                    <mat-form-field class="example-full-width" *ngIf="flagSearchTicket">
+                        <input matInput placeholder="# ticket" [(ngModel)]="lTicket">
+                    </mat-form-field>
+                    <button class="m-1" mat-stroked-button *ngIf="flagSearchTicket" type="button" (click)="flagSearchTicket = false" [disabled]="loading['callTicket']">Cancelar</button>
+                    <button class="m-1" mat-stroked-button color="success" *ngIf="flagSearchTicket" type="button" (click)="getCallTicket( null, lTicket )" [disabled]="loading['callTicket']">Link</button>
+                    <div class="d-flex justify-content-end">
+                        <button class="m-1" mat-stroked-button type="button" (click)="omitLink()" [disabled]="loading['linkingTicket']">Omitir</button>
+                        <button class="m-1" mat-stroked-button color="accent" type="button" (click)="chgTicketLink()" [disabled]="loading['linkingTicket']" *ngIf="!flagSearchTicket">Cambiar Ticket</button>
+                        <button class="m-1" mat-stroked-button color="success" type="button" (click)="linkTickets()" [disabled]="loading['linkingTicket'] || flagSearchTicket || updateTicket['ticket'] == ''" *ngIf="!linkedTicketFlag">Si</button>
+                    </div>
+                </div>
+                <mat-progress-bar mode="query" *ngIf="loading['callTicket'] || loading['linkingTicket']"></mat-progress-bar>
+                <button mat-raised-button color="accent" type="button" (click)="viewRsv()" [disabled]="!flagManage">Gestionar Reserva</button>
+            </div>
+        </div>
+    </div>
+</div>

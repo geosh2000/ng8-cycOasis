@@ -1,0 +1,113 @@
+<div class="container">
+    <div class="card border-0">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between flex-wrap bg-info">
+                <div class="align-middle p-1">
+                    <h3 class="align-middle text-light">Información de Contratación</h3>
+                </div>
+                <ng-container *ngIf="data">
+                    <div class="d-flex justify-content-end flex-wrap" *ngIf="data['activo'] == 1">
+                        <div class="d-flex align-items-center justify-content-start flex-wrap" *ngIf="_init.checkSingleCredential('hc_baja_directa') && data['activeSol'] == 0">
+                            <div class="align-middle p-1">
+                                <button type="button" class="align-middle btn btn-sm btn-danger" data-toggle="modal" data-target="#bajaSolicitud" (click)="bajaTipo = true">Registrar Baja</button>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-start flex-wrap" *ngIf="_init.checkSingleCredential('hc_cambios_solicitud') && data['activeSol'] == 0">
+                            <div class="align-middle p-1">
+                                <button type="button" class="align-middle btn btn-sm btn-danger" data-toggle="modal" data-target="#bajaSolicitud" (click)="bajaTipo = false">Solicitar Baja</button>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-start flex-wrap" *ngIf="_init.checkSingleCredential('hc_cambio_solicitud') && data['activeSol'] == 0">
+                            <div class="align-middle p-1">
+                                <button type="button" class="align-middle btn btn-sm btn-warning" data-toggle="modal" data-target="#cambioPuesto">Cambio de Puesto</button>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-start flex-wrap" *ngIf="(_init.checkSingleCredential('hc_cambio_solicitud') || _init.checkSingleCredential('hc_baja_directa')) && data['activeSol'] == 1">
+                            <div class="align-middle p-1">
+                                <div class="alert alert-warning align-middle" role="alert">
+                                    <span class="align-middle"><i class="fas fa-exclamation-triangle text-danger"></i> Solicitudes pendientes de aprobación</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-start flex-wrap" *ngIf="_init.checkSingleCredential('hc_contratos_edit')">
+                            <div class="align-middle p-1">
+                                <button type="button" class="align-middle btn btn-sm btn-warning" data-toggle="modal" data-target="#editContratos">Editar Contratos</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end flex-wrap" *ngIf="data['activo'] == 0 && _init.checkSingleCredential('hc_agregar_asesore')">
+                        <div class="d-flex align-items-center justify-content-start flex-wrap">
+                            <div class="align-middle p-1">
+                                <button type="button" class="align-middle btn btn-sm btn-warning" data-toggle="modal" data-target="#reingreso">Reingreso</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <ng-container *ngIf="!loading['data']">
+                <div class="d-flex justify-content-center flex-wrap" *ngIf="data">
+                    <div class="m-2 p-1 text-center ">
+                        <h5>Ingreso</h5>
+                        <p>{{ printDate(data['Ingreso'], 'DD MMM \'YY') }}</p>
+                    </div>
+                    <div class="m-2 p-1 text-center ">
+                        <h5>Status</h5>
+                        <p><span class="badge badge-pill" [ngClass]="{'badge-success': data['activo'] == 1,'badge-danger': data['activo'] == 0}">{{ data['activo'] == 1 ? 'Activo' : 'Inactivo'}}</span></p>
+                    </div>
+                    <div class="m-2 p-1 text-center " *ngIf="data['activo'] == 1">
+                        <h5>Antigüedad</h5>
+                        <p>{{ printOld(data['old_years'],data['old_months'],data['old_days'] ) }}</p>
+                    </div>
+                    <div class="m-2 p-1 text-center " *ngIf="data['activo'] == 0">
+                        <h5>Egreso</h5>
+                        <p>{{ data['activo'] == 1 ? '-' : printDate(data['Egreso'], 'DD MMM \'YY') }}</p>
+                        <p>({{ printOld(data['old_years'],data['old_months'],data['old_days'] ) }})</p>
+                    </div>
+                    <div class="m-2 p-1 text-center " *ngIf="data['activo'] == 0">
+                        <h5>Recontratable</h5>
+                        <p *ngIf="data['activo']==1">-</p>
+                        <p *ngIf="data['activo']==0"><span class="badge badge-pill" [ngClass]="{'badge-success': data.recontratable == 1,'badge-danger': data.recontratable == 0,'badge-secondary': data.recontratable == null}">{{ data['recontratable'] == 1 ? 'Recontratable' : data['recontratable'] == 0 ? 'No-recontratable' : 'Sin Información'}}</span></p>
+                    </div>
+                    <div class="m-2 p-1 text-center ">
+                        <h5>Contrato (inicio)</h5>
+                        <p>{{ printDate(data['inicio'], 'DD MMM \'YY') }}</p>
+                    </div>
+                    <div class="m-2 p-1 text-center ">
+                        <h5>Contrato (fin)</h5>
+                        <p>{{ data['activo'] == 1 ? (data['fin'] ? printDate(data['fin'], 'DD MMM \'YY') : '-') : printDate(data['Egreso'], 'DD MMM \'YY') }}</p>
+                        <p *ngIf="data['vencido'] == 1"><span class="badge badge-pill badge-danger">Vencido</span></p>
+                    </div>
+                    <div class="m-2 p-1 text-center ">
+                        <h5>Tipo Contrato</h5>
+                        <p><span class="badge badge-pill" [ngClass]="{'badge-secondary': data.activo == 1 && data.tipo != 1 && data.tipo != 2,'badge-warning': data.activo == 1 && data.tipo == 1,'badge-success': data.activo == 1 && data.tipo == 2,'badge-danger': data.activo == 0}">{{ data['activo'] == 1 ? (data['tipo'] == 1 ? 'Temporal' : data['tipo'] == 2 ? 'Indefinido' : 'N/A') : 'Terminado'}}</span></p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center flex-wrap p-4" *ngIf="!data">
+                    <div class="alert alert-primary" role="alert">
+                        No existe información de contratación para este asesor
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="loading['data']">
+                <div class="text-center p-4">
+                    <h3>Cargando Contratos <i class="fas fa-spinner fa-pulse text-info"></i></h3>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
+
+</div>
+<ng-container *ngIf="data">
+    <!-- MODAL BAJA -->
+    <app-set-baja [asesor]="asesor" [nombre]="data['nombre']" [tipo]="bajaTipo" [modal]="'#bajaSolicitud'" (error)="err($event)" (save)="succ($event)"></app-set-baja>
+
+    <!-- MODAL CONTRATOS -->
+    <app-add-contrato [asesor]="asesor" [nombre]="data['nombre']" [contratos]="contratos" [modal]="'#editContratos'" (showEval)="showEval.emit( $event )" (error)="err($event)" (save)="succ($event)"></app-add-contrato>
+
+    <!-- Reingreso -->
+    <app-reingreso-asesor [nombre]="data['nombre']" [asesor]="asesor" element='#reingreso' (save)="saved( $event )"></app-reingreso-asesor>
+
+    <!-- cambio Puesto -->
+    <app-cambio-puesto [asesor]="asesor" [nombre]="data['nombre']" element='#cambioPuesto' (save)="succ( $event )" (error)="err($event)"></app-cambio-puesto>
+</ng-container>

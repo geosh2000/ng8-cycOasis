@@ -1,0 +1,123 @@
+<div class="container">
+    <div class="card border-0">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between flex-wrap bg-info">
+                <div class="align-middle p-1">
+                    <h3 class="align-middle text-light">Detalle Vacaciones</h3>
+                </div>
+                <div class="align-middle p-1">
+                    <button class="btn btn-warning" data-toggle="modal" data-target="#histoVacaciones"><i class="fas fa-history"></i> Historial</button>
+                </div>
+
+            </div>
+            <ng-container *ngIf="!loading['vacaciones']">
+                <div class="d-flex justify-content-center pt-1" style="font-size: smaller" *ngIf="dataHistorial && dataHistorial.length > 0">
+                    <table class="table table-sm" style="font-size: smaller">
+                        <thead>
+                            <tr>
+                                <th class='text-center'>
+                                    <h5>Fecha</h5>
+                                </th>
+                                <th class='text-center'>
+                                    <h5>Antigüedad</h5>
+                                </th>
+                                <th class='text-center'>
+                                    <h5>Vacaciones</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Disfrutadas</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Disponibles</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Vigencia Inicio</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Vigencia Fin</h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of dataHistorial; index as ind">
+                                <td class='text-center'>{{ printDate(item.Fecha, 'DD MMM \'YY') }}</td>
+                                <td class='text-center'>{{ item.anio }}</td>
+                                <td class='text-center'>{{ item.vacaciones }}</td>
+                                <td class='text-center text-primary'>{{ item.disfrutadas }}</td>
+                                <td class='text-center text-primary'>{{ item.disponibles }}</td>
+                                <td class='text-center text-danger'>{{ printDate(item.vigencia_inicio, 'DD MMM \'YY') }}</td>
+                                <td class='text-center'>{{ printDate(item.vigencia_fin, 'DD MMM \'YY') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-center flex-wrap p-4" *ngIf="!dataHistorial || dataHistorial.length == 0">
+                    <div class="alert alert-primary" role="alert">
+                        No existe información de vacaciones para este asesor
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="loading['vacaciones']">
+                <div class="text-center p-4">
+                    <h3>Cargando Saldos Vacacionales <i class="fas fa-spinner fa-pulse text-info"></i></h3>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="histoVacaciones" tabindex="-1" role="dialog" aria-labelledby="histoVacacionesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="histoVacacionesLabel">Histórico de Vacaciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+                <div class="modal-body p-2">
+                    <table class="table table-sm" style="font-size: smaller">
+                        <thead>
+                            <tr>
+                                <th class='text-center'>
+                                    <h5>id</h5>
+                                </th>
+                                <th class='text-center'>
+                                    <h5>Inicio</h5>
+                                </th>
+                                <th class='text-center'>
+                                    <h5>Fin</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Días</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Caso</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Fecha Captura</h5>
+                                </th>
+                                <th class='text-left'>
+                                    <h5>Capturó</h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of detalleHistorial; index as ind">
+                                <td class='text-center'>{{ item.id }}</td>
+                                <td class='text-center'>{{ printDate(item.Inicio, 'DD MMM \'YY') }}</td>
+                                <td class='text-center'>{{ printDate(item.Fin, 'DD MMM \'YY') }}</td>
+                                <td class='text-center text-primary'>{{ item.Dias }}</td>
+                                <td class='text-center text-primary'><a href="http://sos.pricetravel.com.mx/default.asp?{{item.Caso}}" target="_blank">{{ item.Caso }}</a></td>
+                                <td class='text-center text-danger'>{{ printDate(item.FechaCaptura, 'DD MMM \'YY') }}</td>
+                                <td class='text-center text-primary'>{{ item.Captura }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>

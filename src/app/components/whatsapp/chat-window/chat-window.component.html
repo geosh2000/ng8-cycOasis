@@ -1,0 +1,64 @@
+<div class="container p-0 m-0 staticBg">
+    <a href="#bottomTgt" id="link" hidden>Link</a>
+    <div class="container p-0 m-0" style="padding-bottom: 5rem!important; min-height: 660px; overflow: auto" id="chatWdw">
+        <div style="position: fixed;bottom: 127px;right: 12px;zoom: 0.5;" *ngIf="loading['reading']">
+            <mat-spinner></mat-spinner>
+        </div>
+        <!-- <div class="container p-0 m-0" style="padding-bottom: 5rem!important; min-height: 660px" > -->
+        <div class="cht">
+            <ng-container>
+                <ng-container *ngFor="let d of chatData | keys">
+                    <div class="d-flex justify-content-center">
+                        <div class="dayDivider">{{ d }}</div>
+                    </div>
+                    <div [ngClass]="{'inMsg': c['isIn'] == 1, 'outMsg': c['isIn'] == 0}" *ngFor="let c of chatData[d]">
+
+                        <div class="msgFrame pr-4" *ngIf="c['attachments'].length > 0">
+                            <div class="p-0 m-0 d-flex justify-content-center" [ngSwitch]="c['attachments'][0]['content_type']">
+                                <div *ngSwitchCase="'image/jpeg'">
+                                    <a [href]="c['attachments'][0]['content_url']" target="_blank"><img [src]="c['attachments'][0]['thumbnails'][0]['content_url']" alt="attachment" [height]="c['attachments'][0]['thumbnails'][0]['height']" [width]="c['attachments'][0]['thumbnails'][0]['width']"></a>
+                                </div>
+                                <div class="mr-auto" *ngSwitchCase="'audio/ogg'">
+                                    <mat-basic-audio-player [audioUrl]="c['attachments'][0]['content_url']" title="audio" [displayTitle]="false" [displayVolumeControls]="false"></mat-basic-audio-player>
+                                </div>
+                                <div *ngSwitchCase="'application/pdf'">
+                                    <a [href]="c['attachments'][0]['content_url']" target="_blank">{{ c['attachments'][0]['file_name'] }}</a>
+                                </div>
+                                <div *ngSwitchDefault>
+                                    <span class="font-weight-light font-italic">Archivo no soportado ({{c['attachments'][0]['content_type']}})</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="msgFrame" [innerHTML]="c['comment']" *ngIf="c['plain'] != 'The user has sent an attachment'"></div>
+                        <div class="msgTime"><span class="text-primary mr-2">{{ c['agent'] }}</span>{{ formatTime(c['dt'], 'HH:mm') }}</div>
+                    </div>
+                </ng-container>
+                <!-- <pre>{{ chatData | json }}</pre> -->
+            </ng-container>
+            <p id="bottomTgt"></p>
+        </div>
+
+    </div>
+    <div class="p-2 footer ">
+        <div *ngIf="previewSrc">
+            <p>
+                <img src="" alt="" height="150" id="previewImg">
+                <button mat-icon-button color="warn" (click)="deleteAttach()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </p>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <textarea #note id='note' rows="1" (keyup)="auto_grow(note)" [readonly]="!loaded"></textarea>
+            <button mat-icon-button (click)="submit()" [disabled]="!(msgSend != '' || file) || !loaded">
+                    <mat-icon>send</mat-icon>
+            </button>
+            <!-- <ngx-float-button style="position: relative !important;" icon="add" *ngIf="msgSend == '' && !file" color="#f8f9f9">
+                <ngx-float-item-button icon="add_photo_alternate" content="Agregar Imagen" (click)="addImageOpenModal()"></ngx-float-item-button>
+                <ngx-float-item-button icon="gps_fixed" content="float item 2"></ngx-float-item-button>
+                <ngx-float-item-button icon="mode_edit" content="float item 3"></ngx-float-item-button>
+            </ngx-float-button> -->
+            <!-- </div> -->
+        </div>
+    </div>
+    <!-- <app-upload-image [passFile]="true" (getFile)="getFile($event)"></app-upload-image> -->

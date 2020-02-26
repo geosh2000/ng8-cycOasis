@@ -1,0 +1,90 @@
+<div class="modal" tabindex="-1" role="dialog" id="preferencesModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Preferencias del Usuario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center" *ngIf="!show">
+                    <h3>Loading... <i class="fas fa-spinner fa-pulse"></i></h3>
+                </div>
+                <ng-container *ngIf="show">
+                    <div class="row">
+                        <div class="col-6 text-left p-2">
+                            <p>Zona Horaria:</p>
+                        </div>
+                        <div class="col-6 p-2">
+                            <select class="custom-select" (change)="chgPref('zonaHoraria', $event)" [(ngModel)]="preferences['zonaHoraria']">
+                            <option value="">Selecciona...</option>
+                            <option [value]="item['id']" *ngFor="let item of zhs | orderBy: 'title'">{{ item['title'] }}</option>
+                          </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-left p-2">
+                            <p>Color Monitor:</p>
+                        </div>
+                        <div class="col-6 p-2">
+                            <select class="custom-select" (change)="chgPref('colorProfile', $event)" [(ngModel)]="preferences['colorProfile']">
+                            <option value="">Selecciona...</option>
+                            <option value="0">MX</option>
+                            <option value="1">CO</option>
+                          </select>
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- <div class="d-flex justify-content-end">
+                    <p><small>{{ version }}</small></p>
+                </div> -->
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Cambiar Contraseña
+                            </mat-panel-title>
+
+                        </mat-expansion-panel-header>
+                        <form [formGroup]="pwdForm">
+                            <mat-form-field>
+                                <input type="password" matInput placeholder="Contraseña actual" formControlName="usp">
+                            </mat-form-field>
+                            <mat-error *ngIf="pwdForm.controls['usp'].hasError('required')">
+                                El campo es obligatorio
+                            </mat-error>
+                            <br>
+                            <mat-form-field>
+                                <input type="password" matInput placeholder="Nueva Contraseña" formControlName="new">
+                            </mat-form-field>
+                            <mat-error *ngIf="pwdForm.controls['new'].hasError('minLength') && !pwdForm.controls['new'].hasError('required')">
+                                Debe tener minimo 8 caracteres
+                            </mat-error>
+                            <mat-error *ngIf="pwdForm.controls['new'].hasError('required')">
+                                El campo es obligatorio
+                            </mat-error>
+                            <br>
+                            <mat-form-field>
+                                <input type="password" matInput placeholder="Confirma Contraseña" formControlName="control">
+                            </mat-form-field>
+                            <mat-error *ngIf="(pwdForm.controls['control'].hasError('different') || pwdForm.controls['control'].value != pwdForm.controls['new'].value) && !pwdForm.controls['control'].hasError('required')">
+                                Las contraseñas nuevas no coinciden
+                            </mat-error>
+                            <mat-error *ngIf="pwdForm.controls['control'].hasError('required')">
+                                El campo es obligatorio
+                            </mat-error>
+                            <div style="width: 100%">
+                                <button mat-raised-button color="primary" (click)="chgPsw()" [disabled]="loading['pwd'] || pwdForm.status == 'INVALID' || pwdForm.controls['control'].value != pwdForm.controls['new'].value">Cambiar <span *ngIf="loading['pwd']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                            </div>
+                        </form>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary ml-auto" data-dismiss="modal" [disabled]="loading['pwd']">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

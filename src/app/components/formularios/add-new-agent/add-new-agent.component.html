@@ -1,0 +1,21 @@
+<div class="modal fade" id="addAsesor" tabindex="-1" role="dialog" aria-labelledby="editDetailLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Agregar Asesor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <app-batch-asesor-form #batchCmp [item]="pais" (done)="nextRegSubmit( $event )" (omitir)="deleteReg( $event, 0 )" [profiles]="listProfiles" [vacantes]="vacantesList" [selectVacIndex]="selectVacIndex" [selectedVac]="selectedVac" [resetFlag]="resetFlag"
+                    [saving]="saving" [resetVac]="resetVac" [i]="0" (changeVac)="onVacSelect($event['val'], $event['i'])"></app-batch-asesor-form>
+            </div>
+            <div class="modal-footer d-flex justify-content-end">
+                <button class="p-1 btn btn-sm btn-secondary" data-dismiss="modal" [disabled]="loading['submitAll']">{{ showSave ? 'Cancelar' : 'Cerrar' }}</button>
+                <button class="p-1 btn btn-sm btn-success" (click)="nextRegSubmit( {status:true, index:0}, true )" [disabled]="loading['submitAll'] || summary['error'] > 0" *ngIf="showSave">Guardar <span *ngIf="loading['submitAll']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+                <button class="p-1 btn btn-sm btn-success" (click)="goToNew()" *ngIf="newId">Ver Asesor</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+<!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="modalLogin" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body" style="padding: 0;">
+                <div class="row">
+                    <div class="col-12">
+
+                        <div class="card text-center">
+                            <br>
+                            <div class="alert alert-danger" role="alert" *ngIf="loginError">
+                                <strong>ERROR</strong> {{ loginMsg }}
+                            </div>
+                            <form class="form-group row" #forma="ngForm" (ngSubmit)="logIn()">
+                                <div class="col"></div>
+                                <div class="col-10">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-user fa-fw"></i></div>
+                                        <input [(ngModel)]="login.usn" type="text" class="form-control" name="usn" placeholder="User" required>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+                                        <input [(ngModel)]="login.usp" type="password" class="form-control" name="usp" placeholder="Password" required>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                      <input
+                      [(ngModel)]="login.remember"
+                        class="form-check-input" name="remember"
+                        value="rem"
+                        type="checkbox"> Remember me
+                    </label>
+                                    </div>
+
+                                    <button [disabled]="loginLoad" type="submit" class="btn btn-primary">
+                    Submit
+                    <span *ngIf="loginLoad"><i class="fa fa-spinner fa-pulse fa-fw"></i></span>
+                  </button>
+                                </div>
+                                <div class="col"></div>
+                            </form>
+                            <div class="card-footer text-muted">
+                                Usa tus credenciales de Oasis Hotels & Resorts
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- No Credentials -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id='noCredentials'>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="alert alert-danger d-flex justify-content-around" style="margin: 0" role="alert">
+                <div class='p-2'>No cuentas con permiso para acceder a este contenido. Verifícalo con el gerencia de CC</div>
+                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class='fa fa-times fa-fw'></i></button>
+            </div>
+        </div>
+    </div>
+</div>

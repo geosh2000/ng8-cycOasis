@@ -1,0 +1,91 @@
+<mat-progress-bar mode="query" *ngIf="loading['deleting']"></mat-progress-bar>
+<div *ngIf="item && !loading['deleting']">
+    <mat-tab-group mat-align-tabs="end" (selectedTabChange)="tabChange($event)">
+        <mat-tab label="Pagos">
+            <div class="d-flex justify-content-between p-2 pt-3" style="overflow:hidden">
+                <mat-chip-list aria-label="ID">
+                    <mat-chip class="text-center" [color]="item['status'] == 0 ? 'accent' : item['status'] == 2 ? 'warn' : 'success'" selected [style.width.px]="90">
+                        <span class="text-center">ID: {{ item['id'] }}</span>
+                    </mat-chip>
+                    <mat-chip class="text-center" color="primary" selected [style.width.px]="90">
+                        <span class="text-center">{{ item['tipoPago'] }}</span>
+                    </mat-chip>
+                </mat-chip-list>
+                <div>
+                    <mat-form-field class="pl-3" [style.width.px]="130">
+                        <input matInput readonly placeholder="Monto Item" [value]="item['montoItem'] | currency:'MXN':'symbol-narrow':'.2-2'">
+                    </mat-form-field>
+                    <mat-form-field class="pl-3" [style.width.px]="130">
+                        <input matInput readonly placeholder="Monto Referencia" [value]="item['monto'] | currency:'MXN':'symbol-narrow':'.2-2'">
+                    </mat-form-field>
+                </div>
+                <mat-chip-list aria-label="ID">
+                    <mat-chip class="text-center" [color]="item['operacion'] == null ? 'warn' : 'success'" selected>
+                        <span class="text-center">{{ item['operacion'] == null ? 'Sin Ligar' : 'Ligado' }}</span>
+                    </mat-chip>
+                </mat-chip-list>
+                <div>
+                    <button mat-icon-button color="warn" [disabled]="item['operacion'] != null" (click)="flagDelete = true">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+                <mat-chip-list aria-label="ID">
+                    <mat-chip class="text-center" color="primary" selected>
+                        <span class="text-center">{{ item['moneda'] }}</span>
+                    </mat-chip>
+                    <mat-chip class="text-center" color="accent" selected>
+                        <span class="text-center">ID: {{ item['referencia'] }}</span>
+                    </mat-chip>
+                    <mat-chip class="text-center" [color]="item['operacion'] ? item['monto'] == item['montoLiga'] ? 'success' : 'warn' : 'alert'" selected>
+                        <span class="text-center">{{ item['operacion'] ? item['monto'] == item['montoLiga'] ? 'Consistente' : 'Inconsistente' : 'Sin Liga' }}</span>
+                    </mat-chip>
+                    <mat-chip class="text-center" [color]="item['status'] == 0 ? 'accent' : item['status'] == 2 ? 'warn' : 'success'" selected>
+                        <span class="text-center">{{ item['status'] == 0 ? 'Pendiente' : item['status'] == 2 ? 'Xld' : 'Pagado' }}</span>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div class="alert alert-warning" role="alert" *ngIf="flagDelete">
+                <p>Realmente deseas desactivar este pago?</p>
+                <button mat-raised-button color="warn" (click)="flagDelete = false">No</button>
+                <button mat-raised-button color="success" (click)="delete(item['id'])">Continuar</button>
+            </div>
+        </mat-tab>
+        <mat-tab label="Ligas">
+            <mat-progress-bar mode="indeterminate" *ngIf="loading['links'] || loading['linking']"></mat-progress-bar>
+            <mat-list *ngIf="!loading['links'] && !loading['linking'] && data.length > 0">
+                <ng-container *ngFor="let p of data">
+                    <div class="d-flex justify-content-between pt-2">
+                        <mat-form-field class="pl-3">
+                            <input matInput readonly placeholder="Proveedor" [value]="p['proveedor']">
+                        </mat-form-field>
+                        <mat-form-field class="pl-3">
+                            <input matInput readonly placeholder="Referencia" [value]="p['referencia']">
+                        </mat-form-field>
+                        <mat-form-field class="pl-3">
+                            <input matInput readonly placeholder="Complejo" [value]="p['complejo']">
+                        </mat-form-field>
+                        <mat-form-field class="pl-3">
+                            <input matInput readonly placeholder="Autorizacion" [value]="p['aut']">
+                        </mat-form-field>
+                        <mat-form-field class="pl-3">
+                            <input matInput readonly placeholder="Monto" [value]="(p['monto'] | currency:'MXN':'symbol-narrow':'.2-2') + ' ' + p['moneda']">
+                        </mat-form-field>
+                        <button [disabled]="flagWarn[p['operacion']] || (p['paymentId'] != null && p['paymentId'] != item['id'])" mat-raised-button [color]="p['paymentId'] == null ? 'primary' : p['paymentId'] == item['id'] ? 'warn' : 'alert'" (click)="linkPayment(p, p['paymentId'] == null)">
+                          {{ p['paymentId'] == null ? 'Link' : p['paymentId'] == item['id'] ? 'Unlink' : 'Linked' }}
+                        </button>
+                    </div>
+                    <div class="alert alert-warning" role="alert" *ngIf="flagWarn[p['operacion']]">
+                        <p *ngIf="p['paymentId'] != item['id']">Deseas cambiar la asignación actual? Este movimiento quitará la relación actual del pago y lo asignará al item seleccionado</p>
+                        <p *ngIf="p['paymentId'] == item['id']">Deseas eliminar la relación del pago con el item seleccionado?</p>
+                        <button mat-raised-button color="warn" (click)="flagWarn[p['operacion']] = false">No</button>
+                        <button mat-raised-button color="success" (click)="linkPayment(p, true)">Continuar</button>
+                    </div>
+                    <mat-divider></mat-divider>
+                </ng-container>
+            </mat-list>
+            <div class="alert alert-danger" role="alert" *ngIf="data.length == 0">
+                No hay pagos registrados con referencia {{ item['masterItemLocator'] }}
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

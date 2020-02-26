@@ -1,0 +1,147 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">Gerencia</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+    <div class="container-fluid">
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span><h1 class="display-3">Listado de Reservas Confirmadas CyC</h1></span>
+                    </div>
+                </div>
+            </div>
+            <div class="container d-flex justify-content-between p-2">
+
+                <mat-card [style.width.px]="230">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-between">
+                            <mat-form-field [style.width.px]="150">
+                                <input matInput placeholder="Fecha Llegada" id="arrival" [autoClose]="false" (click)="search['dtArrivalFlag'] ? dA.toggle() : search['dtArrivalFlag']=search['dtCreatedFlag']" name="dp" ngbDatepicker #dA="ngbDatepicker" [dayTemplate]="tdA" (dateSelect)="onDateSelection($event, dA, 'arrival')"
+                                    autocomplete="off" readonly [disabled]="!search['dtArrivalFlag']">
+                                <ng-template #tdA let-date="date" let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                            {{ date.day }}
+                                        </span>
+                                </ng-template>
+                            </mat-form-field>
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="small" name='exist' [(ngModel)]="search['dtArrivalFlag']"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card [style.width.px]="230">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-between">
+                            <mat-form-field [style.width.px]="150">
+                                <input matInput placeholder="Fecha Salida" id="created" [autoClose]="false" (click)="search['dtCreatedFlag'] ? dC.toggle() : search['dtCreatedFlag']=search['dtCreatedFlag']" name="dp" ngbDatepicker #dC="ngbDatepicker" [dayTemplate]="tdC" (dateSelect)="onDateSelection($event, dC, 'created')"
+                                    autocomplete="off" readonly [disabled]="!search['dtCreatedFlag']">
+                                <ng-template #tdC let-date="date" let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                            {{ date.day }}
+                                        </span>
+                                </ng-template>
+                            </mat-form-field>
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="small" name='exist' [(ngModel)]="search['dtCreatedFlag']"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card [style.width.px]="280">
+                    <mat-card-content>
+                        <div class="d-flex justify-content-center">
+                            <div class="p-2 align-content-center">
+                                <ui-switch size="medium" name='exist' [(ngModel)]="search['activas']" checkedLabel="Activas" uncheckedLabel="Canceladas"></ui-switch>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="container d-flex justify-content-end p-2">
+                <button mat-raised-button color="primary" (click)="searchLocs()">Buscar</button>
+            </div>
+
+        </div>
+
+        <mat-progress-bar mode="buffer" *ngIf="loading['locs']"></mat-progress-bar>
+
+        <div class="container alert alert-danger" role="alert" *ngIf="data.length == 0 && !loading['locs'] && searchFlag">
+            No hay reservaciones para mostrar
+        </div>
+
+        <div class="container-fluid" *ngIf="data.length > 0">
+
+            <ngx-table [configuration]="config" [data]="data" [columns]="columns">
+                <ng-template let-row>
+                    <td class="row__email" [ngClass]="{'text-danger': getDif(row)}" *ngFor="let item of columns">
+                        <span [ngSwitch]="item['type']">
+                                <span style="font-size: smaller" *ngSwitchCase="'default'">
+                                {{ row[item['key']] }}
+                                </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'npropio'">
+                                {{ row[item['key']] | capitalizado }}
+                                </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'ocup'">
+                                {{ row['a'] }} | {{ row['j'] }} | {{ row['m'] }}
+                                </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'money'">
+                                {{ row[item['key']] | currency:'MXN':'symbol-narrow':'.2-2' }} {{ row['moneda'] }}
+    
+                                </span>
+                        <span style="font-size: smaller" [ngClass]="{'text-success': row['allPaid']=='1'}" *ngSwitchCase="'moneySaldo'">
+                                <b>{{ row[item['key']] | currency:'MXN':'symbol-narrow':'.2-2' }} MXN</b><br>
+                                <b>{{ row['saldoUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }} USD</b>
+    
+                                </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'date'">
+                                {{ formatDate(row[item['key']], 'DD-MM-YY') }}
+                                </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'nr'">
+                                  <mat-chip-list *ngIf="row[item['key']] == 1">
+                                    <mat-chip color="accent" selected>NR</mat-chip>
+                                  </mat-chip-list>
+                              </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'status'">
+                                  <mat-chip-list>
+                                    <mat-chip [color]="row[item['key']] == 'PDT' ? 'accent' : row[item['key']] == 'Agregar' ? 'warn' : row[item['key']] == 'PH' ? 'info' : row[item['key']] == 'PDT' ? 'pdt' : 'success'" selected>{{row[item['key']]}}</mat-chip>
+                                  </mat-chip-list>
+                              </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'pick'">
+                                  <mat-chip-list *ngIf="row['tipoServicio'] == 'Traslado' && row['isCancel'] == '0'">
+                                    <mat-chip [color]="pickUpColor(row)" selected>{{ pickUpTxt(row) }}</mat-chip>
+                                  </mat-chip-list>
+                              </span>
+                        <span style="font-size: smaller" *ngSwitchCase="'button'">
+                                  <a mat-mini-fab color="primary" (click)="viewPaper(row)">
+                                    <mat-icon>remove_red_eye</mat-icon>
+                                  </a>
+                              </span>
+                        </span>
+                    </td>
+                </ng-template>
+            </ngx-table>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="viewPaper" tabindex="-1" role="dialog" aria-labelledby="viewPaperLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewPaperLabel">Papeleta {{ paperItem }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+                </div>
+                <div class="modal-body">
+                    <app-ext-papeleta></app-ext-papeleta>
+                </div>
+            </div>
+        </div>
+    </div>

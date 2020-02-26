@@ -1,0 +1,25 @@
+<mat-grid-list cols="2" rowHeight="2:1">
+    <mat-grid-tile>
+        <app-dasboard-venta-fc style="width: 100%"></app-dasboard-venta-fc>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="2">
+        <app-dasboard-venta-al-dia style="width: 100%"></app-dasboard-venta-al-dia>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <app-dasboard-venta-per-month style="width: 100%"></app-dasboard-venta-per-month>
+    </mat-grid-tile>
+</mat-grid-list>
+<mat-grid-list cols="2" rowHeight="2:1">
+    <mat-grid-tile>
+        <app-dasboard-venta-prepago-por-dia style="width: 100%"></app-dasboard-venta-prepago-por-dia>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <app-dasboard-venta-prepago-por-asesor style="width: 100%"></app-dasboard-venta-prepago-por-asesor>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="2">
+        <app-dasboard-comisiones [dashboard]="true" style="width: 100%"></app-dasboard-comisiones>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        4
+    </mat-grid-tile>
+</mat-grid-list>

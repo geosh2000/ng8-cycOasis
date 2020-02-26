@@ -1,0 +1,28 @@
+<div class="input-group mb-3" *ngIf="!matStyle">
+    <div class="input-group-prepend" *ngIf="iconPosition!='right'">
+        <span class="input-group-text"><i class="fas fa-user fa-fw"></i></span>
+    </div>
+    <ng2-completer style="z-index: 100" [inputClass]="inputClass ? inputClass : 'form-control completer-width'" [disableInput]="disableInput" [(ngModel)]="searchStrName" [datasource]="dataServiceName" [minSearchLength]="3" [matchClass]="'completer-match'"
+        [fillHighlighted]="false" (selected)="onSelected($event)" [placeholder]="placeholder">
+    </ng2-completer>
+    <div class="input-group-append" *ngIf="iconPosition=='right'">
+        <span class="input-group-text"><i class="fas fa-user fa-fw"></i></span>
+    </div>
+</div>
+
+
+<div class="mat-form-field-wrapper">
+    <div class="mat-form-field-flex" *ngIf="matStyle">
+        <div class="mat-form-field-infix">
+            <ng2-completer style="z-index: 100" [inputClass]="inputClass ? inputClass : 'form-control completer-width'" [disableInput]="disableInput" [(ngModel)]="searchStrName" [datasource]="dataServiceName" [minSearchLength]="3" [matchClass]="'completer-match'"
+                [fillHighlighted]="false" (selected)="onSelected($event)" [placeholder]="placeholder">
+            </ng2-completer>
+        </div>
+    </div>
+    <div class="mat-form-field-underline ng-tns-c14-6 ng-star-inserted"><span class="mat-form-field-ripple"></span></div>
+    <div class="mat-form-field-subscript-wrapper" ng-reflect-ng-switch="hint">
+        <div class="mat-form-field-hint-wrapper ng-tns-c14-6 ng-trigger ng-trigger-transitionMessages ng-star-inserted">
+            <div class="mat-form-field-hint-spacer"></div>
+        </div>
+    </div>
+</div>

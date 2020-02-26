@@ -1,0 +1,71 @@
+<app-search-bar-cotizador (search)="search($event)" [minDate]="minDate" [isCode]="true" [pax]="false" [groupsTfa]="groupsTfa" [loading]="loading['cotizar']"></app-search-bar-cotizador>
+<div class="container-fluid d-flex justify-content-between flex-wrap p-2" *ngIf="!loading['cotizar'] && flag">
+    <mat-card class="tour-card m-2" *ngFor="let t of results">
+        <mat-card-header>
+            <mat-card-title class="text-info">{{ t['titulo'] }}</mat-card-title>
+            <mat-card-subtitle class="text-info">{{ t['nombre'] }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-drawer-container [hasBackdrop]="true">
+                <mat-drawer #drawer [mode]="'over'">
+
+                    <!-- HORARIOS -->
+                    <div class="alert alert-info" role="alert">
+                        <ul>Horarios:
+                            <li *ngFor="let h of t['salidaHora']; index as x">{{ formatSalida(h) }} hrs. - {{ t['salidaHotel'][x] }}</li>
+                        </ul>
+                    </div>
+
+                    <!-- Duracion -->
+                    <div class="alert alert-warning" role="alert">
+                        Duración aprox: {{ t['duracion'] }}
+                    </div>
+
+                    <!-- INCLUYE -->
+                    <div class="alert alert-info" role="alert">
+                        <div class="row p-2 container">
+                            <div class='col-6'>
+                                <div class='alert alert-warning'>
+                                    <p>Incluye: </p>
+                                    <ul>
+                                        <li *ngFor="let i of t['incluye']"><small>{{ i }}</small></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='col-6'>
+                                <div class='alert alert-danger'>
+                                    <p>No Incluye: </p>
+                                    <ul>
+                                        <li *ngFor="let i of t['no_incluye']"><small>{{ i }}</small></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-drawer>
+                <mat-drawer-content>
+                    <p>{{ t['descripcion'] }}</p>
+                    <button mat-raised-button class="ml-auto" (click)="drawer.toggle()">Detalles</button>
+                </mat-drawer-content>
+            </mat-drawer-container>
+
+
+
+        </mat-card-content>
+        <mat-card-footer class="p-2 tour-footer">
+            <ng-container *ngIf="t['menorUSD'] != null">
+                <small class='text-success'>** Menores: {{ t['descripMenores'] }}</small>
+            </ng-container>
+            <hr style='margin-top: 1px!important;'>
+            <div class="d-flex justify-content-between">
+                <mat-chip-list>
+                    <mat-chip color="primary" selected>Adulto: {{ (t['adultUSD'] * (_search['moneda'] ? t['tc'] : 1)) | currency:'MXN':'symbol-narrow':'.2-2' }}</mat-chip>
+                    <mat-chip color="warn" selected *ngIf="t['menorUSD'] != null">Menor: {{ (t['menorUSD'] * (_search['moneda'] ? t['tc'] : 1)) | currency:'MXN':'symbol-narrow':'.2-2' }}</mat-chip>
+                    <mat-chip *ngIf="t['menorUSD'] == null">No Menores</mat-chip>
+                </mat-chip-list>
+                <button mat-mini-fab color="success" (click)="popReserve(t)" *ngIf="_init.checkSingleCredential('app_cotizador_rsv')"><mat-icon>done</mat-icon></button>
+            </div>
+        </mat-card-footer>
+    </mat-card>
+</div>
+<!-- <pre>{{ results | json }}</pre> -->

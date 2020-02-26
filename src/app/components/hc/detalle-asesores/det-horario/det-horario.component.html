@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="card border-0">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between flex-wrap bg-info">
+        <div class="align-middle p-1">
+          <h3 class="align-middle text-light">Horarios</h3>
+        </div>
+
+        <!-- Fechas -->
+        <div class="d-flex justify-content-end flex-wrap pr-2" >
+          <form class="form-inline">
+            <div class="form-group">
+              <div class="form-group">
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd" [autoClose]="false"
+                    (click)="d.toggle()" id="picker"
+                         name="dp" ngbDatepicker #d="ngbDatepicker" [dayTemplate]="t" (dateSelect)="onDateSelection($event, d)">
+                   <ng-template #t let-date="date" let-focused="focused">
+                     <span class="custom-day"
+                           [class.focused]="focused"
+                           [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)"
+                           [class.faded]="isHovered(date) || isInside(date)"
+                           (mouseenter)="hoveredDate = date"
+                           (mouseleave)="hoveredDate = null">
+                       {{ date.day }}
+                     </span>
+                   </ng-template>
+                  <div class="input-group-append">
+                    <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+      <ng-container *ngIf="!loading['horarios']">
+        <div class="d-flex justify-content-center pt-1" style="font-size: smaller;" *ngIf="dataHorarios && dataHorarios.length > 0">
+          <table class="table table-fluid table-striped table-bordered table-hover table-sm table-responsive" style="max-height: 700px; overflow: auto" id="ausTable">
+            <thead>
+              <tr>
+                <th *ngFor="let item of dataHorarios" class="text-center" [ngClass]="isToday(item['Fecha'])">{{ formatDate( item['Fecha'] + ' 10:00:00', 'ddd DD MMM \'YY') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td *ngFor="let item of dataHorarios" class="text-xs-center" style="max-width: 180px">
+                    <app-jornadas
+                      (exception)="getAsistencia()"
+                      [asistData]="item"
+                      [date]="item['Fecha']"
+                      [asesor]="asesor"
+                      [nombre]="item.Nombre"
+                      [editable]="false"
+                      (saveHx)="hxSave($event)"
+                      [showOpts]="showOpts">
+                    </app-jornadas>
+                  </td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap p-4" *ngIf="!dataHorarios || dataHorarios.length == 0">
+          <div class="alert alert-primary" role="alert">
+            No existe información de horarios para este asesor
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="loading['horarios']">
+        <div class="text-center p-4">
+          <h3>Cargando Horarios <i class="fas fa-spinner fa-pulse text-info"></i></h3>
+        </div>
+      </ng-container>
+    </div>
+  </div>

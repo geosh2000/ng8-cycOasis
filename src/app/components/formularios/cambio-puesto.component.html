@@ -1,0 +1,203 @@
+<div class="modal fade" id="cambioPuesto" tabindex="-1" role="dialog" aria-labelledby="cambioPuestoLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Cambio de Puesto - <small>{{ nombre }}</small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form Cambio Puesto -->
+                <form class="form-group" [formGroup]="formCambioPuesto" (ngSubmit)="askCambio()">
+
+                    <div class="row">
+
+                        <!-- Fecha Cambio -->
+                        <div class="col-6">
+                            <div class="form-group p-1">
+                                <label>Fecha Cambio</label>
+                                <div class="input-group">
+                                    <input readonly [ngClass]="{'is-invalid': !formCambioPuesto.controls['fechaCambio'].valid}" daterangepicker formControlName="fechaCambio" [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setVal($event.start, 'fechaCambio')">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    </div>
+                                </div>
+                                <small class="text-danger" style="font-size: xx-small" *ngIf="!formCambioPuesto.controls['fechaCambio'].valid && formCambioPuesto.controls['fechaCambio'].errors?.pattern">Debe coincidir con el formato de Fecha YYYY/MM/DD</small>
+                                <small class="text-danger" style="font-size: xx-small" *ngIf="!formCambioPuesto.controls['fechaCambio'].valid && formCambioPuesto.controls['fechaCambio'].errors?.required">Debes ingresar la Fecha del Cambio</small>
+                            </div>
+                        </div>
+
+                        <!-- Ciudad -->
+                        <div class="col-6">
+                            <div *ngIf="flagLoading['ciudad']">
+                                <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                            </div>
+                            <div class="form-group" *ngIf="formCambioPuesto.controls['fechaCambio'].valid && flagExists['ciudad'] && !flagLoading['ciudad']">
+                                <label>Ciudad</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-map-marker fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="ciudad">
+                      <option value="">Selecciona...</option>
+                      <option *ngFor="let ciudad of listOptions.ciudad" [value]="ciudad.id">{{ ciudad.name }}</option>
+                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Oficina -->
+                        <div class="col-6">
+                            <div *ngIf="flagLoading['oficina']">
+                                <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                            </div>
+                            <div class="form-group" *ngIf="formCambioPuesto.controls['ciudad'].valid && flagExists['oficina'] && !flagLoading['oficina']">
+                                <label>Oficina</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-building-o fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="oficina">
+                      <option value="">Selecciona...</option>
+                      <option *ngFor="let oficina of listOptions.oficina" [value]="oficina.id">{{ oficina.name }}</option>
+                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Departamento -->
+                        <div class="col-6">
+                            <div *ngIf="flagLoading['departamento']">
+                                <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                            </div>
+                            <div class="form-group" *ngIf="formCambioPuesto.controls['ciudad'].valid && flagExists['departamento'] && !flagLoading['departamento']">
+                                <label>Departamento</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-users fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="departamento">
+                      <option value="">Selecciona...</option>
+                      <option *ngFor="let departamento of listOptions.departamento" [value]="departamento.id">{{ departamento.name }}</option>
+                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Puesto -->
+                        <div class="col-6">
+                            <div *ngIf="flagLoading['puesto']">
+                                <button type="button" class="btn btn-outline-primary btn-block" disabled><i class="fa fa-spinner fa-pulse fa-fw"></i> Cargando</button>
+                            </div>
+                            <div class="form-group" *ngIf="formCambioPuesto.controls['ciudad'].valid && flagExists['puesto'] && !flagLoading['puesto']">
+                                <label>Puesto</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-user fa-fw"></i></div>
+                                    </div>
+                                    <select class="custom-select" formControlName="puesto">
+                      <option value="">Selecciona...</option>
+                      <option *ngFor="let puesto of listOptions.puesto" [ngValue]="puesto.id">{{ puesto.name }}</option>
+                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comentarios -->
+                        <div class="col-6">
+                            <div class="form-group" [ngClass]="{ 'has-danger': !formCambioPuesto.controls['comentarios'].valid }" *ngIf="formCambioPuesto.controls['puesto'].valid">
+                                <label>Comentarios</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-calendar-o fa-fw"></i></div>
+                                    </div>
+                                    <input formControlName="comentarios" class="form-control" type="text" value="">
+                                </div>
+                                <div class="form-control-feedback" *ngIf="formCambioPuesto.controls['comentarios']._errors?.required">
+                                    <div><small>Es importante que ingreses tus comentarios de la solicitud</small></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reemplazable -->
+                        <div class="col-6">
+                            <div class="form-group" [ngClass]="{ 'has-danger': !formCambioPuesto.controls['reemplazable'].valid }" *ngIf="formCambioPuesto.controls['puesto'].valid">
+                                <label></label>
+                                <div class="input-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" formControlName="reemplazable" [indeterminate]="true" id="ch2">
+                                        <span class="custom-control-indicator"></span>
+                                        <label class="custom-control-label" for="ch2">Reemplazable</label>
+                                    </div>
+                                </div>
+                                <div class="form-control-feedback" *ngIf="formCambioPuesto.controls['reemplazable']._errors?.indeterminate">
+                                    <div><small>Elige si la vacante será o no reemplazable</small></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fecha Liberacion -->
+                        <div class="col-6" *ngIf="formCambioPuesto.controls['reemplazable'].value == true">
+                            <div class="form-group p-1">
+                                <label>Fecha Liberación</label>
+                                <div class="input-group">
+                                    <input readonly [ngClass]="{'is-invalid': !formCambioPuesto.controls['fechaLiberacion'].valid}" daterangepicker formControlName="fechaLiberacion" [options]="singlePicker" class="form-control uneditable-input" type="text" (selected)="setVal($event.start, 'fechaLiberacion')">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    </div>
+                                </div>
+                                <small class="text-danger" style="font-size: xx-small" *ngIf="!formCambioPuesto.controls['fechaLiberacion'].valid && formCambioPuesto.controls['fechaLiberacion'].errors?.pattern">Debe coincidir con el formato de Fecha YYYY/MM/DD</small>
+                                <small class="text-danger" style="font-size: xx-small" *ngIf="!formCambioPuesto.controls['fechaLiberacion'].valid && formCambioPuesto.controls['fechaLiberacion'].errors?.required">Debes ingresar la Fecha de Liberación</small>
+                                <small class="text-danger" style="font-size: xx-small" *ngIf="!formCambioPuesto.controls['fechaLiberacion'].valid && formCambioPuesto.controls['fechaLiberacion'].errors?.lessFechaLiberacion">La fecha de liberación debe ser menor o igual a la fecha de Cambio</small>
+                            </div>
+                        </div>
+
+                        <!-- <div class="col-6">
+                            <div class="form-group" [ngClass]="{ 'is-invalid': !formCambioPuesto.controls['fechaLiberacion'].valid }" *ngIf="formCambioPuesto.controls['reemplazable'].value == true">
+                                <label>Fecha Liberación</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-calendar-o fa-fw"></i></div>
+                                    </div>
+                                    <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaLiberacion" (selected)="setVal($event.start, 'fechaLiberacion')" (click)="dl.toggle()" name="dp" ngbDatepicker #dl="ngbDatepicker">
+                                </div>
+                                <div class="form-control-feedback" *ngIf="formCambioPuesto.controls['fechaLiberacion']._errors?.required">
+                                    <div><small>La fecha de liberación es requerida cuando la vacante es reemplazable</small></div>
+                                </div>
+                                <div class="form-control-feedback" *ngIf="formCambioPuesto.controls['fechaLiberacion']._errors?.lessFechaLiberacion">
+                                    <div><small>La fecha de liberación debe ser menor o igual a la fecha de Cambio</small></div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                    </div>
+                    <div class="alert alert-danger" role="alert" *ngIf="saveAlert">
+                        <span><strong>Hubo un error en el proceso</strong></span><br>
+                        <span>
+                {{ errorMsg }}
+              </span><br>
+                        <span>Por favor notifícalo a WFM</span>
+                    </div>
+                    <div class="d-flex flex-row-reverse">
+                        <button [disabled]="formCambioPuesto.invalid || retrieving" type="button" [ngClass]="{ 'btn-outline-secondary': formCambioPuesto.invalid, 'btn-success': !formCambioPuesto.invalid }" class="btn" *ngIf="!confirmCambio" (click)="formCambioPuesto['value']['reemplazable'] ? submit() : confirmCambio = true">Enviar  <span *ngIf="retrieving"><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button>
+                        <div class="col-12 animated flipInX" *ngIf="confirmCambio">
+                            <div class="alert alert-warning d-flex justify-content-end" role="alert">
+                                <div class="" style="font-size:smaller">
+                                    <p>Al seleccionar la opción de <b>No Reemplazable</b> la plaza se desactivará, haciendo que el HeadCount se reduzca</p>
+                                    <p>¿Deseas continuar?</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <button type="button" class="btn btn-block btn-danger" (click)="confirmCambio = false"><i class="fas fa-times"></i></button>
+                                    <button type="button" class="btn btn-block btn-success" (click)="submit()"><i class="fas fa-check"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

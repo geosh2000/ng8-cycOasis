@@ -1,0 +1,20 @@
+<div class="modal fade" id="rsvLinkPaymentDirect" tabindex="-1" role="dialog" aria-labelledby="rsvLinkPaymentDirect" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rsvLinkPaymentDirect">Ligar Pagos a Localizador {{ genData['masterlocatorid'] }}</h5>
+                <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body text-center">
+                <app-search-payment (selected)="locSelected($event)"></app-search-payment>
+                <h3 *ngIf="params['op'] != null">Se ligará el pago a la cuenta del cliente <b class='text-success'>{{ genData['nombreCliente'] }}</b> que incluye el localizador <b class="text-success">{{ genData['masterlocatorid'] }}</b></h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" mat-raised-button (click)="closeModal()" [disabled]="loading['save']">Cancelar</button>
+                <button type="button" mat-raised-button color="primary" (click)="linkRsv()" [disabled]="params['op'] == null">Ligar <span *ngIf="loading['save']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+            </div>
+        </div>
+    </div>
+</div>

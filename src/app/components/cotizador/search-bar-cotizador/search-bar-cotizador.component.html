@@ -1,0 +1,181 @@
+<div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn" style="padding-top: 0px">
+    <div class='container pt-5 d-flex justify-content-between'>
+
+        <div class="form d-flex justify-content-start pr-3">
+            <div class="form-group p-1" *ngIf="isDate">
+                <label for="fechas">{{ endDateSep ? 'Inicio' : 'Fechas' }}</label>
+                <div class="input-group">
+                    <input class="form-control" *ngIf="!endDate" [minDate]="minDate" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event, d)" autocomplete="off" [style.width.px]="150">
+                    <ng-container *ngIf="endDate">
+                        <input class="form-control" id="fechas" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" [dayTemplate]="t" (dateSelect)="onDateSelection($event, d)" autocomplete="off" [style.width.px]="150">
+                        <ng-template #t let-date="date" let-focused="focused">
+                            <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                        </span>
+                        </ng-template>
+                    </ng-container>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group p-1" *ngIf="timepicker">
+                <label for="horaInicio">Hora Inicio</label>
+                <div class="input-group">
+                    <input class="form-control" [min]="minHS" [max]="maxHS" [format]="24" [disabled]="this.inicio == null" placeholder="12:00 hrs" [ngxTimepicker]="pickerStart" id='horaInicio' autocomplete="off" [style.width.px]="110">
+                    <ngx-material-timepicker [enableKeyboardInput]="true" minutesGap="5" (timeSet)="setTimePicker($event, true, horaInicio)" #pickerStart></ngx-material-timepicker>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group p-1" *ngIf="endDateSep">
+                <label for="fechas">Fecha Fin</label>
+                <div class="input-group">
+                    <input class="form-control" [minDate]="minDate" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="ds.toggle()" id="pickerDs" name="dp" ngbDatepicker #ds="ngbDatepicker" (dateSelect)="onDateSelection($event, ds, 'ds')" autocomplete="off" [style.width.px]="150">
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group p-1" *ngIf="endDateSep && timepicker">
+                <label for="horaFin">Hora Fin</label>
+                <div class="input-group">
+                    <input class="form-control" [min]="minHE" [max]="maxHE" [format]="24" [disabled]="this.fin == null" placeholder="12:00 hrs" [ngxTimepicker]="picker" id='horaFin' autocomplete="off" [style.width.px]="110">
+                    <ngx-material-timepicker [enableKeyboardInput]="true" minutesGap="5" (timeSet)="setTimePicker($event, false, horaFin)" #picker></ngx-material-timepicker>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group p-1" *ngIf="pax">
+                <label for="adults">Adultos</label>
+                <select [(ngModel)]="adults" name="adults" id="adults" class="form-control" [style.width.px]="60">
+                                    <ng-container *ngFor="let n of pickNum">
+                                        <option [value]="n" *ngIf="n <= maxAdultos">{{ n }}</option>
+                                    </ng-container>
+                                </select>
+            </div>
+            <div class="form-group p-1" *ngIf="pax && paxJr">
+                <label for="jrs">Juniors</label>
+                <select [(ngModel)]="jr" (change)="resetAges()" name="jr" id="juniors" class="form-control" [style.width.px]="60">
+                                    <ng-container *ngFor="let n of pickNum">
+                                        <option [value]="n" *ngIf="n <= maxJuniors">{{ n }}</option>
+                                    </ng-container>
+                                </select>
+            </div>
+
+            <div class="form-group p-1" *ngIf="pax">
+                <label for="menores">Menores</label>
+                <select [(ngModel)]="min" (change)="resetAges()" name="min" id="menores" class="form-control" [style.width.px]="60">
+                                    <ng-container *ngFor="let n of pickNum">
+                                        <option [value]="n" *ngIf="n <= maxMenores">{{ n }}</option>
+                                    </ng-container>
+                                </select>
+            </div>
+
+            <div class="d-flex flew-wrap justify-content-start" *ngIf="agesDispl">
+                <div class="form-group p-1" *ngIf="min > 0">
+                    <label for="edad1" class="text-center">Edad 1</label>
+                    <select [(ngModel)]="e1" name="e1" id="edad1" class="form-control" [style.width.px]="80">
+                                  <option value="0" selected>0</option>
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                  <option value="6">6</option>
+                                  <option value="7">7</option>
+                                  <option value="8">8</option>
+                                  <option value="9">9</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                  <option value="12">12</option>
+                                  <option value="13">13</option>
+                                  <option value="14">14</option>
+                                  <option value="15">15</option>
+                                  <option value="16">16</option>
+                                  <option value="17">17</option>
+                                </select>
+                </div>
+                <div class="form-group p-1" *ngIf="min > 1">
+                    <label for="edad2" class="text-center">2</label>
+                    <select [(ngModel)]="e2" name="e2" id="edad2" class="form-control" [style.width.px]="80">
+                                  <option value="0" selected>0</option>
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                  <option value="6">6</option>
+                                  <option value="7">7</option>
+                                  <option value="8">8</option>
+                                  <option value="9">9</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                  <option value="12">12</option>
+                                  <option value="13">13</option>
+                                  <option value="14">14</option>
+                                  <option value="15">15</option>
+                                  <option value="16">16</option>
+                                  <option value="17">17</option>
+                                </select>
+                </div>
+                <div class="form-group p-1" *ngIf="min > 2">
+                    <label for="edad3" class="text-center">3</label>
+                    <select [(ngModel)]="e3" name="e3" id="edad3" class="form-control" [style.width.px]="80">
+                                  <option value="0" selected>0</option>
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                  <option value="6">6</option>
+                                  <option value="7">7</option>
+                                  <option value="8">8</option>
+                                  <option value="9">9</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                  <option value="12">12</option>
+                                  <option value="13">13</option>
+                                  <option value="14">14</option>
+                                  <option value="15">15</option>
+                                  <option value="16">16</option>
+                                  <option value="17">17</option>
+                                </select>
+                </div>
+                <div class="form-group p-1" *ngIf="isCode">
+                    <label for="grupo">Código</label>
+                    <select [(ngModel)]="selectedCode" name="grupo" id="grupo" class="form-control">
+                                            <option [value]="gp['grupo']" *ngFor="let gp of groupsTfa">{{ gp['grupo'] }}</option>
+                                        </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-start align-items-center">
+            <div style="text-align: center" class="p-1" *ngIf="local">
+                <ui-switch color="green" size="medium" name='isLocal' [(ngModel)]="isLocal" checkedLabel='Local' uncheckedLabel='Normal'></ui-switch>
+                <p>
+                    <small>Local </small>
+                </p>
+            </div>
+            <div style="text-align: center" class="p-1" *ngIf="group">
+                <ui-switch color="green" size="medium" name='isGroup' [(ngModel)]="isGroup" checkedLabel='Grupo' uncheckedLabel='Normal'></ui-switch>
+                <p>
+                    <small>Grupo </small>
+                </p>
+            </div>
+            <div style="text-align: center" class="p-1">
+                <ui-switch color="green" size="medium" name='ch_comida' [(ngModel)]="moneda" checkedLabel='MXN' uncheckedLabel='USD'></ui-switch>
+                <p>
+                    <small>Moneda </small>
+                </p>
+            </div>
+            <div>
+                <!-- <button mat-raised-button class="m-1" color="primary" (click)="popReserve([1])">TEST</button> -->
+                <button mat-raised-button color="primary" type="button" (click)="save()" [disabled]="loading || !this.searchFlag">Cotizar <span *ngIf="loading"><i class="fa fa-fw fa-spinner fa-pulse"></i></span></button>
+            </div>
+        </div>
+
+    </div>

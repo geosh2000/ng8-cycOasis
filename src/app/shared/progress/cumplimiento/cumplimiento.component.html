@@ -1,0 +1,11 @@
+<div
+  [ngClass]="['progress', 'border', 'border-'+config['border'] ]"
+  style="height: 5px">
+  <div [ngClass]="['progress-bar', 'bg-'+config['bar'] ]"
+      role="progressbar"
+      [style.width.%]="config['val']"
+      [attr.aria-valuenow]="100"
+      aria-valuemin="0"
+      aria-valuemax="100">
+  </div>
+</div>

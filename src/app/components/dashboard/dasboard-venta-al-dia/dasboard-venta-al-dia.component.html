@@ -1,0 +1,5 @@
+<div class="d-flex justify-content-center" *ngIf="loading['data']">
+    <mat-spinner></mat-spinner>
+</div>
+<div id='container' #chartContainer [style.height.px]="800"></div>
+<button mat-raised-button color='primary' (click)="getData()">Reload</button>

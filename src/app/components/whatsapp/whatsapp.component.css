@@ -1,0 +1,77 @@
+.mainContent {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 15px;
+    color: #333;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+footer {
+    font-size: 10px;
+    padding-top: 20px;
+}
+
+.data {
+    color: #363;
+    padding-left: 6px;
+}
+
+#content {
+    padding: 20px;
+}
+
+#allUsers td {
+    font-size: 12px;
+    padding-top: 2px;
+}
+
+.conversation {
+    background-image: url("https://cyc-oasishoteles.com/img/waBg.png");
+    background-color: #cccccc;
+    background-size: contain;
+}
+
+.user-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+}
+
+.waHead {
+    background: #f7f7f7;
+    height: 50px;
+}
+
+.avatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+.client-image {
+    background-image: url(https://material.angular.io/assets/img/examples/shiba1.jpg);
+    background-size: cover;
+}
+
+.chatWdw {
+    height: 673px;
+    overflow: auto;
+    position: relative;
+}
+
+.mat-success {
+    background-color: #33a933;
+    color: #fff;
+}
+
+.mat-alert {
+    background-color: #e2be0c;
+    color: #fff;
+}
+
+.mat-danger {
+    background-color: #9c1414;
+    color: #fff;
+}

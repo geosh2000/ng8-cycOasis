@@ -1,0 +1,27 @@
+<!-- <div class="container-fluid d-flex flex-wrap justify-content-between">
+    <div class="card m-4" style="width: 18rem; " *ngFor="let f of dataOk['status'] | keys">
+        <div class="card-body text-center">
+            <h5 class="card-title">{{ dataOk['status'][f]['title'] }}</h5>
+            <h1>
+                {{ dataOk['status'][f]['data'] }}
+            </h1>
+        </div>
+    </div>
+</div> -->
+
+<app-tel-agent *ngIf="showOpt == 'detail'"></app-tel-agent>
+<hr>
+<!-- <ng-container>
+    <div class="container-fluid d-flex flex-wrap justify-content-between">
+        <div class="card m-1" style="width: 18rem;" *ngFor="let f of dataOk['sum']">
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ f[0] }}</h5>
+                <h1>
+                    {{ printVal(f[0],f[1]) }}
+                </h1>
+            </div>
+        </div>
+    </div>
+</ng-container> -->
+
+<!-- <pre>{{ data | json }}</pre> -->

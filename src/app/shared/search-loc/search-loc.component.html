@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col d-flex justify-content-center flex-wrap">
+        <div class="p-1">
+            <mat-form-field>
+                <input matInput placeholder="Nombre / Loc / Correo" name="mail" [(ngModel)]="mail">
+            </mat-form-field>
+        </div>
+        <div class="p-1">
+            <button mat-raised-button color="primary" (click)="search()" [disabled]="loading['search'] || mail == '' || !mail">Buscar <span *ngIf="loading['search']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+        </div>
+    </div>
+    <div class="col-9" *ngIf="data.length > 0 || noResults" [style.max-height.px]="maxHeight" style="overflow: auto">
+        <mat-list *ngIf="data.length > 0">
+            <ng-container *ngFor="let item of data; index as i">
+                <mat-list-item>
+                    <span [style.width.px]="200" class="text-info text-bold">{{ item['nombreCliente'] }}</span>
+                    <span [style.width.px]="10"></span>
+                    <span class="text-center bg-info text-light" [style.width.px]="40"><i class="fas fa-envelope"></i></span>
+                    <span [style.width.px]="250" class="ml-2">{{ item['correoCliente'] }}</span>
+                    <span [style.width.px]="10"></span>
+                    <span class="text-center bg-info text-light" [style.width.px]="40"><i class="fas fa-calendar-check"></i></span>
+                    <span [style.width.px]="100" class="ml-2">{{ item['inicio'] }}</span>
+                    <span [style.width.px]="10"></span>
+                    <span class="text-center bg-info text-light" [style.width.px]="40"><i class="fab fa-slack-hash"></i></span>
+                    <span [style.width.px]="80" class="ml-2">{{ item['masterlocatorid'] }}</span>
+                    <button mat-raised-button color="primary" (click)="select(item)" [disabled]="loading['select']"><i class="fas fa-check"></i></button>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            </ng-container>
+            <mat-divider></mat-divider>
+        </mat-list>
+        <div class="alert alert-warning" role="alert" *ngIf="noResults">
+            No se encontraron coincidencias
+        </div>
+    </div>
+</div>

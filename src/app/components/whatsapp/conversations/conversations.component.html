@@ -1,0 +1,38 @@
+<div class="container p-0 m-0 staticBg">
+    <div class="m-0 p-2 d-flex justify-content-center" style="background: #decdcd">
+        <mat-chip-list aria-label="Filter Selection">
+            <mat-chip color="primary" (click)="filterSelect(agentId)" [selected]="selected != 1 && selected != 0">Asignados</mat-chip>
+            <mat-chip color="primary" (click)="filterSelect(0)" [selected]="selected == 0">Sin Asignar</mat-chip>
+            <mat-chip color="primary" (click)="filterSelect(1)" [selected]="selected == 1">Todos</mat-chip>
+        </mat-chip-list>
+    </div>
+    <div class="container p-0 m-0" style="height: 613px; overflow: auto" id="convWdw">
+        <div style="position: fixed; bottom: 0; zoom: 0.5;" *ngIf="loading['tickets']">
+            <mat-spinner></mat-spinner>
+        </div>
+        <div class="container p-2 m-0">
+            <mat-list>
+                <ng-container *ngFor="let t of tickets">
+                    <mat-list-item class="itemList" [ngClass]="{'mOver': t['ticketId'] == this.ticketSelected}" (mouseenter)="mOver($event)" (mouseleave)="mLeave($event)" (click)="setConv(t['ticketId'], t['assignee'], $event)" [id]="t['ticketId']">
+                        <div class="p-1 row m-0">
+                            <div class="col-10 p-0">
+                                <h6 class="text-truncate" [ngClass]="{'text-success': t['lastIsIn'] == 1}">{{ t['reqName'] }}</h6>
+                                <div class="d-flex justify-content-start" [style.width.px]="300" [style.height.px]="15">
+                                    <div [style.width.px]="50" style="font-size: x-small"><a target="_blank" href="https://oasishoteles.zendesk.com/agent/tickets/{{t['ticketId']}}">{{ t['ticketId'] }}</a></div>
+                                    <div class="ml-1 text-truncate" style="font-size: x-small; max-width: 180px;" [innerHTML]="t['lastConv']"></div>
+                                </div>
+                            </div>
+                            <div class="col-2 text-secondary p-0" style="font-size: xx-small; margin-top:6px; text-align: right">
+                                <div>{{ formatTime(t['lastMsg'],'HH:mm') }}</div>
+                                <div class="text-truncate mt-2" [ngClass]="{'text-danger': agentId == t['assignee'],'text-primary': agentId != t['assignee']}">{{ t['agentName'] }}</div>
+                            </div>
+                        </div>
+                    </mat-list-item>
+                    <mat-divider></mat-divider>
+                </ng-container>
+            </mat-list>
+
+            <!-- <pre *ngFor="let t of tickets">{{ tickets | json }}</pre> -->
+        </div>
+    </div>
+</div>

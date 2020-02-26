@@ -1,0 +1,368 @@
+<div class="container p-2 pt-3">
+
+
+
+    <!-- START ITEM HOTEL -->
+    <ng-container *ngIf="i['itemType'] == 1">
+        <div class="container d-flex justify-content-start p-1" *ngIf="!editNameFlag">
+            <div class="d-flex justify-content-start align-items-center">
+                <div class="productConcept"><b>Nombre:</b></div>
+                <div style="font-weight: bolder">{{ i['nombreCliente'] }} <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editNameFlag = true"><mat-icon>edit</mat-icon></button></div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-start align-items-center" *ngIf="editNameFlag">
+            <mat-form-field class="example-full-width">
+                <input style="font-size: 11px" matInput placeholder="Nombre" [value]="i['nombreCliente']" #clientName>
+            </mat-form-field>
+            <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editNameFlag = false" [disabled]="loading['editName']"><mat-icon *ngIf="!loading['editName']">cancel</mat-icon><span *ngIf="loading['editName']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+            <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editName(clientName, i)" [disabled]="loading['editName']"><mat-icon *ngIf="!loading['editName']">done</mat-icon><span *ngIf="loading['editName']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+        </div>
+        <div class="container row p-2">
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Hotel:</b></div>
+                    <div class="clientInfo">{{ i['hotel'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Categoria:</b></div>
+                    <div class="clientInfo">{{ i['categoria'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Tipo Tarifa:</b></div>
+                    <div class="clientInfo">{{ i['isNR'] == 1 ? 'No Reembolsable' : 'Flexible' }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Agencia:</b></div>
+                    <div class="clientInfo">{{ i['agencia'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Grupo:</b></div>
+                    <div class="clientInfo">{{ i['grupo'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>TarifaCC:</b></div>
+                    <div class="clientInfo">{{ i['grupoTfas'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Nivel:</b></div>
+                    <div class="clientInfo">{{ i['lv'] }}</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Llegada:</b></div>
+                    <div class="clientInfo">{{ formatDate(i['llegada'], 'DD MMM YYYY') }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Salida:</b></div>
+                    <div class="clientInfo">{{ formatDate(i['salida'], 'DD MMM YYYY') }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Adultos:</b></div>
+                    <div class="clientInfo">{{ i['adultos'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Juniors:</b></div>
+                    <div class="clientInfo">{{ i['juniors'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Menores:</b></div>
+                    <div class="clientInfo">{{ i['menores'] }}</div>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="i['isCancel'] != 1">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Método de Pago:</b></div>
+                    <div class="clientInfo">{{ i['isPagoHotel'] == 1 ? 'PH' : i['isParcial'] == 1 ? 'PP' : 'PT' }}</div>
+                </div>
+                <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>TSI:</b></div>
+                    <div class="clientInfo">{{ ( i['monto'] / 1.19 ) | currency:'MXN':'symbol-narrow':'.2-2' }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Status de pago:</b></div>
+                    <div class="clientInfo">{{ i['tipoPago'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Moneda:</b></div>
+                    <div class="clientInfo">{{ i['moneda'] }}</div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- END ITEM HOTEL -->
+
+    <!-- START ITEM DAYPASS -->
+    <ng-container *ngIf="i['itemType'] == 2">
+        <div class="container row p-2">
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Categoria:</b></div>
+                    <div class="clientInfo">{{ i['categoria'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Hotel:</b></div>
+                    <div class="clientInfo">{{ i['hotel'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Fecha:</b></div>
+                    <div class="clientInfo">{{ formatDate(i['llegada'], 'DD MMM YYYY') }}</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Adultos:</b></div>
+                    <div class="clientInfo">{{ i['adultos'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Juniors:</b></div>
+                    <div class="clientInfo">{{ i['juniors'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Menores:</b></div>
+                    <div class="clientInfo">{{ i['menores'] }}</div>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="i['isCancel'] != 1">
+                <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Status de pago:</b></div>
+                    <div class="clientInfo">{{ i['tipoPago'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Moneda:</b></div>
+                    <div class="clientInfo">{{ i['moneda'] }}</div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- END ITEM DAYPASS -->
+
+    <!-- START ITEM TOUR -->
+    <ng-container *ngIf="i['itemType'] == 4">
+        <div class="container row p-2">
+            <div class="col-8">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Servicio:</b></div>
+                    <div class="clientInfoXL">{{ i['trName'] }} <span class="text-info">({{ i['trTitulo'] }})</span></div>
+                </div>
+
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Adultos:</b></div>
+                    <div class="clientInfoXL">{{ i['adultos'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Menores:</b></div>
+                    <div class="clientInfoXL">{{ i['menores'] }}</div>
+                </div>
+
+
+
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Llegada:</b></div>
+                    <div class="clientInfoXL">{{ formatDate(i['llegada'], 'DD/MM/YY') }} {{ i['hora_in'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Horario:</b></div>
+                    <div class="clientInfoXL">{{ i['pickup'] }}</div>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="i['isCancel'] != 1">
+                <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Status de pago:</b></div>
+                    <div class="clientInfo">{{ i['tipoPago'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Moneda:</b></div>
+                    <div class="clientInfo">{{ i['moneda'] }}</div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- END ITEM TOUR -->
+
+    <!-- START ITEM XFER -->
+    <ng-container *ngIf="i['itemType'] == 5">
+        <div class="container row p-2">
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Servicio:</b></div>
+                    <div class="clientInfo">{{ i['categoria'] }} <span class="text-info">{{ i['xferType'] }} {{ i['isShared'] == 1  ? 'compartido' : i['xferType'] == 'abierto' ? '' : 'privado' }}</span> {{ i['Zona'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Hotel:</b></div>
+                    <div class="clientInfo">{{ i['hotel'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Adultos:</b></div>
+                    <div class="clientInfo">{{ i['adultos'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Menores:</b></div>
+                    <div class="clientInfo">{{ i['menores'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Infantes:</b></div>
+                    <div class="clientInfo">{{ i['infantes'] }}</div>
+                </div>
+
+            </div>
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Llegada:</b></div>
+                    <div class="clientInfo">{{ formatDate(i['llegada'], 'DD/MM/YY') }} {{ i['hora_in'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Vuelo In:</b></div>
+                    <div class="clientInfo">{{ i['aerolinea_in'] }} {{ i['vuelo_in'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>PickUp In:</b></div>
+                    <div class="clientInfo">{{ i['dtPickUpIn'] }}</div>
+                </div>
+                <ng-container *ngIf="i['salida'] != null">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConceptXL"><b>Salida:</b></div>
+                        <div class="clientInfo">{{ formatDate(i['salida'], 'DD/MM/YY') }} {{ i['hora_out'] }}</div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConceptXL"><b>Vuelo Out:</b></div>
+                        <div class="clientInfo">{{ i['aerolinea_out'] }} {{ i['vuelo_out'] }}</div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConceptXL"><b>PickUp Out:</b></div>
+                        <div class="clientInfo">{{ i['dtPickUpOut'] }}</div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="col-4" *ngIf="i['isCancel'] != 1 && i['isFree'] == 0">
+                <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Status de pago:</b></div>
+                    <div class="clientInfo">{{ i['tipoPago'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Moneda:</b></div>
+                    <div class="clientInfo">{{ i['moneda'] }}</div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- END ITEM XFER -->
+
+    <!-- START ITEM AUTO -->
+    <ng-container *ngIf="i['itemType'] == 3">
+        <div class="container row p-2">
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Auto:</b></div>
+                    <div class="clientInfo">{{ i['categoria'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Dias:</b></div>
+                    <div class="clientInfo">{{ i['dias'] }}</div>
+                </div>
+
+            </div>
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Inicio:</b></div>
+                    <div class="clientInfo">{{ formatDate(i['llegada'], 'DD/MM/YY') }} {{ i['hora_in'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Fin:</b></div>
+                    <div class="clientInfo">{{ formatDate(i['salida'], 'DD/MM/YY') }} {{ i['hora_out'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>PickUp:</b></div>
+                    <div class="clientInfo">{{ i['pickup'] }}</div>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="i['isCancel'] != 1">
+                <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Status de pago:</b></div>
+                    <div class="clientInfo">{{ i['tipoPago'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Moneda:</b></div>
+                    <div class="clientInfo">{{ i['moneda'] }}</div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- END ITEM AUTO -->
+
+    <!-- START ITEM CONCIERTO -->
+    <ng-container *ngIf="i['itemType'] == 9">
+        <div class="container row p-2">
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Concierto:</b></div>
+                    <div class="clientInfo">{{ i['categoria'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Categoria:</b></div>
+                    <div class="clientInfo">{{ i['hotel'] }}</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Fecha:</b></div>
+                    <div class="clientInfo">{{ formatDate(i['llegada'], 'DD/MM/YY') }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Pax:</b></div>
+                    <div class="clientInfo">{{ i['adultos'] }}</div>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="i['isCancel'] != 1">
+                <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Status de pago:</b></div>
+                    <div class="clientInfo">{{ i['tipoPago'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Moneda:</b></div>
+                    <div class="clientInfo">{{ i['moneda'] }}</div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- END ITEM CONCIERTO -->
+
+    <div class="container d-flex justify-content-around">
+
+        <div class="d-flex justify-content-end align-items-center" *ngIf="i['isQuote'] == '0' && i['isCancel'] == 0">
+            <div class="clientConcept"><b>Reenviar Confirmación:</b></div>
+            <div class="clientInfo" *ngIf="!loading['sendConf']">
+                <button class="ml-3" mat-mini-fab color="primary" (click)="sendConf(true)">
+                    <mat-icon>home</mat-icon>
+                </button>
+                <button class="ml-3" mat-mini-fab color="accent" (click)="sendConf(false)">
+                    <mat-icon>language</mat-icon>
+                </button>
+            </div>
+            <div class="clientInfo" *ngIf="loading['sendConf']">
+                <span><i class="fas fa-spinner fa-pulse"></i></span>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center">
+            <div class="clientConcept"><b>Vouchers:</b></div>
+            <div class="clientInfo">
+                <a mat-mini-fab color="primary" [href]="hrIndex + '/vouchers/' + i['itemLocatorId']" target="_blank">
+                    <mat-icon>remove_red_eye</mat-icon>
+                </a>
+                <button class="ml-3" mat-mini-fab color="accent" (click)="uplImg.emit(i)">
+                    <mat-icon>note_add</mat-icon>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <div class="d-flex justify-content-end align-items-center">
+        <div class="clientConcept"><small>id {{ i['itemId'] }}</small></div>
+    </div>
+</div>

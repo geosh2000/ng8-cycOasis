@@ -1,0 +1,140 @@
+<div class="container-fluid d-flex flex-wrap justify-content-between scale">
+    <ng-container *ngFor="let f of data">
+        <mat-card class="example-card m-1" [ngClass]="bgStatus(f)" *ngIf="f['online_time']>0">
+            <mat-card-header [style.width.px]="270">
+                <div mat-card-avatar [style.backgroundImage]="'url(' + f['avatar_url'] + ')'" class="example-header-image"></div>
+                <mat-card-title class="text-truncate">{{ f['name'] }}</mat-card-title>
+                <mat-card-subtitle>{{ f['status'] == 'En una llamada' ? 'En llamada' : f['status'] }} <b>(AHT: {{ printVal('time', f['average_talk_time']+f['average_hold_time']+f['average_wrap_up_time']) }})</b></mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <table style="width: 100%">
+                    <tr>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" color="primary" selected><i class="fas fa-user-circle mr-2"></i> {{ printVal('online_time', f['online_time']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" color="pause" selected><i class="fas fa-pause-circle mr-2"></i> {{ printVal('away_time', f['away_time']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right" *ngIf="f['online_time'] != 0">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" [style.width.px]="98" [color]="(f['away_time']/f['online_time']) > .1 ? 'warn' : 'call'" selected>
+                                    <i class="fas fa-user-clock mr-2"></i>
+                                    <span class="text-center" [style.width.%]="100">{{ (1-(f['away_time']/f['online_time'])) | percent:'.0-0' }}</span>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" color="call" selected><i class="fas fa-headset mr-2"></i> {{ printVal('total_call_duration', f['total_call_duration']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" color="wrap" selected><i class="fas fa-keyboard mr-2"></i> {{ printVal('total_wrap_up_time', f['total_wrap_up_time']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right" *ngIf="f['online_time']-f['away_time'] != 0">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" [style.width.px]="98" [color]="((f['total_call_duration']+f['total_wrap_up_time'])/(f['online_time']-f['away_time'])) >= .7 ? 'call' : 'warn'" selected>
+                                    <i class="fas fa-user-cog mr-2"></i>
+                                    <span class="text-center" [style.width.%]="100">{{ ((f['total_call_duration']+f['total_wrap_up_time'])/(f['online_time']-f['away_time'])) | percent:'.0-0' }}</span>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" [style.width.px]="98" color="wrap" selected>
+                                    <i class="fas fa-phone mr-2"></i>
+                                    <span class="text-center" [style.width.%]="100">{{ f['calls_accepted'] }}</span>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" [style.width.px]="98" color="warn" selected>
+                                    <i class="fas fa-microphone-alt-slash mr-2"></i>
+                                    <span class="text-center" [style.width.%]="100">{{ f['calls_denied'] }}</span>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip class="border border-light" [style.width.px]="98" color="accent" selected>
+                                    <i class="fas fa-phone-slash mr-2"></i>
+                                    <span class="text-center" [style.width.%]="100">{{ f['calls_missed'] }}</span>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr>
+                    <!-- <tr>
+                        <td>Online: </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip color="primary" selected>{{ printVal('online_time', f['online_time']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Avail: </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip color="accent" selected>{{ printVal('available_time', f['online_time']-f['total_call_duration']-f['away_time']-f['total_wrap_up_time']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right" *ngIf="f['online_time'] != 0">
+                            <mat-chip-list>
+                                <mat-chip [color]="((f['online_time']-f['total_call_duration']-f['away_time']-f['total_wrap_up_time'])/f['online_time']) >= .85 ? 'call' : ((f['online_time']-f['total_call_duration']-f['away_time']-f['total_wrap_up_time'])/f['online_time']) >= .7 ? 'pause' : 'accent'"
+                                    selected>{{ ((f['online_time']-f['total_call_duration']-f['away_time']-f['total_wrap_up_time'])/f['online_time']) | percent:'.0-0' }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>On call: </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip color="call" selected>{{ printVal('total_call_duration', f['total_call_duration']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right" *ngIf="f['online_time']-f['total_call_duration']-f['away_time']-f['total_wrap_up_time'] != 0">
+                            <mat-chip-list>
+                                <mat-chip [color]="(f['total_call_duration']/(f['online_time']-f['total_call_duration']-f['away_time']-f['total_wrap_up_time'])) >= .7 ? 'call' : 'warn'" selected>{{ (f['total_call_duration']/(f['online_time']-f['total_call_duration']-f['away_time']-f['total_wrap_up_time'])) | percent:'.0-0' }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Away: </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip color="pause" selected>{{ printVal('away_time', f['away_time']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                        <td class="text-right" *ngIf="f['online_time'] != 0">
+                            <mat-chip-list>
+                                <mat-chip [color]="(f['away_time']/f['online_time']) > .1 ? 'warn' : 'call'" selected>{{ (f['away_time']/f['online_time']) | percent:'.0-0' }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Wrap-Up: </td>
+                        <td class="text-right">
+                            <mat-chip-list>
+                                <mat-chip color="wrap" selected>{{ printVal('total_wrap_up_time', f['total_wrap_up_time']) }}</mat-chip>
+                            </mat-chip-list>
+                        </td>
+                    </tr> -->
+                </table>
+            </mat-card-content>
+        </mat-card>
+    </ng-container>
+</div>
+<div class="d-flex justify-content-end">
+    <small>Last Update: {{ lu }}</small>
+</div>
