@@ -25,6 +25,7 @@ import { Rsv2ManageComponent } from './components/rsv2/rsv2-manage/rsv2-manage.c
 import { ExtranetComponent } from './components/extranet/extranet.component';
 import { ExtranetListComponent } from './components/extranet/extranet-list/extranet-list.component';
 import { WhatsappComponent } from './components/whatsapp/whatsapp.component';
+import { UploadFilesComponent } from './config/upload-files/upload-files.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -74,6 +75,9 @@ const routes: Routes = [
 
   { path: 'whatsapp', component: WhatsappComponent },
   { path: 'whatsapp/:ticket', component: WhatsappComponent },
+
+  { path: 'uploads', component: UploadFilesComponent },
+  { path: 'uploads/:param', component: UploadFilesComponent },
 
 ];
 

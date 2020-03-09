@@ -1,0 +1,31 @@
+<h3>Reservas CIELO</h3>
+<mat-progress-bar *ngIf="loading['cielo']"></mat-progress-bar>
+
+<ng-container *ngIf="cieloList.length>0">
+    <table style='font-size: smaller;' class="table table-sm table-bordered table-hover table-striped">
+
+        <thead>
+            <tr>
+                <th>HOTEL</th>
+                <ng-container *ngFor="let s of summary['GOC'] | keys">
+                    <th>{{ s }}</th>
+                </ng-container>
+            </tr>
+        </thead>
+
+        <tbody>
+            <ng-container *ngFor="let h of summary | keys">
+                <tr *ngIf="h != 'total'">
+                    <td>{{ h }}</td>
+                    <ng-container *ngFor="let c of summary[h] | keys">
+                        <td>{{ summary[h][c] }}</td>
+                    </ng-container>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+    <div class="container d-flex justify-content-end">
+        <button mat-raised-button color='primary' (click)="submitChanges()"><span *ngIf="loading['uploading']"><i class="fas fa-spinner fa-pulse"></i></span><span *ngIf="!loading['uploading']">Subir</span></button>
+    </div>
+
+</ng-container>

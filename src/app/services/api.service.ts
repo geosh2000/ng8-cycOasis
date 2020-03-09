@@ -92,18 +92,30 @@ export class ApiService {
         )
   }
 
-  restfulPost( params, apiRoute ){
+  restfulPost( params, apiRoute, alterRoute = false, token? ){
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    let url = `${ this.apiRestful }${ apiRoute }?token=${currentUser ? currentUser.token : 'noToken'}&usn=${currentUser ? currentUser.username : 'noUser'}&usid=${currentUser ? currentUser.hcInfo.id : 'noId'}&zdId=${currentUser ? currentUser.hcInfo.zdId : 'noId'}&localIp=${this.localIp}`
+
+    let url = ''
+    let headers:any
+
+    if( !alterRoute ){
+      url = `${ this.apiRestful }${ apiRoute }?token=${currentUser ? currentUser.token : 'noToken'}&usn=${currentUser ? currentUser.username : 'noUser'}&usid=${currentUser ? currentUser.hcInfo.id : 'noId'}&zdId=${currentUser ? currentUser.hcInfo.zdId : 'noId'}&localIp=${this.localIp}`
+      headers = new HttpHeaders({
+        'Content-Type':'application/json'
+      });
+    }else{
+      url = apiRoute
+      headers = new HttpHeaders({
+        'Content-Type':'application/json',
+        Authorization : token
+      });
+    }
 
     let urlOK = this.transform( url )
 
     let body = JSON.stringify( params );
 
-    let headers = new HttpHeaders({
-      'Content-Type':'application/json'
-    });
 
     return this.http.post( urlOK.changingThisBreaksApplicationSecurity, body, { headers } )
         .pipe(

@@ -1,0 +1,48 @@
+<div class="alert alert-danger" role="alert" *ngIf="!showContents">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="showContents">
+
+    <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <span><h1 class="display-3">Sube registros</h1></span>
+                    <p class="lead">Sube los archivos xlsx a la base de datos del CyC</p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class='container d-flex justify-content-start'>
+            <div class='p-2'>
+                <select class="custom-select mb-2 mr-sm-2 mb-sm-0" [(ngModel)]="uploadType">
+                    <option [value]="o.value" *ngFor="let o of uplList">{{ o.displayName }}</option>
+                </select>
+            </div>
+            <div class="p-2">
+                <form [formGroup]="imageForm">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label class="sr-only" for="formUploadImage">Archivo</label>
+                            <input (change)="setImagePath( )" type="file" class="form-control mb-2 mb-sm-0" id="formUploadImage" placeholder="Archivo" #imageFile formControlName="imageFile" [disabled]="!uploadType">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class='p-2'>
+                <button class="btn btn-success" (click)="uploadXls()" [disabled]="loading['upload']">Subir <span *ngIf="loading['upload']"><i class="fas fa-spinner fa-pulse"></i></span></button>
+            </div>
+        </div>
+        <iframe id="dwlFrame" src="assets/img/bePriceBCO.png" style="display:none;"></iframe>
+    </div>
+
+    <div class="container d-flex justify-content-center" *ngIf="loading['building']">
+        <h1>{{ loading['upload'] ? 'Subiendo' : 'Construyendo' }}... <i class="fas fa-spinner fa-pulse"></i></h1>
+    </div>
+
+    <div class="container-fluid">
+        <app-cid-prod *ngIf="uploadType=='cid2020'"></app-cid-prod>
+        <app-cielo-llegadas *ngIf="uploadType=='cieloLlegadas'"></app-cielo-llegadas>
+    </div>
+
+</div>

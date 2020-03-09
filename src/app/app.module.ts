@@ -179,6 +179,9 @@ import { ChatWindowComponent } from './components/whatsapp/chat-window/chat-wind
 import { ConversationsComponent } from './components/whatsapp/conversations/conversations.component';
 import { NgxAudioPlayerModule } from 'ngx-audio-player';
 import { GoToLocComponent } from './shared/go-to-loc/go-to-loc.component';
+import { UploadFilesComponent } from './config/upload-files/upload-files.component';
+import { CidProdComponent } from './config/upload-files/cid-prod/cid-prod.component';
+import { CieloLlegadasComponent } from './config/upload-files/cielo-llegadas/cielo-llegadas.component';
 
 @NgModule({
   declarations: [
@@ -295,7 +298,10 @@ import { GoToLocComponent } from './shared/go-to-loc/go-to-loc.component';
     WhatsappComponent,
     ChatWindowComponent,
     ConversationsComponent,
-    GoToLocComponent
+    GoToLocComponent,
+    UploadFilesComponent,
+    CidProdComponent,
+    CieloLlegadasComponent
 
   ],
   imports: [
