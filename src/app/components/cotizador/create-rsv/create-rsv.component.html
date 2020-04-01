@@ -62,6 +62,27 @@
                         </div>
                     </div>
                 </form>
+                <form [formGroup]="clientForm" (ngSubmit)="saveLang()" *ngIf="!searchUserFlag && !isNew && newRsvForm.status=='INVALID'">
+                    <div class="d-flex justify-content-center pt-3" [style.width.px]="1137">
+                        <mat-form-field>
+                            <mat-label>Idioma Usuario</mat-label>
+                            <mat-select (selectionChange)="selectedLang($event)" formControlName="lang" #langSelect>
+                                <ng-container *ngFor="let lang of idiomas">
+                                    <mat-option [value]="lang['lang']">
+                                        {{ lang['idioma'] }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error *ngIf="langSelect.errorState && clientForm.controls['lang'].errors['required']">
+                                Debes elegir un idioma
+                            </mat-error>
+                        </mat-form-field>
+                        <div class='p-1' *ngIf="!loading['lang']">
+                            <button mat-raised-button type="submit" color="accent" [disabled]="clientForm.status=='INVALID'">Guardar Idioma</button>
+                        </div>
+                    </div>
+                    <mat-progress-bar color="accent" mode="buffer" *ngIf="loading['lang']"></mat-progress-bar>
+                </form>
                 <!-- END SEARCH APPS -->
 
                 <!-- BEGIN RSV HOTEL -->

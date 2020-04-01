@@ -1,6 +1,6 @@
 // Production = 1
 // Development = 0
-let env = 0
+let env = 1
 
 
 export const APISERV = env == 1 ? '' : '';

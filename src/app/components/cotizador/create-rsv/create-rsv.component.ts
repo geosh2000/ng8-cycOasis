@@ -37,7 +37,7 @@ import * as moment from 'moment-timezone';
 })
 export class CreateRsvComponent implements OnInit {
 
-  @ViewChild( SearchZdUserComponent ,{static:false}) private zdSearch: SearchZdUserComponent
+  @ViewChild( SearchZdUserComponent ,{static:false}) private _zdu: SearchZdUserComponent
   // tslint:disable-next-line: no-output-native
   @Output() error = new EventEmitter<any>()
   @Output() save = new EventEmitter<any>()
@@ -49,9 +49,19 @@ export class CreateRsvComponent implements OnInit {
   isNew = true
   searchUserFlag = true
   newRsvForm:FormGroup
+  clientForm:FormGroup
   masterLoc:any
   total = 0
   all:any
+
+  idiomas:Object = [
+    {idioma: 'español', lang: 'idioma_es'},
+    {idioma: 'inglés', lang: 'idioma_en'},
+    {idioma: 'francés', lang: 'idioma_fr'},
+    {idioma: 'portugués', lang: 'idioma_pt'}
+  ]
+
+  zduFlag = false
 
   fechaSalida:any
 
@@ -71,7 +81,13 @@ export class CreateRsvComponent implements OnInit {
       ['correoCliente']:   new FormControl('', [ Validators.required, Validators.pattern('^(.)+@(.)+\\.(.)+$')]),
       ['telCliente']:   new FormControl('', []),
       ['zdUserId']:   new FormControl('', [ Validators.required, Validators.pattern('^\\d+$')]),
+      ['languaje']:   new FormControl('', [ Validators.required ]),
       ['userCreated']:   new FormControl(this._init.currentUser['hcInfo']['id'], [ Validators.required, Validators.pattern('^\\d+$')])
+    })
+
+    this.clientForm =  new FormGroup({
+      ['id']:    new FormControl('', [ Validators.required ]),
+      ['lang']:   new FormControl('', [ Validators.required ])
     })
 
    }
@@ -79,23 +95,36 @@ export class CreateRsvComponent implements OnInit {
   ngOnInit() {
   }
 
+  selectedLang(e){
+    this.clientForm.controls['lang'].setValue(e.value)
+    console.log(this.clientForm.controls)
+  }
+
   selectedUser( e ){
     this.newRsvForm.reset()
+    this.clientForm.reset()
+
     this.masterLoc = null
     this.newRsvForm.controls['userCreated'].setValue(this._init.currentUser['hcInfo']['id'])
 
 
     if( !this.isNew ){
       this.masterLoc = e['masterlocatorid']
+
       this.newRsvForm.controls['nombreCliente'].setValue(e['nombreCliente'])
       this.newRsvForm.controls['correoCliente'].setValue(e['correoCliente'])
       this.newRsvForm.controls['telCliente'].setValue(e['telCliente'])
       this.newRsvForm.controls['zdUserId'].setValue(e['zdUserId'])
+      this.newRsvForm.controls['languaje'].setValue(e['languaje'])
+      this.clientForm.controls['id'].setValue(e['zdUserId'])
+      this.clientForm.controls['lang'].setValue(e['languaje'])
+
     }else{
       this.newRsvForm.controls['nombreCliente'].setValue(e['name'])
       this.newRsvForm.controls['correoCliente'].setValue(e['email'])
       this.newRsvForm.controls['telCliente'].setValue(e['phone'])
       this.newRsvForm.controls['zdUserId'].setValue(e['id'])
+      this.newRsvForm.controls['languaje'].setValue(e['user_fields']['idioma_cliente'])
     }
     this.searchUserFlag = false
 
@@ -305,7 +334,36 @@ export class CreateRsvComponent implements OnInit {
     return `${h}:${m < 10 ? '0' + m : m}`
   }
 
-  tst(){
-    
+  saveLang(){
+
+    let item
+    this.loading['lang'] = true
+
+    let params = {
+      values : {
+        rqId: this.clientForm.controls['id'].value,
+        user_fields: { idioma_cliente: this.clientForm.controls['lang'].value }
+      },
+      field: 'user_fields'
+    }
+
+    this._api.restfulPut( params, 'Calls/updateUserV2' )
+                .subscribe( res => {
+
+                  this.loading['create'] = false;
+                  item = res['rsp']['data']['user']
+                  this.newRsvForm.controls['languaje'].setValue(item['user_fields']['idioma_cliente'])
+                  this.loading['lang'] = false
+
+                }, err => {
+                  this.loading['lang'] = false
+                  this.loading['create'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+
   }
 }

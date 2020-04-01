@@ -25,7 +25,8 @@
                         "styles": [
                             "src/styles.css",
                             "./node_modules/ngx-ui-switch/ui-switch.component.css",
-                            "node_modules/ngx-easy-table/style.css"
+                            "node_modules/ngx-easy-table/style.css",
+                            "node_modules/ngx-toastr/toastr.css"
                         ],
                         "scripts": []
                     },
@@ -83,7 +84,8 @@
                         "styles": [
                             "src/styles.css",
                             "./node_modules/ngx-ui-switch/ui-switch.component.css",
-                            "node_modules/ngx-easy-table/style.css"
+                            "node_modules/ngx-easy-table/style.css",
+                            "node_modules/ngx-toastr/toastr.css"
                         ],
                         "scripts": []
                     }

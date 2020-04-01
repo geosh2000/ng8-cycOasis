@@ -5,3 +5,8 @@
 .mat-radio-button~.mat-radio-button {
     margin-left: 16px;
 }
+
+.cdk-overlay-container,
+.cdk-overlay-pane {
+    z-index: 9999 !important;
+}

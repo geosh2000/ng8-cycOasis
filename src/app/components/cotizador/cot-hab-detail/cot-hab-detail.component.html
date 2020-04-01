@@ -121,10 +121,10 @@
                 </ng-container>
             </div>
         </div>
-        <div class="form d-flex justify-content-center pr-3" *ngIf="paymentSelect && hb['gpotfaOK']=='ccenter_pkgSB2020'">
+        <div class="form d-flex justify-content-center pr-3" *ngIf="paymentSelect">
             <div class="form-group p-1">
                 <div class="input-group">
-                    <textarea rows="5" cols="120" [(ngModel)]="hb['notasHotel']" placeholder="Nombres de los huéspedes" id="notas"></textarea>
+                    <textarea rows="5" cols="120" [(ngModel)]="hb['notasHotel']" placeholder="Notas Reserva" id="notas"></textarea>
                 </div>
             </div>
 

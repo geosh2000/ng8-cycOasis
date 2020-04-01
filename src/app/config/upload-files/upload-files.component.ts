@@ -46,6 +46,9 @@ export class UploadFilesComponent implements OnInit {
   xlsAttr:any = []
   uploadType:any = 'regs'
 
+  arrayBuffer:any;
+  file:File;
+
   constructor(public _api: ApiService,
               public _init:InitService,
               private titleService: Title,
@@ -73,6 +76,10 @@ export class UploadFilesComponent implements OnInit {
       ftype:              new FormControl('.xlsx', [ Validators.required,  ] )
     })
 
+  }
+
+  incomingfile(event){
+    this.file= event.target.files[0]
   }
 
   ngOnInit() {
@@ -118,76 +125,112 @@ export class UploadFilesComponent implements OnInit {
   }
 
   uploadXls(){
-    let Image = this.image_File.nativeElement
+    // let Image = this.image_File.nativeElement
     let type = this.uploadType
-
-    if( Image.files && Image.files[0] ){
-      this.imageFileUp = Image.files[0]
-    }else{
-      this.toastr.error('No se ha cargado ningun archivo correcto', 'ERROR')
-      return true
-    }
-
-    let ImageFile: File = this.imageFileUp
-
-    let formData: FormData = new FormData()
-    formData.append( 'fname', this.imageForm.controls['fname'].value)
-    formData.append( 'dir',   this.imageForm.controls['dir'].value)
-    formData.append( 'ftype', this.imageForm.controls['ftype'].value)
-    formData.append( 'image', ImageFile, ImageFile.name)
-
     this.loading['building'] = true
     this.loading['upload'] = true
-    this._api.restfulImgPost( formData, 'UploadImage/uploadImage' )
-            .subscribe( res => {
-                this.loading['upload'] = false
-                this.buildForms(type)
 
-            }, err => {
-                this.loading['upload'] = false
-                this.loading['building'] = false
-                console.log('ERROR', err)
-                this.toastr.error( err, 'Error' )
-              })
+    // if( Image.files && Image.files[0] ){
+    //   this.imageFileUp = Image.files[0]
+    // }else{
+    //   this.toastr.error('No se ha cargado ningun archivo correcto', 'ERROR')
+    //   return true
+    // }
 
+    // let ImageFile: File = this.imageFileUp
+
+    // let formData: FormData = new FormData()
+    // formData.append( 'fname', this.imageForm.controls['fname'].value)
+    // formData.append( 'dir',   this.imageForm.controls['dir'].value)
+    // formData.append( 'ftype', this.imageForm.controls['ftype'].value)
+    // formData.append( 'image', ImageFile, ImageFile.name)
+
+    // this.loading['building'] = true
+    // this.loading['upload'] = true
+    // this._api.restfulImgPost( formData, 'UploadImage/uploadImage' )
+    //         .subscribe( res => {
+    //             this.loading['upload'] = false
+    //             this.buildForms(type, res)
+
+    //         }, err => {
+    //             this.loading['upload'] = false
+    //             this.loading['building'] = false
+    //             console.log('ERROR', err)
+    //             this.toastr.error( err, 'Error' )
+    //           })
+
+    this.buildForms( type, null)
+    this.loading['upload'] = false
   }
 
-  buildForms( type ){
+  buildForms( type, s ){
 
-    let tests = {
-      cid2020: 'smd.xlsx',
-      cieloLlegadas: 'llegadas.xls'
-    }
+    // let tests = {
+    //   cid2020: 'smd.xlsx',
+    //   cieloLlegadas: 'llegadas.xls'
+    // }
 
-    let url = Globals.PRODENV == 1 ? `img/${this.imageForm.controls['dir'].value}` : `assets`
-    let file = Globals.PRODENV == 1 ? `${this.imageForm.controls['fname'].value + this.imageForm.controls['ftype'].value}` : tests[type]
-    let test = Globals.PRODENV == 1 ? false : true
-    let dt = {}
+    // let url = Globals.PRODENV == 1 ? `img/${this.imageForm.controls['dir'].value}` : `assets`
+    // let file = Globals.PRODENV == 1 ? `${s[1]['fname']}${s[0]['ftype']}` : tests[type]
+    // let test = Globals.PRODENV == 1 ? false : true
+    // let dt = {}
 
-    this._api.getFile( file, url, test )
-        .subscribe( f => {
-          let data = new Uint8Array(f);
-          let workbook = readXlsx(data, {type:'array'});
-          let sheetName = workbook.SheetNames[0]
-          let jsonFile = utils.sheet_to_json( workbook.Sheets[sheetName], {raw: true, defval:null} )
-
-          this.xlsJson = jsonFile
+    // this._api.getFile( file, url, test )
+    //     .subscribe( f => {
+    console.log('build start')
+    console.log(this.file)
+    let fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(this.file);
+    fileReader.onload = (e) => {
+          this.arrayBuffer = fileReader.result;
+          let data = new Uint8Array(this.arrayBuffer);
+          // let data = new Uint8Array(f);
+          let arr = new Array();
+          for(let i = 0; i != data.length; ++i){
+            arr[i] = String.fromCharCode(data[i]);
+          }
+          let bstr = arr.join('');
+          let workbook
 
           switch( type ){
             case 'cid2020':
+              workbook = readXlsx(data, {type:'array'});
+              break
+            case 'cieloLlegadas':
+              console.log(bstr)
+              console.log(arr)
+              workbook = readXlsx(bstr, {type:'string'});
+              break
+          }
+
+          let sheetName = workbook.SheetNames[0]
+          let jsonFile = utils.sheet_to_json( workbook.Sheets[sheetName], {raw: true, defval:null} )
+          this.xlsJson = jsonFile
+          console.log('jsonFile created')
+          console.log(jsonFile)
+
+          switch( type ){
+            case 'cid2020':
+              console.log('cid2020 called')
               this.cid.buildVouchers(jsonFile)
               this.loading['building'] = false
               break;
             case 'cieloLlegadas':
+              console.log('cieloLlegadas called')
               this.clL.buildVouchers(jsonFile)
               this.loading['building'] = false
               break;
+            default:
+              console.log('process not defined')
           }
 
+        // })
+    }
 
+  }
 
-
-        })
+  excelDate( excelDate ) {
+    return new Date((excelDate - (25567 + 1))*86400*1000).toLocaleDateString('en-US');
   }
 
   buildTx( arr, type ){

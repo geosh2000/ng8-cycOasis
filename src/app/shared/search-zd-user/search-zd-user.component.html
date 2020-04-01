@@ -1,50 +1,63 @@
-<div class="row">
-    <div class="col" style="max-height: 550px">
-        <div class="col d-flex justify-content-center flex-wrap" style="max-height: 550px">
-            <div class="p-1">
-                <mat-form-field>
-                    <input matInput placeholder="Nombre o Correo" name="mail" [(ngModel)]="mail">
-                </mat-form-field>
-            </div>
-            <div class="p-1">
-                <button mat-raised-button color="primary" (click)="search()" [disabled]="loading['search'] || mail.length<3">Buscar <span *ngIf="loading['search']"><i class="fas fa-spinner fa-pulse"></i></span></button>
-            </div>
+<div class="d-flex justify-content-between" style="max-height: 550px" *ngIf="!loading['search']">
+    <div class="col d-flex justify-content-center flex-wrap" style="max-height: 550px">
+        <div class="p-1">
+            <mat-form-field>
+                <input matInput placeholder="Nombre o Correo" name="mail" [(ngModel)]="mail">
+            </mat-form-field>
         </div>
-        <div class="col d-flex justify-content-center flex-wrap pt-4" style="max-height: 550px" *ngIf="data.length > 0">
-            <mat-radio-group (change)="orderBy($event)" aria-label="Ordenar Resultados por">
-                <mat-radio-button value="name">Nombre</mat-radio-button>
-                <mat-radio-button value="email">Correo</mat-radio-button>
-            </mat-radio-group>
+        <div class="p-1">
+            <button mat-raised-button color="primary" (click)="search()" [disabled]="mail.length<3">Buscar</button>
+        </div>
+        <div class="p-1">
+            <button mat-raised-button color="primary" (click)="searchFromTicket()" [disabled]="!isTicket(mail)">Desde Ticket</button>
         </div>
     </div>
-    <div class="col-9" style="max-height: 550px; overflow-y: auto; overflow-x: hidden" *ngIf="data.length > 0 || noResults">
-        <mat-list *ngIf="data.length > 0">
-            <ng-container *ngFor="let item of data; index as i">
-                <mat-list-item>
-                    <span [style.width.px]="200" class="text-info text-truncate text-sm" matTooltipPosition="above" [matTooltip]="item['name']">{{ item['name'] }}</span>
-                    <span [style.width.px]="10"></span>
-                    <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-phone"></i></span>
-                    <span [style.width.px]="150" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['phone']">{{ item['phone'] }}</span>
-                    <span [style.width.px]="10"></span>
-                    <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fab fa-whatsapp"></i></span>
-                    <span [style.width.px]="150" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['user_fields']['whatsapp']">{{ item['user_fields']['whatsapp'] }}</span>
-                    <span [style.width.px]="10"></span>
-                    <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-envelope"></i></span>
-                    <span [style.width.px]="250" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['email'] }}</span>
+
+    <div class="col d-flex justify-content-center flex-wrap pt-4" style="max-height: 550px" *ngIf="data.length > 0">
+        <div class="mr-3">Ordenar por:</div>
+        <mat-radio-group (change)="orderBy($event)" aria-label="Ordenar Resultados por">
+            <mat-radio-button value="name">Nombre</mat-radio-button>
+            <mat-radio-button value="email">Correo</mat-radio-button>
+        </mat-radio-group>
+    </div>
+</div>
+<mat-progress-bar mode="buffer" *ngIf="loading['search']"></mat-progress-bar>
+<div class="alert alert-danger" role="alert" *ngIf="noEditable">
+    Este usuario no puede usarse para cotizar o reservar / No es editable
+</div>
+<div style="max-height: 550px; overflow-y: auto; overflow-x: hidden" *ngIf="data.length > 0 || noResults">
+    <mat-list *ngIf="data.length > 0">
+        <ng-container *ngFor="let item of data; index as i">
+            <mat-list-item>
+                <span [style.width.px]="200" class="text-info text-truncate text-sm" matTooltipPosition="above" [matTooltip]="item['name']">{{ item['name'] }}</span>
+                <span [style.width.px]="10"></span>
+                <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-phone"></i></span>
+                <span [style.width.px]="150" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['phone']">{{ item['phone'] }}</span>
+                <span [style.width.px]="10"></span>
+                <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fab fa-whatsapp"></i></span>
+                <span [style.width.px]="150" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['user_fields']['whatsapp']">{{ item['user_fields']['whatsapp'] }}</span>
+                <span [style.width.px]="10"></span>
+                <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-envelope"></i></span>
+                <span [style.width.px]="250" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['email'] }}</span>
+                <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-globe-americas"></i></span>
+                <span [style.width.px]="85" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['user_fields']['idioma_cliente'] }}</span>
+                <ng-container *ngIf="!noEditable">
                     <button mat-icon-button color="warn" (click)="edit(item)" [disabled]="loading['select']"><mat-icon>edit</mat-icon></button>
                     <button mat-icon-button color="primary" (click)="select(item)" [disabled]="loading['select'] || item['email'] == null"><mat-icon>done</mat-icon></button>
-                </mat-list-item>
-                <mat-divider></mat-divider>
-            </ng-container>
+                </ng-container>
+            </mat-list-item>
             <mat-divider></mat-divider>
-        </mat-list>
-        <div class="alert alert-warning" role="alert" *ngIf="noResults">
-            No se encontraron coincidencias
-        </div>
-
+        </ng-container>
+        <mat-divider></mat-divider>
+    </mat-list>
+    <div class="alert alert-warning" role="alert" *ngIf="noResults">
+        No se encontraron coincidencias
     </div>
+
+</div>
+<ng-container *ngIf="selectedClient || noResults">
     <form [formGroup]="newClientForm" (ngSubmit)="newClient()" *ngIf="data.length > 0 || noResults">
-        <div class="d-flex justify-content-center pt-3" [style.width.px]="1137">
+        <div class="d-flex justify-content-center pt-3" [style.width.px]="1137" *ngIf="!loading['create']">
             <mat-form-field [style.width.px]="200" class="ml-2">
                 <mat-icon matPrefix>account_circle</mat-icon>
 
@@ -80,9 +93,27 @@
                     El formato no coincide con un correo electrónico
                 </mat-error>
             </mat-form-field>
+        </div>
+        <div class="d-flex justify-content-center pt-3" [style.width.px]="1137" *ngIf="!loading['create']">
+            <mat-form-field class="formInfo">
+                <mat-label>Idioma Usuario</mat-label>
+                <mat-select (selectionChange)="selectedLang($event)" formControlName="lang" #langSelect>
+                    <ng-container *ngFor="let lang of idiomas">
+                        <mat-option [value]="lang['lang']">
+                            {{ lang['idioma'] }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+                <mat-error *ngIf="langSelect.errorState && newClientForm.controls['lang'].errors['required']">
+                    Debes elegir un idioma
+                </mat-error>
+            </mat-form-field>
             <div class='p-1'>
                 <button mat-raised-button type="submit" color="accent" [disabled]="newClientForm.status=='INVALID'">Crear Cliente</button>
             </div>
         </div>
+        <mat-progress-bar color="accent" mode="buffer" *ngIf="loading['create']"></mat-progress-bar>
     </form>
-</div>
+</ng-container>
+<!-- <button mat-raised-button (click)="printForm()" color="accent">Form</button> -->
+<!-- <div><pre>{{ newClientForm.controls | json }}</pre></div> -->

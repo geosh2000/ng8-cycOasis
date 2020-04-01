@@ -24,7 +24,8 @@
                     <div class="form-row align-items-center">
                         <div class="col-auto">
                             <label class="sr-only" for="formUploadImage">Archivo</label>
-                            <input (change)="setImagePath( )" type="file" class="form-control mb-2 mb-sm-0" id="formUploadImage" placeholder="Archivo" #imageFile formControlName="imageFile" [disabled]="!uploadType">
+                            <input (change)="incomingfile($event)" type="file" class="form-control mb-2 mb-sm-0" id="formUploadImage" placeholder="Archivo" #imageFile formControlName="imageFile" [disabled]="!uploadType">
+                            <!-- <input (change)="setImagePath( )" type="file" class="form-control mb-2 mb-sm-0" id="formUploadImage" placeholder="Archivo" #imageFile formControlName="imageFile" [disabled]="!uploadType"> -->
                         </div>
                     </div>
                 </form>

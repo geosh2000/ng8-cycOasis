@@ -32,21 +32,24 @@ export class CieloLlegadasComponent implements OnInit {
     GOTSK: 'TULUM'
   }
   summary:Object = {
-    total: 0,
-    OLITE: { c:0,n:0,R:0,B:0,S:0 },
-    GOC: { c:0,n:0,R:0,B:0,S:0 },
-    PYR: { c:0,n:0,R:0,B:0,S:0 },
-    OT: { c:0,n:0,R:0,B:0,S:0 },
-    SENS: { c:0,n:0,R:0,B:0,S:0 },
-    SKGS: { c:0,n:0,R:0,B:0,S:0 },
-    GOT: { c:0,n:0,R:0,B:0,S:0 },
-    OPB: { c:0,n:0,R:0,B:0,S:0 },
-    GSC: { c:0,n:0,R:0,B:0,S:0 },
-    GOP: { c:0,n:0,R:0,B:0,S:0 },
-    SMART: { c:0,n:0,R:0,B:0,S:0 },
-    OH: { c:0,n:0,R:0,B:0,S:0 },
-    GOTSK: { c:0,n:0,R:0,B:0,S:0 }
+    total: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    OLITE: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    GOC: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    PYR: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    OT: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    SENS: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    SKGS: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    GOT: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    OPB: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    GSC: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    GOP: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    SMART: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    OH: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    GOTSK: { c:0,n:0,R:0,B:0,S:0,O:0 }
   }
+  allRegs = 0
+  maxRegs = 5000
+  progress = []
 
   constructor(public _api: ApiService,
               public _init:InitService,
@@ -56,34 +59,67 @@ export class CieloLlegadasComponent implements OnInit {
   }
 
   buildVouchers( json ){
-
+    console.log('build cielo start')
+    this.progress = []
     this.loading['cielo'] = true
 
     this.summary = {
-      total: 0,
-      OLITE: { c:0,n:0,R:0,B:0,S:0 },
-      GOC: { c:0,n:0,R:0,B:0,S:0 },
-      PYR: { c:0,n:0,R:0,B:0,S:0 },
-      OT: { c:0,n:0,R:0,B:0,S:0 },
-      SENS: { c:0,n:0,R:0,B:0,S:0 },
-      SKGS: { c:0,n:0,R:0,B:0,S:0 },
-      GOT: { c:0,n:0,R:0,B:0,S:0 },
-      OPB: { c:0,n:0,R:0,B:0,S:0 },
-      GSC: { c:0,n:0,R:0,B:0,S:0 },
-      GOP: { c:0,n:0,R:0,B:0,S:0 },
-      SMART: { c:0,n:0,R:0,B:0,S:0 },
-      OH: { c:0,n:0,R:0,B:0,S:0 },
-      GOTSK: { c:0,n:0,R:0,B:0,S:0 }
+      total: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      OLITE: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      GOC: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      PYR: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      OT: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      SENS: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      SKGS: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      GOT: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      OPB: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      GSC: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      GOP: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      SMART: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      OH: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      GOTSK: { c:0,n:0,R:0,B:0,S:0,O:0 }
     }
 
+    this.allRegs = 0
+
     this.cieloList = []
-    let cielo = []
+    let cielo = [[]]
+    let index = 0
+    let i = 0
+    let reg = 0
 
     for( let r of json ){
+
+      if( r['SIGLA'] == 'SIGLA' ){
+        continue
+      }
+
+      // if( reg < 2735 || reg > 2755 ){
+      //   reg++
+      //   continue
+      // }
+
+      // reg++
+
+      if( i == this.maxRegs ){
+        cielo.push([])
+        index++
+        i = 0
+      }
+
+      let llegada = typeof r['LLEGADA'] != 'number' ? r['LLEGADA'].split('/') : []
+      let salida = typeof r['SALIDA'] != 'number' ? r['SALIDA'].split('/') : []
+      let dtCreated = typeof r['FECHACAP'] != 'number' ? r['FECHACAP'].split('/') : []
+      let dtCancel = []
+
+      if( r['S'] == 'C' ){
+        dtCancel = typeof r['FCANCELA'] != 'number' ? r['FCANCELA'].split('/') : []
+      }
+
       let rsv = {
         rsva: r['RESERV'],
         hotel: r['SIGLA'],
-        complejo: this.complejo['SIGLA'],
+        complejo: this.complejo[r['SIGLA']],
         mdo: r['MAYORIST'],
         agencia: r['AGENCIA'],
         grupo: r['GRUPO'],
@@ -92,37 +128,43 @@ export class CieloLlegadasComponent implements OnInit {
         adultos: r['ADULTOS'],
         juniors: r['JUNIOR'],
         menores: r['MENORES'],
-        llegada: this.ExcelDateToJSDate(r['LLEGADA']),
+        // llegada: moment(`20${llegada[2]}-${parseInt(llegada[1])}-${llegada[0]}`).format('YYYY-MM-DD'),
+        // salida: moment(`20${salida[2]}-${parseInt(salida[1])}-${salida[0]}`).format('YYYY-MM-DD'),
+        // dtCreated: moment(`20${dtCreated[2]}-${parseInt(dtCreated[1])}-${dtCreated[0]}`).format('YYYY-MM-DD'),
+        // dtCancel: r['S'] == 'C' ? moment(`20${dtCancel[2]}-${parseInt(dtCancel[1])}-${dtCancel[0]}`).format('YYYY-MM-DD') : null,
+        llegada: typeof(r['LLEGADA']) == 'number' ? this.excelDate(r['LLEGADA']) : moment(`20${llegada[2]}-${parseInt(llegada[1])}-${llegada[0]}`).format('YYYY-MM-DD'),
+        salida: typeof(r['SALIDA']) == 'number' ? this.excelDate(r['SALIDA']) : moment(`20${salida[2]}-${parseInt(salida[1])}-${salida[0]}`).format('YYYY-MM-DD'),
+        dtCreated: typeof(r['FECHACAP']) == 'number' ? this.excelDate(r['FECHACAP']) : moment(`20${dtCreated[2]}-${parseInt(dtCreated[1])}-${dtCreated[0]}`).format('YYYY-MM-DD'),
+        dtCancel: r['S'] == 'C' ? (typeof(r['FCANCELA']) == 'number' ? this.excelDate(r['FCANCELA']) : moment(`20${dtCancel[2]}-${parseInt(dtCancel[1])}-${dtCancel[0]}`).format('YYYY-MM-DD')) : null,
         noches: r['NOCHES'],
-        salida: this.ExcelDateToJSDate(r['SALIDA']),
-        notas: r['NOTAS'],
-        voucher: r['VOUCHER'],
+        notas: this.validateText(r['NOTAS'], false, null),
+        voucher: this.validateText(r['VOUCHER'], false, null),
         total: r['IMPORTE'],
         mon: r['MON'],
-        tipocambio: r['TIPOCAMBIO'],
-        hab: r['HABI'],
-        dtCreated: this.ExcelDateToJSDate(r['FECHACAP']),
+        tipocambio: this.validateText(r['TIPOCAMBIO'], false, null),
+        hab: this.validateText(r['HABI'], false, null),
         userCreated: r['USUARIOCAP'],
         rp_char01: r['TARIF'],
-        pais: r['MX'],
-        origen: r['GR'],
-        dtCancel: r['S'] == 'C' ? this.ExcelDateToJSDate(r['FCANCELA']) : null,
+        pais: r['PAI'],
+        origen: r['ORIGE'],
         userCancel: r['UCANCELA'],
-        userComision: r['JESSICA'],
-        guest1_apellido: r['APELLIDO1'],
-        guest1_nombre: r['NOMBRE1'],
-        guest2_apellido: r['APELLIDO2'],
-        guest2_nombre: r['NOMBRE2'],
-        guest3_apellido: r['APELLIDO3'],
-        guest3_nombre: r['NOMBRE3'],
-        guest4_apellido: r['APELLIDO4'],
-        guest4_nombre: r['NOMBRE4'],
-        bedType: r['C'],
+        userComision: r['UVENDIO'],
+        guest1_apellido: this.validateText(r['APELLIDO1'], false, null),
+        guest1_nombre: this.validateText(r['NOMBRE1'], false, null),
+        guest2_apellido: this.validateText(r['APELLIDO2'], false, null),
+        guest2_nombre: this.validateText(r['NOMBRE2'], false, null),
+        guest3_apellido: this.validateText(r['APELLIDO3'], false, null),
+        guest3_nombre: this.validateText(r['NOMBRE3'], false, null),
+        guest4_apellido: this.validateText(r['APELLIDO4'], false, null),
+        guest4_nombre: this.validateText(r['NOMBRE4'], false, null),
+        bedType: this.validateText(r['C'], false, null)
       }
-      cielo.push(rsv)
+      cielo[index].push(rsv)
+      i++
 
-      this.summary['total']++
       this.summary[r['SIGLA']][rsv['e']]++
+      this.summary['total'][rsv['e']]++
+      this.allRegs++
     }
 
     this.cieloList = cielo
@@ -130,29 +172,57 @@ export class CieloLlegadasComponent implements OnInit {
 
   }
 
-  submitChanges( ){
-    this.loading['uploading'] = true
+  validateText( t, trim, nt){
+    return t ? (trim ? t.trim() : (t == ' ' ? null : t)) : nt
+  }
 
-    this._api.restfulPut( this.cieloList, 'Uploads/saveCielo')
+  submitChanges( ){
+    this.progress = []
+    let arr = this.cieloList
+    // console.log(arr)
+
+    for( let d of arr ){
+      this.progress.push({s:0,l:0})
+    }
+
+    this.submit(arr, 0)
+
+  }
+
+  submit( d, i ){
+    this.loading['uploading'] = true
+    this.progress[i]['s'] = 1
+
+    this._api.restfulPut( d[i], 'Uploads/saveCielo')
             .subscribe( res => {
 
               this.toastr.success('Done!', res['msg'])
               this.loading['uploading'] = false
+
+              this.progress[i]['s'] = 2
+              this.progress[i]['l'] = res['data'].length
+              i++
+              if( i < d.length ){
+                this.submit( d, i )
+              }
             },
             err => {
               this.loading['uploading'] = false
               const error = err.error;
               this.toastr.error( err, 'Error' )
+              this.progress[i]['s'] = 3
+
+              for(let x = i;i<d.length;i++){
+                this.progress[i]['s'] = 3
+              }
+
               console.error(err.statusText, error.msg);
             });
+
   }
 
-  ExcelDateToJSDate(serial) {
-    let utc_days  = Math.floor(serial - 25569)
-    let utc_value = utc_days * 86400
-    let date_info = new Date(utc_value * 1000)
-
-    return moment(`${date_info.getFullYear()}-${date_info.getMonth()}-${date_info.getDate()}`).format('YYYY-MM-DD')
- }
+  excelDate( excelDate ) {
+    return moment(new Date((Math.round(excelDate) - (25567 + 1))*86400*1000).toLocaleDateString('en-US'), 'DD/MM/YYYY').format('YYYY-MM-DD');
+  }
 
 }

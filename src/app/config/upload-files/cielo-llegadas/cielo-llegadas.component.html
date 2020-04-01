@@ -1,5 +1,9 @@
 <h3>Reservas CIELO</h3>
-<mat-progress-bar *ngIf="loading['cielo']"></mat-progress-bar>
+<!-- <mat-form-field>
+    <mat-label>Numero de registros ({{ maxRegs }})</mat-label>
+    <input matInput type="number" placeholder="500" [(ngModel)]="maxRegs">
+</mat-form-field> -->
+<mat-progress-bar mode="buffer" *ngIf="loading['cielo']"></mat-progress-bar>
 
 <ng-container *ngIf="cieloList.length>0">
     <table style='font-size: smaller;' class="table table-sm table-bordered table-hover table-striped">
@@ -18,12 +22,26 @@
                 <tr *ngIf="h != 'total'">
                     <td>{{ h }}</td>
                     <ng-container *ngFor="let c of summary[h] | keys">
-                        <td>{{ summary[h][c] }}</td>
+                        <td class="text-center">{{ summary[h][c] }}</td>
                     </ng-container>
                 </tr>
             </ng-container>
+            <tr class="text-bold">
+                <td>TOTAL ({{ allRegs }} registros)</td>
+                <ng-container *ngFor="let c of summary['total'] | keys">
+                    <td class="text-center">{{ summary['total'][c] }}</td>
+                </ng-container>
+            </tr>
         </tbody>
     </table>
+
+    <div class='container' *ngIf="progress.length > 0">
+        <div *ngFor="let p of progress; index as i">
+            <p [ngClass]="{'text-alert': p['s'] == 0, 'text-danger': p['s'] == 3, 'text-primary': p['s'] == 1, 'text-success': p['s'] == 2}">Arreglo {{ i + 1 }} de {{ progress.length }}: {{ p['s'] == 0 ? 'Queued' : p['s'] == 1 ? 'Uploading...' : p['s'] == 2 ? 'Done!' : 'Error!!' }}</p>
+            <mat-progress-bar mode="indeterminate" *ngIf="p['s'] == 1"></mat-progress-bar>
+        </div>
+    </div>
+
     <div class="container d-flex justify-content-end">
         <button mat-raised-button color='primary' (click)="submitChanges()"><span *ngIf="loading['uploading']"><i class="fas fa-spinner fa-pulse"></i></span><span *ngIf="!loading['uploading']">Subir</span></button>
     </div>

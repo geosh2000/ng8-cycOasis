@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class SearchLocComponent implements OnInit {
 
-  @Output() selected = new EventEmitter
+  @Output() selected = new EventEmitter()
   @Input() maxHeight:any = 900
 
 
@@ -18,11 +18,11 @@ export class SearchLocComponent implements OnInit {
   loading:Object = {
   }
   data:any = []
-  noResults:boolean = false
+  noResults = false
 
   constructor(public _api: ApiService,
-                private orderPipe: OrderPipe,
-                public toastr: ToastrService) { 
+              private orderPipe: OrderPipe,
+              public toastr: ToastrService) {
                 }
 
   ngOnInit() {

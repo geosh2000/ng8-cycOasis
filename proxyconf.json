@@ -9,6 +9,11 @@
         "secure": false,
         "changeOrigin": true
     },
+    "/img": {
+        "target": "https://cyc-oasishoteles.com",
+        "secure": false,
+        "changeOrigin": true
+    },
     "/formatos": {
         "target": "https://cyc-oasishoteles.com",
         "secure": false,
