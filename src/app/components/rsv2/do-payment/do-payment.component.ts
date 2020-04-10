@@ -158,7 +158,7 @@ export class DoPaymentComponent implements OnInit {
 
     if( v > (i['monto'] - i['montoPagado']) ){
       i['toPay'] = (i['monto'] - i['montoPagado'])
-      this.toastr.error('El monto elegido sobrepasa el monto adeudado. Se modificó el monto a pagar', 'Monto inválido')
+      this.toastr.warning('El monto elegido sobrepasa el monto adeudado. Se modificó el monto a pagar. Quedará un saldo a favor', 'Monto inválido')
     }
 
     if( v < 0 ){
@@ -172,7 +172,7 @@ export class DoPaymentComponent implements OnInit {
       if( this.accSaldo - total < 0 ){
         console.log( 'invalid', this.accSaldo, total, this.remaining )
         i['toPay'] -= total - this.accSaldo
-        this.toastr.error('El saldo no es suficiente para ingresar ese monto, se ha ajustado el monto para que el saldo quede en 0', 'Monto inválido')
+        this.toastr.warning('El saldo no es suficiente para ingresar ese monto, se ha ajustado el monto para que el saldo quede en 0. Puedes continuar con la operación', 'Monto inválido')
         return true
       }else{
         console.log( 'valid', this.accSaldo, total, this.remaining )

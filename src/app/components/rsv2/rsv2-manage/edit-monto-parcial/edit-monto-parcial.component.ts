@@ -19,6 +19,7 @@ export class EditMontoParcialComponent implements OnInit {
   @Output() uplImg = new EventEmitter()
   @Output() reload = new EventEmitter()
   @Output() confSent = new EventEmitter()
+  @Output() openDates = new EventEmitter()
 
   loading:Object = {}
   hrIndex = Globals.HREF
@@ -90,6 +91,17 @@ export class EditMontoParcialComponent implements OnInit {
 
                 });
 
+  }
+
+  copyToClipboard( t ) {
+
+    let d = $('<input>').val(t).appendTo('body').select()
+    document.execCommand('copy')
+
+  }
+
+  linkPrint( t ){
+    return '...' + t.substring(t.length - 8, t.length)
   }
 
 

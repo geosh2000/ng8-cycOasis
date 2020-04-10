@@ -1,0 +1,28 @@
+<div class="modal fade" id="updateUser" tabindex="-1" role="dialog" aria-labelledby="updateUserLabel" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateUserLabel">Actualizar Usuario</h5>
+            </div>
+            <ng-container *ngIf="!loading">
+                <div class="modal-body">
+                    <div class="alert alert-warning" role="alert">
+                        Recuerda que este módulo es sólo para <b>corregir o agregar datos del cliente actual</b>. Si necesitas cambiarlo completamente, debes solicitarlo a gerencia o crear un nuevo localizador.
+                    </div>
+                    <app-search-zd-user (selected)="updateClient($event)"></app-search-zd-user>
+                    <div class="alert alert-primary" role="alert" *ngIf="flagDif">
+                        No existen diferencias para guardar
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="loading">
+                <div class="modal-body">
+                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

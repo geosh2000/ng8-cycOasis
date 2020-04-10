@@ -176,6 +176,7 @@ export class CreateRsvComponent implements OnInit {
             monto: {
               montoOriginal: this.moneda ? h['MXN'] : h['USD'],
               lv: this.data['lSelected'],
+              promo: this.moneda ? h['p' + this.data['lSelected']] : 'C',
               monto: Math.round((this.moneda ? h['l' + this.data['lSelected'] + 'MXN_total'] : h['l' + this.data['lSelected'] + 'USD_total']) * 100) / 100,
               moneda: this.moneda ? 'MXN' : 'USD',
               isPagoHotel: h['fdp']
@@ -220,6 +221,7 @@ export class CreateRsvComponent implements OnInit {
   }
 
   popReserve( h ){
+    console.log(h)
     let minDate:NgbDateStruct = {
       day: parseInt(moment(h['fecha']).format('DD')),
       month: parseInt(moment(h['fecha']).format('MM')),

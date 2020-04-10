@@ -1,0 +1,167 @@
+<div class="modal fade" id="genLink" tabindex="-1" role="dialog" aria-labelledby="genLinkLabel" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <div>
+                    <h5 class="modal-title" id="genLinkLabel">Generar Liga de Pago para loc {{ ml }}</h5>
+                </div>
+                <div style="text-align: center" class="p-1">
+                    <ui-switch color="green" size="small" [(ngModel)]="selMon" (change)="resetAll()" checkedLabel='MXN' uncheckedLabel='USD'></ui-switch>
+                    <p>
+                        <small>Moneda </small>
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-body" *ngIf="fullReload">
+                <mat-progress-bar mode="buffer"></mat-progress-bar>
+            </div>
+            <div class="modal-body" *ngIf="!fullReload">
+                <mat-list *ngIf="items.length > 0">
+                    <div class="text-truncate d-flex align-items-center" [style.height.px]="50">
+
+                        <span class="mr-2" [style.width.px]="100"><b>Item</b></span>
+                        <mat-icon [style.width.px]="50"></mat-icon><span class="ml-2 text-truncate" [style.width.px]="165"><b>Servicio</b></span>
+                        <!-- <span class="mr-2 text-center" [style.width.px]="140">Saldo Prepago:</span> -->
+                        <span class="mr-2 text-center" [style.width.px]="130"><b>Saldo Prepago</b></span>
+                        <span class="mr-2 text-center" [style.width.px]="130"><b>Cuenta</b></span>
+                        <span class="mr-2 text-center" [style.width.px]="140"><b>Promociones</b></span>
+                        <span class="mr-2 text-center" [style.width.px]="140"><b>Links</b></span>
+
+                    </div>
+                    <mat-divider></mat-divider>
+                    <ng-container *ngFor="let i of items">
+                        <ng-container *ngIf="i['moneda'] == (selMon ? 'MXN' : 'USD')">
+
+                            <div class="text-truncate d-flex align-items-center" [style.height.px]="50">
+
+                                <span class="mr-2" [style.width.px]="100">{{ i['itemLocatorId'] }}</span>
+                                <mat-icon [style.width.px]="50">{{ i['icon'] }}</mat-icon><span class="ml-2 text-truncate" [style.width.px]="165">{{ i['tipoServicio'] }}</span>
+                                <!-- <span class="mr-2" [style.width.px]="140">Saldo Prepago:</span> -->
+                                <span class="mr-2 text-center" [ngClass]="{'text-success': (i['montoParcial'] - i['montoPagado'] - i['linksMonto']) > 0, 'text-danger': (i['montoParcial'] - i['montoPagado'] - i['linksMonto']) <= 0}" [style.width.px]="130">{{ (i['montoParcial'] - i['montoPagado'] - i['linksMonto']) | currency:'MXN':'symbol-narrow':'.2-2' }}</span>
+                                <span class="mr-2 text-center" [style.width.px]="130">{{ i['cuentaSantander'] }}</span>
+                                <span class="mr-2 text-center" [style.width.px]="140">{{ i['promo'] }}</span>
+                                <span class="mr-2 text-center" [ngClass]="{'text-success': i['activeLinks']>0}" [style.width.px]="140">{{ i['activeLinks'] }}
+                                    <button mat-icon-button color="warn" (click)="i['deactFlag'] = true" aria-label="delete link" *ngIf="i['activeLinks'] > 0 && !i['deactFlag']">
+                                        <mat-icon>delete_forever</mat-icon>
+                                    </button>
+                                </span>
+                                <span class="mr-2 text-center" [style.width.px]="180">
+                                    <section class="check-section" *ngIf="(i['montoParcial'] - i['montoPagado'] - i['linksMonto']) > 0">
+                                        <mat-checkbox class="check-margin" [(ngModel)]="i['checked']" (change)="sumReport($event)">Checked</mat-checkbox>
+                                    </section>
+                                </span>
+
+                            </div>
+                            <ng-container *ngIf="i['deactFlag']">
+                                <div class='container alert alert-warning p-2'>
+                                    <ng-container *ngIf="!loading">
+                                        <mat-radio-group aria-labelledby="links-radio-group-label" class="links-radio-group" [(ngModel)]="i['deactivateLnk']">
+                                            <ng-container *ngFor="let lnk of i['links']">
+                                                <ng-container *ngIf="lnk['active'] == 1">
+                                                    <mat-radio-button class="links-radio-button" [value]="lnk['reference']">
+                                                        <div class="d-flex align-items-center justify-content-start">
+                                                            <span class="mr-2" [style.width.px]="200"><b>{{ lnk['reference'] }}</b></span>
+                                                            <span class="mr-2" [style.width.px]="138">cuenta {{ data['master']['allLinks'][lnk['reference']]['cuenta'] }}</span>
+                                                            <span class="mr-2" [style.width.px]="150">promo ({{ data['master']['allLinks'][lnk['reference']]['promo'] }})</span>
+                                                            <span class="mr-2" [style.width.px]="160">monto: {{ data['master']['allLinks'][lnk['reference']]['total'] | currency:'MXN':'symbol-narrow':'.2-2' }}</span>
+                                                            <span class="mr-2">items: {{ data['master']['allLinks'][lnk['reference']]['items'] }}</span>
+                                                        </div>
+                                                    </mat-radio-button>
+                                                </ng-container>
+                                            </ng-container>
+                                        </mat-radio-group>
+                                        <div class="d-flex justify-content-end p-4">
+                                            <button mat-flat-button color="primary" (click)="i['deactFlag'] = false">Cancelar</button>
+                                            <button class="ml-2 mat-flat-button" color="accent" (click)="deactivate(i)" [disabled]="!i['deactivateLnk']">Desactivar</button>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="loading">
+                                        <mat-progress-bar mode="buffer"></mat-progress-bar>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <mat-divider></mat-divider>
+
+                        </ng-container>
+                    </ng-container>
+                </mat-list>
+                <div class="alert alert-warning" role="alert" *ngIf="items.length == 0">
+                    No hay items con saldos pendientes. Revisa que los prepagos de cada item estén correctamente establecidos.
+                </div>
+                <ng-container *ngFor="let af of summary | keys">
+                    <ng-container *ngFor="let p of summary[af] | keys">
+                        <div class="container d-flex justify-content-end align-items-center" [style.height.px]="35">
+                            <span class="text-right" [style.width.px]="80" *ngIf="summary[af][p]['cuenta'] != 'VCM' && p == 'C' && mergeSel">
+                                <button mat-icon-button color="accent" aria-label="Combinar pago" (click)="mergeVcm(summary[af][p])">
+                                    <mat-icon>call_made</mat-icon>
+                                </button>
+                            </span>
+                            <span class="text-right" [style.width.px]="80" *ngIf="summary[af][p]['cuenta'] == 'VCM' && mergeFlag && !mergeSel && !summary[af][p]['mergedVcm']">
+                                <button mat-icon-button color="primary" aria-label="Combinar pago" (click)="mergeSel = true">
+                                    <mat-icon>call_merge</mat-icon>
+                                </button>
+                            </span>
+                            <span class="text-right" [style.width.px]="80" *ngIf="summary[af][p]['merged']">
+                                <button mat-icon-button color="warn" aria-label="Separar pago" (click)="splitVcm(summary[af][p])">
+                                    <mat-icon>call_split</mat-icon>
+                                </button>
+                            </span>
+                            <span class="text-right" [style.width.px]="80"><b>{{ af }}</b> </span>
+                            <span class="text-right" [style.width.px]="95"><b>{{ summary[af][p]['cuenta'] }} </b></span>
+                            <span class="text-right" [style.width.px]="105"><b>({{ p }}):</b></span>
+                            <span class="text-right" [style.width.px]="170" *ngIf="summary[af][p]['status'] == 0">{{ (summary[af][p]['mergedVcm'] ? 0 : summary[af][p]['total']) | currency:'MXN':'symbol-narrow':'.2-2' }} {{ selMon ? 'MXN' : 'USD' }}</span>
+                            <span class="text-right" [style.width.px]="170" *ngIf="summary[af][p]['status'] == 1"><mat-progress-bar mode="buffer"></mat-progress-bar></span>
+                            <span class="text-right text-success" [style.width.px]="170" *ngIf="summary[af][p]['status'] == 2">Generada!</span>
+                            <span class="text-right text-danger" [style.width.px]="170" *ngIf="summary[af][p]['status'] == 3">ERROR!</span>
+                        </div>
+                    </ng-container>
+                </ng-container>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+                <button type="button" class="btn btn-primary" (click)="createLinks()" [disabled]="summary == {} || loading">Generar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- SHOW LINKS -->
+<div class="modal fade" id="showLink" tabindex="-1" role="dialog" aria-labelledby="showLinkLabel" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <div>
+                    <h5 class="modal-title" id="showLinkLabel">Ligas Generadas para loc {{ ml }}</h5>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <mat-list>
+                    <mat-divider></mat-divider>
+                    <ng-container *ngFor="let af of summary | keys">
+                        <ng-container *ngFor="let p of summary[af] | keys">
+                            <ng-container *ngIf="summary[af][p]['status'] == 2">
+                                <div class="container d-flex justify-content-strt align-items-center" [style.height.px]="35">
+                                    <span class="m-1 text-right" [style.width.px]="80"><b>{{ af }}</b> </span>
+                                    <span class="m-1 text-center" [style.width.px]="95"><b>{{ summary[af][p]['cuenta'] }} </b></span>
+                                    <span class="m-1 text-center" [style.width.px]="105"><b>({{ p }})</b></span>
+                                    <span class="m-1 text-center" style="font-size: x-small" [style.width.px]="145"><b>{{ summary[af][p]['reference'] }}</b></span>
+                                    <span class="m-1 text-right" [style.width.px]="170">{{ summary[af][p]['total'] | currency:'MXN':'symbol-narrow':'.2-2' }} {{ summary[af][p]['moneda'] }}</span>
+                                    <span class="m-1 text-right text-primary"><b><a [href]="summary[af][p]['link']" target="_blank">{{ summary[af][p]['link'] }}</a></b> <button mat-button color="primery" (click)="copyToClipboard(summary[af][p]['link'])" class="clientInfo text-truncate"><mat-icon>file_copy</mat-icon></button></span>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </mat-list>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeShown()">Cerrar</button>
+                <!-- <button type="button" class="btn btn-primary" (click)="sendLinks()">Enviar</button> -->
+            </div>
+
+        </div>
+    </div>
+</div>

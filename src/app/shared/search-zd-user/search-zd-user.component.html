@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-between" style="max-height: 550px" *ngIf="!loading['search']">
+<div class="d-flex justify-content-between" style="max-height: 550px" *ngIf="!loading['search'] && showSearch">
     <div class="col d-flex justify-content-center flex-wrap" style="max-height: 550px">
         <div class="p-1">
             <mat-form-field>
@@ -55,7 +55,7 @@
     </div>
 
 </div>
-<ng-container *ngIf="selectedClient || noResults">
+<ng-container *ngIf="selectedClient || noResults || noEditable">
     <form [formGroup]="newClientForm" (ngSubmit)="newClient()" *ngIf="data.length > 0 || noResults">
         <div class="d-flex justify-content-center pt-3" [style.width.px]="1137" *ngIf="!loading['create']">
             <mat-form-field [style.width.px]="200" class="ml-2">
@@ -109,7 +109,7 @@
                 </mat-error>
             </mat-form-field>
             <div class='p-1'>
-                <button mat-raised-button type="submit" color="accent" [disabled]="newClientForm.status=='INVALID'">Crear Cliente</button>
+                <button mat-raised-button type="submit" color="accent" [disabled]="newClientForm.status=='INVALID'">{{ editFlag ? 'Editar' : 'Crear' }} Cliente</button>
             </div>
         </div>
         <mat-progress-bar color="accent" mode="buffer" *ngIf="loading['create']"></mat-progress-bar>

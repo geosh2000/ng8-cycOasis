@@ -44,6 +44,7 @@
                 <div class="d-flex justify-content-end p-1" *ngIf="_init.checkSingleCredential('app_cotizador')">
                     <!-- <button mat-button style="zoom: 0.8" color="warn"><mat-icon>edit</mat-icon> Modificar</button> -->
                     <button mat-button style="zoom: 0.8" color="primary" (click)="_regP.openModal()" *ngIf="_init.checkSingleCredential('rsv_paymentReg')"><mat-icon>play_for_work</mat-icon> Registrar Pago</button>
+                    <button mat-button style="zoom: 0.8" color="primary" (click)="_genL.open( data )" *ngIf="_init.checkSingleCredential('rsv_paymentReg')"><mat-icon>link</mat-icon> Generar Liga</button>
                     <!-- <button mat-button style="zoom: 0.8" color="primary" (click)="_linkP.openModal( data['master'] )"><mat-icon>link</mat-icon> Ligar</button> -->
                     <button mat-button style="zoom: 0.8" color="primary" (click)="_payment.openModal( data['master']['zdUserId'], data['items'] )"><mat-icon>payment</mat-icon> Saldar</button>
                 </div>
@@ -71,6 +72,7 @@
                                     <ng-container *ngIf="i['isCancel'] == 0">
                                         <div class="col-2 mt-auto mb-auto text-center text-truncate p-0" [ngClass]="colorConfirm(i['confirm'], isVigente(i['vigencia']), i['isQuote'] == 1)" [matTooltip]="i['confirm']" [matTooltipPosition]="'above'">
                                             <span class="badge badge-pill badge-success" *ngIf="i['tipoPago'] == 'PT'">PT</span>
+                                            <span class="badge badge-pill badge-secondary" *ngIf="i['tipoPago'] == 'OD'">OD</span>
                                             <span class="badge badge-pill badge-info" *ngIf="i['tipoPago'] == 'PP'">PP</span>
                                             <span class="badge badge-pill badge-primary" *ngIf="i['tipoPago'] == 'PH'">PH</span>
                                             <span class="badge badge-pill badge-alert" *ngIf="i['tipoPago'] == 'PDT'">PDT</span> {{ i['isQuote'] == 1 && !isVigente(i['vigencia']) ? 'Expirada' : i['confirm'] }}
@@ -97,9 +99,11 @@
                             <div class="alert alert-info" role="alert" *ngIf="i['isFree'] == 1">
                                 Item marcado como cortesía, relacionado con reservas {{ i['cieloRelates'] }}
                             </div>
-                            <app-edit-monto-parcial [i]="i" (confSent)="getHistory(mlTicket)" (saveMonto)="saveMonto( $event )" (saveName)="saveName( $event )" (uplImg)="uplImg($event)"></app-edit-monto-parcial>
+                            <app-edit-monto-parcial [i]="i" (openDates)="openOD(i)" (confSent)="getHistory(mlTicket)" (saveMonto)="saveMonto( $event )" (saveName)="saveName( $event )" (uplImg)="uplImg($event)"></app-edit-monto-parcial>
                             <div class="container d-flex justify-content-end">
                                 <div class="mr-auto"><span class="productConceptXL">Notas: </span><span class="clientInfo">{{ i['notas'] }}</span></div>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openOD(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isQuote'] == 0 && i['isCancel'] == 0"><mat-icon>meeting_room</mat-icon> Fechas Abiertas</button>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openODSet(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isOpen'] == 1 && i['isCancel'] == 0"><mat-icon>beach_access</mat-icon> Establecer Fechas</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)" *ngIf="_init.checkSingleCredential('app_cotizador')"><mat-icon>remove_circle</mat-icon> Cancelar</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="reactivate(i)" *ngIf="_init.checkSingleCredential('rsv_reactivate') && !isVigente(i['vigencia']) && i['isQuote'] == 1 && i['isCancel'] == 0"><ng-container *ngIf="loading['reactivate']"><span><i class="fas fa-spinner fa-pulse"></i></span></ng-container><ng-container *ngIf="!loading['reactivate']"><mat-icon>alarm_add</mat-icon> Reactivar</ng-container></button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="confirmItem(i)" *ngIf="i['isQuote'] == 0 && i['confirmOK'] == null"><mat-icon>done_outline</mat-icon> Confirmar</button>
@@ -150,6 +154,29 @@
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>Zendesk:</b></div>
                     <div class="clientInfo"><a target="_blank" [href]=" data['master']['zdUserId'] | domseguro:'https://oasishoteles.zendesk.com/agent/users/' ">{{ data['master']['zdUserId'] }}</a></div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><button mat-icon-button color="primary" aria-label="edit cc button" (click)="ccFlag = true" *ngIf="!ccFlag">
+                        <mat-icon>edit</mat-icon>
+                      </button> <b>CC:</b></div>
+                    <div class="clientInfo">
+                        <ng-container *ngIf="!ccFlag">
+                            {{ data['master']['cc'] }}
+                        </ng-container>
+                        <ng-container *ngIf="ccFlag">
+                            <mat-form-field class="example-full-width" [style.width.px]="120">
+                                <input style="font-size: 11px" matInput placeholder="Correo CC" pattern="^(.)+@(.)+\.(.)+$" [value]="data['master']['cc']" #mailInput>
+                            </mat-form-field>
+                            <button style="zoom: 0.8; width: 28px" mat-icon-button color='warn' (click)="ccFlag = false" [disabled]="loading['editCC']"><mat-icon *ngIf="!loading['editCC']">cancel</mat-icon><span *ngIf="loading['editCC']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                            <button style="zoom: 0.8; width: 28px" mat-icon-button color='primary' (click)="editCCMail(mailInput)" [disabled]="loading['editCC']"><mat-icon *ngIf="!loading['editCC']">done</mat-icon><span *ngIf="loading['editCC']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div *ngIf="!_updU.loading">
+                        <button mat-button color="primary" (click)="updateContact()"><mat-icon>refresh</mat-icon> Actualizar datos de contacto</button>
+                    </div>
+                    <mat-progress-bar mode="buffer" *ngIf="_updU.loading"></mat-progress-bar>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-start align-items-center">
@@ -350,6 +377,22 @@
 <app-rsv-payment-registry></app-rsv-payment-registry>
 <!-- ====================== FIN MODAL DE REG PAYMENT ====================== -->
 
+<!-- ====================== MODAL DE OPEN DATES ====================== -->
+<app-rsv-open-dates (saveOpen)="this.getLoc(viewLoc)"></app-rsv-open-dates>
+<!-- ====================== FIN MODAL DE OPEN DATES ====================== -->
+
+<!-- ====================== MODAL DE SET DATES FOR OPEN DATES ====================== -->
+<app-rsv-open-dates-set (saveOpen)="this.getLoc(viewLoc)"></app-rsv-open-dates-set>
+<!-- ====================== FIN MODAL DE SET DATES FOR OPEN DATES ====================== -->
+
+<!-- ====================== MODAL DE UPDATE USER ====================== -->
+<app-rsv-update-contact (saved)="this.getLoc(viewLoc)"></app-rsv-update-contact>
+<!-- ====================== FIN MODAL DE UPDATE USER ====================== -->
+
+<!-- ====================== MODAL DE GEN LINK ====================== -->
+<app-payment-link-gen (reloadTkt)="getHistory()" (saved)="this.getLoc(viewLoc)" (reloadFull)="this.getLoc(viewLoc, 'links')"></app-payment-link-gen>
+<!-- ====================== FIN MODAL DE GEN LINK ====================== -->
+
 <!-- ====================== MODAL SUMMARY PAYMENT ====================== -->
 <div class="modal fade" id="paymentSummary" tabindex="-1" role="dialog" aria-labelledby="paymentSummaryLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
@@ -357,8 +400,8 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="paymentSummaryLabel">Resumen de Pagos {{ data['master']['masterlocator'] }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+        <span aria-hidden="true">&times;</span>
+        </button>
             </div>
             <div class="modal-body">
                 <table class="table table-sm table-bordered table-hover table-striped text-sm" *ngIf="data['master']['payments']">

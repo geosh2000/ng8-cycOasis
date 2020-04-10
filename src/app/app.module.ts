@@ -182,6 +182,10 @@ import { GoToLocComponent } from './shared/go-to-loc/go-to-loc.component';
 import { UploadFilesComponent } from './config/upload-files/upload-files.component';
 import { CidProdComponent } from './config/upload-files/cid-prod/cid-prod.component';
 import { CieloLlegadasComponent } from './config/upload-files/cielo-llegadas/cielo-llegadas.component';
+import { RsvOpenDatesComponent } from './components/rsv2/rsv-open-dates/rsv-open-dates.component';
+import { RsvOpenDatesSetComponent } from './components/rsv2/rsv-open-dates-set/rsv-open-dates-set.component';
+import { RsvUpdateContactComponent } from './components/rsv2/rsv-update-contact/rsv-update-contact.component';
+import { PaymentLinkGenComponent } from './components/rsv2/payment-link-gen/payment-link-gen.component';
 
 @NgModule({
   declarations: [
@@ -301,7 +305,11 @@ import { CieloLlegadasComponent } from './config/upload-files/cielo-llegadas/cie
     GoToLocComponent,
     UploadFilesComponent,
     CidProdComponent,
-    CieloLlegadasComponent
+    CieloLlegadasComponent,
+    RsvOpenDatesComponent,
+    RsvOpenDatesSetComponent,
+    RsvUpdateContactComponent,
+    PaymentLinkGenComponent
 
   ],
   imports: [

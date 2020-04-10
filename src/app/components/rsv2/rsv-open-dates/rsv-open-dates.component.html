@@ -1,0 +1,57 @@
+<div class="modal fade" id="openDates" tabindex="-1" role="dialog" aria-labelledby="openDatesLabel" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="openDatesLabel">Establecer Fechas Abiertas {{ item }} (id: {{ itemId }})</h5>
+            </div>
+            <div class="modal-body">
+                <div class='container d-flex justify-content-center flex-wrap'>
+                    <div class="form-group p-1">
+                        <label for="fechas">Fecha Máxima</label>
+                        <div class="input-group">
+                            <input class="form-control" [minDate]="minDate" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event, d,'d')" autocomplete="off" [style.width.px]="150">
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group p-1">
+                        <label for="fechas">Fecha Salida</label>
+                        <div class="input-group">
+                            <input class="form-control" [(ngModel)]="endDate" [readonly]="true" autocomplete="off" [style.width.px]="150">
+                        </div>
+                    </div>
+                </div>
+                <div class='container d-flex justify-content-center flex-wrap'>
+                    <div class="form-group p-1">
+                        <label for="fechas">Fecha Límite Para Selección</label>
+                        <div class="input-group">
+                            <input class="form-control" [minDate]="minDate" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="l.toggle()" id="pickerL" name="ld" ngbDatepicker #l="ngbDatepicker" (dateSelect)="onDateSelection($event, l, 'l')" autocomplete="off" [style.width.px]="150">
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group p-1">
+                        <label for="fechas">Fecha Límite Para Viajar</label>
+                        <div class="input-group">
+                            <input class="form-control" [minDate]="minDate" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="t.toggle()" id="pickerT" name="ld" ngbDatepicker #t="ngbDatepicker" (dateSelect)="onDateSelection($event, t, 't')" autocomplete="off" [style.width.px]="150">
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <ng-container *ngIf="!loading">
+                    <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+                    <button type="button" class="btn btn-success" (click)="saveOpenDates()" [disabled]="!selDate || !limitDate || !limitTravelD">Confirmar</button>
+                </ng-container>
+                <ng-container *ngIf="loading">
+                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

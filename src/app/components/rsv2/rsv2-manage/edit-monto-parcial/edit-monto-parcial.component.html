@@ -47,15 +47,39 @@
                     <div class="productConcept"><b>Nivel:</b></div>
                     <div class="clientInfo">{{ i['lv'] }}</div>
                 </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConcept"><b>Descuento:</b></div>
+                    <div class="clientInfo">{{ i['montoOriginal'] ? (1 - (i['monto'] / i['montoOriginal']) | percent:'.0-2') : 'NA' }}</div>
+                </div>
             </div>
             <div class="col-4">
+                <ng-container *ngIf="i['isOpen'] == 0">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Llegada:</b></div>
+                        <div class="clientInfo">{{ formatDate(i['llegada'], 'DD MMM YYYY') }}</div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Salida:</b></div>
+                        <div class="clientInfo">{{ formatDate(i['salida'], 'DD MMM YYYY') }}</div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="i['isOpen'] == 1">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Fechas:</b></div>
+                        <div class="clientInfo">Fecha Abierta</div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Límite:</b></div>
+                        <div class="clientInfo text-danger">{{ formatDate(i['limite_od'], 'DD MMM YYYY') }}</div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>F. Temporal:</b></div>
+                        <div class="clientInfo text-warning">{{ formatDate(i['llegada'], 'DD MMM YYYY') }}</div>
+                    </div>
+                </ng-container>
                 <div class="d-flex justify-content-start align-items-center">
-                    <div class="productConcept"><b>Llegada:</b></div>
-                    <div class="clientInfo">{{ formatDate(i['llegada'], 'DD MMM YYYY') }}</div>
-                </div>
-                <div class="d-flex justify-content-start align-items-center">
-                    <div class="productConcept"><b>Salida:</b></div>
-                    <div class="clientInfo">{{ formatDate(i['salida'], 'DD MMM YYYY') }}</div>
+                    <div class="productConcept"><b>Noches:</b></div>
+                    <div class="clientInfo">{{ i['htlNoches'] }}</div>
                 </div>
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="productConcept"><b>Adultos:</b></div>
@@ -69,11 +93,21 @@
                     <div class="productConcept"><b>Menores:</b></div>
                     <div class="clientInfo">{{ i['menores'] }}</div>
                 </div>
+                <ng-container *ngFor="let lk of i['links']; index as lki">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
+                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                    </div>
+                </ng-container>
             </div>
             <div class="col-4" *ngIf="i['isCancel'] != 1">
                 <div class="d-flex justify-content-start align-items-center">
-                    <div class="productConceptXL"><b>Método de Pago:</b></div>
+                    <div class="productConceptXL"><b>Método:</b></div>
                     <div class="clientInfo">{{ i['isPagoHotel'] == 1 ? 'PH' : i['isParcial'] == 1 ? 'PP' : 'PT' }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="productConceptXL"><b>Promo:</b></div>
+                    <div class="clientInfo">{{ i['promo'] }}</div>
                 </div>
                 <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
                 <div class="d-flex justify-content-start align-items-center">
@@ -123,6 +157,12 @@
                     <div class="productConcept"><b>Menores:</b></div>
                     <div class="clientInfo">{{ i['menores'] }}</div>
                 </div>
+                <ng-container *ngFor="let lk of i['links']; index as lki">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
+                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                    </div>
+                </ng-container>
             </div>
             <div class="col-4" *ngIf="i['isCancel'] != 1">
                 <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
@@ -167,6 +207,12 @@
                     <div class="productConcept"><b>Horario:</b></div>
                     <div class="clientInfoXL">{{ i['pickup'] }}</div>
                 </div>
+                <ng-container *ngFor="let lk of i['links']; index as lki">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
+                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                    </div>
+                </ng-container>
             </div>
             <div class="col-4" *ngIf="i['isCancel'] != 1">
                 <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
@@ -236,6 +282,12 @@
                         <div class="clientInfo">{{ i['dtPickUpOut'] }}</div>
                     </div>
                 </ng-container>
+                <ng-container *ngFor="let lk of i['links']; index as lki">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
+                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                    </div>
+                </ng-container>
             </div>
             <div class="col-4" *ngIf="i['isCancel'] != 1 && i['isFree'] == 0">
                 <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
@@ -279,6 +331,12 @@
                     <div class="productConceptXL"><b>PickUp:</b></div>
                     <div class="clientInfo">{{ i['pickup'] }}</div>
                 </div>
+                <ng-container *ngFor="let lk of i['links']; index as lki">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
+                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                    </div>
+                </ng-container>
             </div>
             <div class="col-4" *ngIf="i['isCancel'] != 1">
                 <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>
@@ -317,6 +375,12 @@
                     <div class="productConceptXL"><b>Pax:</b></div>
                     <div class="clientInfo">{{ i['adultos'] }}</div>
                 </div>
+                <ng-container *ngFor="let lk of i['links']; index as lki">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
+                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                    </div>
+                </ng-container>
             </div>
             <div class="col-4" *ngIf="i['isCancel'] != 1">
                 <app-edit-prepay [i]="i" (saveMonto)="saveMontoFnc($event)"></app-edit-prepay>

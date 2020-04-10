@@ -1,0 +1,25 @@
+.check-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.example-margin {
+    margin: 0 10px;
+}
+
+.cdk-overlay-container,
+.cdk-overlay-pane {
+    z-index: 9999 !important;
+}
+
+.links-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0 !important;
+}
+
+.links-radio-button {
+    margin: 5px !important;
+}

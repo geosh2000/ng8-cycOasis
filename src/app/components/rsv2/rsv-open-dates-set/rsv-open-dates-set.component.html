@@ -1,0 +1,60 @@
+<div class="modal fade" id="openDatesSet" tabindex="-1" role="dialog" aria-labelledby="openDatesSetLabel" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="openDatesSetLabel">Establecer Fechas {{ item }} (id: {{ itemId }})</h5>
+            </div>
+            <div class="modal-body">
+                <div class='container d-flex justify-content-center flex-wrap'>
+                    <div class="form-group p-1">
+                        <label for="fechas">Fecha Ingreso</label>
+                        <div class="input-group">
+                            <input class="form-control" [minDate]="minDate" [maxDate]="maxDate" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event, d,'d')" autocomplete="off"
+                                [style.width.px]="150">
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group p-1">
+                        <label for="fechas">Fecha Salida</label>
+                        <div class="input-group">
+                            <input class="form-control" [(ngModel)]="endDate" [readonly]="true" autocomplete="off" [style.width.px]="150">
+                        </div>
+                    </div>
+                </div>
+                <div class='container d-flex justify-content-center flex-wrap'>
+                    <div class="form-group p-1">
+                        <label for="fechas">Ticket</label>
+                        <div class="input-group">
+                            <input class="form-control" [(ngModel)]="ticket" placeholder="Ticket de Solicitud" autocomplete="off" [style.width.px]="150">
+                        </div>
+                    </div>
+                </div>
+                <div class='container'>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="checkPolicy" id="defaultCheck1" (change)="checkPolicySet(checkPolicy)">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Aplicar Políticas
+                        </label>
+                    </div>
+                    <div class="form-group p-1">
+                        <label for="fechas">Notas</label>
+                        <div class="input-group">
+                            <textarea rows="5" cols="120" [(ngModel)]="notasClte" placeholder="Notas para el Cliente" id="notas"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <ng-container *ngIf="!loading">
+                    <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+                    <button type="button" class="btn btn-success" (click)="saveOpenDates()" [disabled]="!selDate || !ticket || ticket == '' || notasClte == ''">Confirmar</button>
+                </ng-container>
+                <ng-container *ngIf="loading">
+                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

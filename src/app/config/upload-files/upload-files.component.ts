@@ -197,8 +197,8 @@ export class UploadFilesComponent implements OnInit {
               workbook = readXlsx(data, {type:'array'});
               break
             case 'cieloLlegadas':
-              console.log(bstr)
-              console.log(arr)
+              // console.log(bstr)
+              // console.log(arr)
               workbook = readXlsx(bstr, {type:'string'});
               break
           }
@@ -206,8 +206,8 @@ export class UploadFilesComponent implements OnInit {
           let sheetName = workbook.SheetNames[0]
           let jsonFile = utils.sheet_to_json( workbook.Sheets[sheetName], {raw: true, defval:null} )
           this.xlsJson = jsonFile
-          console.log('jsonFile created')
-          console.log(jsonFile)
+          // console.log('jsonFile created')
+          // console.log(jsonFile)
 
           switch( type ){
             case 'cid2020':

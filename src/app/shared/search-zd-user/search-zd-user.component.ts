@@ -31,7 +31,10 @@ export class SearchZdUserComponent implements OnInit {
     {idioma: 'portugués', lang: 'idioma_pt'}
   ]
 
+  showSearch = true
+
   noEditable = false
+  editFlag = false
 
   constructor(public _api: ApiService,
               private orderPipe: OrderPipe,
@@ -84,12 +87,48 @@ export class SearchZdUserComponent implements OnInit {
                 });
   }
 
+  searchById( id ){
+
+    this.loading['search'] = true;
+    this.newClientForm.reset()
+    this.noResults = false
+    this.selectedClient = null
+    this.noEditable = false
+
+
+    this._api.restfulPut( {zdId: id}, 'Calls/zdSearchById' )
+                .subscribe( res => {
+
+                  this.loading['search'] = false;
+                  let result = res['data']
+                  result = this.orderPipe.transform(result, this.orderChosen)
+
+                  this.data = result
+                  if( this.data.length == 0 ){
+                    this.noResults = true
+                    this.showSearch = true
+                  }
+
+                }, err => {
+                  this.loading['search'] = false;
+
+                  const error = err.error;
+
+                  if( error.msg == 'RecordNotFound' ){
+                    this.showSearch = true
+                  }
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
   select( i ){
 
-    console.log(i)
-    console.log( i['user_fields']['idioma_cliente'] )
-    console.log(this.newClientForm )
-    console.log( this.newClientForm.status == 'VALID' )
+    // console.log(i)
+    // console.log( i['user_fields']['idioma_cliente'] )
+    // console.log(this.newClientForm )
+    // console.log( this.newClientForm.status == 'VALID' )
 
     this.edit(i, false)
 
@@ -111,6 +150,8 @@ export class SearchZdUserComponent implements OnInit {
   }
 
   edit( i, selFlag = true ){
+
+    this.editFlag = true
 
     if( selFlag ){
       this.selectedClient = i
@@ -150,6 +191,7 @@ export class SearchZdUserComponent implements OnInit {
                   this.loading['create'] = false;
                   item = res['data']['data']['user']
                   this.select(item)
+                  this.editFlag = false
 
                 }, err => {
                   this.loading['create'] = false;

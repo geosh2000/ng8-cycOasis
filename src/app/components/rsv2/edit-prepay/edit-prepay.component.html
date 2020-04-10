@@ -45,3 +45,11 @@
         <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editTotalMonto(montoT, commentsT)" [disabled]="loading['editTotalMonto']"><mat-icon *ngIf="!loading['editTotalMonto']">done</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
     </div>
 </ng-container>
+<div class="d-flex justify-content-start align-items-center">
+    <div class="productConceptXL"><b>Links de pago:</b></div>
+    <div class="clientInfo">{{ i['activeLinks'] }}</div>
+</div>
+<div class="d-flex justify-content-start align-items-center">
+    <div class="productConceptXL"><b>Monto links:</b></div>
+    <div class="clientInfo">{{ i['linksMonto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</div>
+</div>

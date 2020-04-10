@@ -286,29 +286,29 @@ export class NgbDateNativeAdapter extends NgbDateAdapter<any> {
 
                 // TD
                 for( let call of res['data']['td'] ){
-                  groups['Abandon']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Abandoned'])])
-                  groups['PDV']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['PDV'])])
-                  groups['PDV']['aht'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['AHT_pdv'])])
-                  groups['IN']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['main'])])
-                  groups['IN']['aht'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['AHT_main'])])
-                  groups['Mixcoac']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['apoyo'])])
-                  groups['Mixcoac']['aht'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['AHT_apoyo'])])
-                  // console.log(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'), parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))))
+                  groups['Abandon']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Abandoned'])])
+                  groups['PDV']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['PDV'])])
+                  groups['PDV']['aht'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['AHT_pdv'])])
+                  groups['IN']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['main'])])
+                  groups['IN']['aht'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['AHT_main'])])
+                  groups['Mixcoac']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['apoyo'])])
+                  groups['Mixcoac']['aht'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['AHT_apoyo'])])
+                  // console.log(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'), parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))))
                 }
 
                 // LW
                 for( let call of res['data']['lw'] ){
-                  groupsH['lw']['data'].push([parseInt(this.unixTime(moment(moment.tz(call['H'],'this._zh.defaultZone').add(7, 'days').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Offered'])])
+                  groupsH['lw']['data'].push([parseInt(this.unixTime(moment(moment.tz(call['H'],this._zh.defaultZone).add(7, 'days').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Offered'])])
                 }
 
                 // LY
                 for( let call of res['data']['ly'] ){
-                  groupsH['ly']['data'].push([parseInt(this.unixTime(moment(moment.tz(call['H'],'this._zh.defaultZone').add(364, 'days').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Offered'])])
+                  groupsH['ly']['data'].push([parseInt(this.unixTime(moment(moment.tz(call['H'],this._zh.defaultZone).add(364, 'days').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Offered'])])
                 }
 
                 // Forecast
                 for( let call of res['data']['forecast'] ){
-                  groups['Forecast']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],'this._zh.defaultZone').tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Offered'])])
+                  groups['Forecast']['data'].push([parseInt(this.unixTime(moment.tz(call['H'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))), parseInt(call['Offered'])])
                 }
 
                 this.data = groups
@@ -446,7 +446,7 @@ export class NgbDateNativeAdapter extends NgbDateAdapter<any> {
 
   unixTime( time ){
     // DEFINE UNIX TIME
-    let m = moment.tz(`${ time }`, 'this._zh.defaultZone')
+    let m = moment.tz(`${ time }`, this._zh.defaultZone)
     let local = m.clone().tz( this._zh.zone )
     let dif = moment(m.format('YYYY-MM-DD HH:mm:ss')).diff(local.format('YYYY-MM-DD HH:mm:ss'), 'hours')
     m.subtract((5+(dif*(-1))), 'hours')
@@ -491,7 +491,7 @@ export class NgbDateNativeAdapter extends NgbDateAdapter<any> {
   }
 
   printTime( time, format ){
-    return moment.tz(time, 'this._zh.defaultZone').tz( this._zh.zone ).format( format )
+    return moment.tz(time, this._zh.defaultZone).tz( this._zh.zone ).format( format )
   }
 
 }

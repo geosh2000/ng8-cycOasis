@@ -17,6 +17,10 @@ import { ZonaHorariaService } from '../../../services/zona-horaria.service';
 import { RsvLinkPaymentDirectComponent } from '../../rsv/rsv-link-payment-direct/rsv-link-payment-direct.component';
 import { RsvPaymentRegistryComponent } from '../../rsv/rsv-payment-registry/rsv-payment-registry.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { RsvOpenDatesComponent } from '../rsv-open-dates/rsv-open-dates.component';
+import { RsvOpenDatesSetComponent } from '../rsv-open-dates-set/rsv-open-dates-set.component';
+import { RsvUpdateContactComponent } from '../rsv-update-contact/rsv-update-contact.component';
+import { PaymentLinkGenComponent } from '../payment-link-gen/payment-link-gen.component';
 
 @Component({
   selector: 'app-rsv2-manage',
@@ -29,6 +33,10 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   @ViewChild(UploadImageComponent, {static: false}) _upl:UploadImageComponent
   @ViewChild(RsvLinkPaymentDirectComponent,{static:false}) _linkP:RsvLinkPaymentDirectComponent;
   @ViewChild(RsvPaymentRegistryComponent,{static:false}) _regP:RsvPaymentRegistryComponent;
+  @ViewChild(RsvOpenDatesComponent,{static:false}) _od:RsvOpenDatesComponent;
+  @ViewChild(RsvOpenDatesSetComponent,{static:false}) _ods:RsvOpenDatesSetComponent;
+  @ViewChild(RsvUpdateContactComponent,{static:false}) _updU:RsvUpdateContactComponent;
+  @ViewChild(PaymentLinkGenComponent,{static:false}) _genL:PaymentLinkGenComponent;
 
   penaltyXld:FormGroup
 
@@ -63,6 +71,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   }
 
   rsvType = 'Cotizacion'
+  ccFlag = false
 
   constructor(public _api: ApiService,
               public _init: InitService,
@@ -142,9 +151,15 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                 });
   }
 
-  getLoc( l ){
+  getLoc( l, s = ''){
     this.loading['loc'] = true
     this.rsvHistory = []
+
+    switch( s ){
+      case 'links':
+        this._genL.fullReload = true
+        break
+    }
 
     this._api.restfulGet( l, 'Rsv/manage2Loc' )
                 .subscribe( res => {
@@ -159,12 +174,52 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
 
                     data['master']['tickets'] = data['master']['tickets'] != null ? data['master']['tickets'].split(',') : []
 
+                    // START Payment links build
+                    if( data['master']['allLinks'] ){
+                      let arr = JSON.parse(data['master']['allLinks'])
+                      data['master']['allLinks'] = {}
+                      for( let lnk of arr ){
+                        data['master']['allLinks'][lnk['reference']] = lnk
+                      }
+                    }else{
+                      data['master']['allLinks'] = {}
+                    }
+
+                    for( let i of data['items'] ){
+                      // console.log(i['links'])
+                      if( i['links'] ){
+                        // console.log(i['links'])
+                        i['links'] = JSON.parse(i['links'])
+                        i['linksMonto'] = 0
+                        for( let lk of i['links'] ){
+                          if( lk['active'] == 1 ){
+                            i['linksMonto'] += parseFloat(lk['monto'])
+                          }
+                        }
+                      }else{
+                        i['links'] = []
+                        i['linksMonto'] = 0
+                      }
+                      // END Payment links build
+                    }
+
                     this.data = data
                     this.mlTicket = data['master']['mlTicket']
                     this.zdClientId = data['master']['zdUserId']
                     this.getHistory(data['master']['mlTicket'])
                     this.getRsvHistory(data['master']['zdUserId'])
                     this.rsvTypeCheck()
+
+                    if( !data['master']['idioma'] ){
+                      this._updU.open( data['master'] )
+                    }
+
+                    switch( s ){
+                      case 'links':
+                        this._genL.open( data )
+                        this._genL.fullReload = false
+                        break
+                    }
                   }else{
                     this.data = {
                       master: {},
@@ -478,6 +533,49 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
 
   linked(e){
     this._linkP.closeModal()
+  }
+
+  openOD( i ){
+    this._od.open( i, this.mlTicket )
+  }
+
+  openODSet( i ){
+    this._ods.open( i, this.mlTicket, this.data['master']['idioma'] )
+  }
+
+  updateContact(){
+    this._updU.open( this.data['master'] )
+    // this._updU.updateUser( this.data['master']['masterlocatorid'] )
+  }
+
+  editCCMail( m ){
+
+    if( jQuery(m)[0].validity.patternMismatch ){
+      this.toastr.error('El formato del correo ingresado es incorrecto', 'Formato no reconocido')
+      return false
+    }
+
+    console.log( jQuery(m)[0].value )
+    console.log( !jQuery(m)[0].validity.patternMismatch )
+    this.loading['editCC'] = true
+
+    this._api.restfulPut( {ticket: this.mlTicket, cc: jQuery(m)[0].value, ml: this.viewLoc}, 'Rsv/editCCMail' )
+                .subscribe( res => {
+
+                  this.loading['editCC'] = false;
+                  this.comment = ''
+                  this.data['master']['cc'] = jQuery(m)[0].value
+                  this.ccFlag = false
+                  this.toastr.success( res['msg'], 'GUARDADO' );
+
+                }, err => {
+                  this.loading['editCC'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
   }
 
 }
