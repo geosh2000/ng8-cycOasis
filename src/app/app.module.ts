@@ -186,6 +186,7 @@ import { RsvOpenDatesComponent } from './components/rsv2/rsv-open-dates/rsv-open
 import { RsvOpenDatesSetComponent } from './components/rsv2/rsv-open-dates-set/rsv-open-dates-set.component';
 import { RsvUpdateContactComponent } from './components/rsv2/rsv-update-contact/rsv-update-contact.component';
 import { PaymentLinkGenComponent } from './components/rsv2/payment-link-gen/payment-link-gen.component';
+import { DataStudioComponent } from './components/data-studio/data-studio.component';
 
 @NgModule({
   declarations: [
@@ -309,7 +310,8 @@ import { PaymentLinkGenComponent } from './components/rsv2/payment-link-gen/paym
     RsvOpenDatesComponent,
     RsvOpenDatesSetComponent,
     RsvUpdateContactComponent,
-    PaymentLinkGenComponent
+    PaymentLinkGenComponent,
+    DataStudioComponent
 
   ],
   imports: [

@@ -44,7 +44,7 @@
                 <div class="d-flex justify-content-end p-1" *ngIf="_init.checkSingleCredential('app_cotizador')">
                     <!-- <button mat-button style="zoom: 0.8" color="warn"><mat-icon>edit</mat-icon> Modificar</button> -->
                     <button mat-button style="zoom: 0.8" color="primary" (click)="_regP.openModal()" *ngIf="_init.checkSingleCredential('rsv_paymentReg')"><mat-icon>play_for_work</mat-icon> Registrar Pago</button>
-                    <button mat-button style="zoom: 0.8" color="primary" (click)="_genL.open( data )" *ngIf="_init.checkSingleCredential('rsv_paymentReg')"><mat-icon>link</mat-icon> Generar Liga</button>
+                    <button mat-button style="zoom: 0.8" color="primary" (click)="_genL.open( data )" *ngIf="_init.checkSingleCredential('rsv_linkGenerator')"><mat-icon>link</mat-icon> Generar Liga</button>
                     <!-- <button mat-button style="zoom: 0.8" color="primary" (click)="_linkP.openModal( data['master'] )"><mat-icon>link</mat-icon> Ligar</button> -->
                     <button mat-button style="zoom: 0.8" color="primary" (click)="_payment.openModal( data['master']['zdUserId'], data['items'] )"><mat-icon>payment</mat-icon> Saldar</button>
                 </div>
@@ -107,6 +107,7 @@
                                 <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)" *ngIf="_init.checkSingleCredential('app_cotizador')"><mat-icon>remove_circle</mat-icon> Cancelar</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="reactivate(i)" *ngIf="_init.checkSingleCredential('rsv_reactivate') && !isVigente(i['vigencia']) && i['isQuote'] == 1 && i['isCancel'] == 0"><ng-container *ngIf="loading['reactivate']"><span><i class="fas fa-spinner fa-pulse"></i></span></ng-container><ng-container *ngIf="!loading['reactivate']"><mat-icon>alarm_add</mat-icon> Reactivar</ng-container></button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="confirmItem(i)" *ngIf="i['isQuote'] == 0 && i['confirmOK'] == null"><mat-icon>done_outline</mat-icon> Confirmar</button>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="resetConfirm(false,i)" *ngIf="_init.checkSingleCredential('rsv_reset_confirm') && i['isQuote'] == 0 && i['confirmOK'] != null"><mat-icon>delete_forever</mat-icon> Reset Confirmación</button>
                             </div>
 
                         </mat-expansion-panel>
@@ -360,6 +361,33 @@
     </div>
 </div>
 <!-- ====================== FIN INGRESAR CONFIRMACION  ====================== -->
+
+<!-- ====================== RESETEAR CONFIRMACION ====================== -->
+<div class="modal fade" id="resetConfirm" tabindex="-1" role="dialog" aria-labelledby="resetConfirmLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetConfirmLabel">Eliminar Confirmación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Realmente deseas eliminar la confirmación <b>{{ resConf['actual'] }}</b><br>del item <b>{{ resConf['itemLocatorId'] }}</b>?
+            </div>
+            <div class="modal-footer">
+                <ng-container *ngIf="!loading['reset']">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading['cancel']">Cerrar</button>
+                    <button type="button" class="btn btn-danger" (click)="resetConfirm(true)"><span *ngIf="!loading['confirm']">Aceptar</span><span *ngIf="loading['confirm']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                </ng-container>
+                <ng-container *ngIf="loading['reset']">
+                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====================== FIN RESETEAR CONFIRMACION  ====================== -->
 
 <!-- ====================== MODAL DE PAGO ====================== -->
 <app-do-payment (paid)="paid($event)" [ml]="viewLoc"></app-do-payment>

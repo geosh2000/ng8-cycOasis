@@ -26,6 +26,7 @@ import { ExtranetComponent } from './components/extranet/extranet.component';
 import { ExtranetListComponent } from './components/extranet/extranet-list/extranet-list.component';
 import { WhatsappComponent } from './components/whatsapp/whatsapp.component';
 import { UploadFilesComponent } from './config/upload-files/upload-files.component';
+import { DataStudioComponent } from './components/data-studio/data-studio.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -46,6 +47,8 @@ const routes: Routes = [
   // { path: 'cotizadorV2', component: CotizadorV2Component },
 
   { path: 'dashboard', component: DashboardComponent },
+
+  { path: 'boards', component: DataStudioComponent },
 
   { path: 'monitores/telefonia', component: TelefoniaComponent },
   { path: 'monitores/telefonia/:a', component: TelefoniaComponent },

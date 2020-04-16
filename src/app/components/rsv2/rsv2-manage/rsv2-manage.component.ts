@@ -73,6 +73,8 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   rsvType = 'Cotizacion'
   ccFlag = false
 
+  resConf = {}
+
   constructor(public _api: ApiService,
               public _init: InitService,
               private _formBuilder: FormBuilder,
@@ -576,6 +578,41 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                   console.error(err.statusText, error.msg);
 
                 });
+  }
+
+  resetConfirm( f , i = {} ){
+    if( !f ){
+      this.resConf = {
+        actual: i['confirm'],
+        itemLocatorId: i['itemLocatorId'],
+        mlTicket: this.mlTicket,
+        itemId: i['itemId']
+      }
+
+      jQuery('#resetConfirm').modal('show')
+      return true
+    }
+
+    this.loading['reset'] = true
+
+    this._api.restfulPut( this.resConf, 'Rsv/resetConfirmation' )
+                .subscribe( res => {
+
+                  this.loading['reset'] = false;
+                  this.toastr.success( res['msg'], 'RESET' );
+                  this.resConf = {}
+                  this.getLoc(this.viewLoc)
+                  jQuery('#resetConfirm').modal('hide')
+
+                }, err => {
+                  this.loading['reset'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+
   }
 
 }

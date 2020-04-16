@@ -1,0 +1,31 @@
+<div class="alert alert-danger" role="alert" *ngIf="!_init.checkCredential( 'app_dashboards', true )">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">WFM</span> si necesitas accesos.</p>
+</div>
+<ng-container *ngIf="_init.checkCredential( 'app_dashboards', true )">
+    <div class='container d-flex justify-content-between'>
+        <div>
+            <h1>{{ selectedReport['name'] ? selectedReport['name'] : 'Dashboards' }}</h1>
+        </div>
+        <div>
+            <ng-container *ngIf="!loading['list']">
+                <mat-form-field class="formInfo" style="font-size: small">
+                    <mat-label>Selecciona Dashboard</mat-label>
+                    <mat-select (selectionChange)="selected($event)" [value]="selectedReport">
+                        <ng-container *ngFor="let r of data">
+                            <mat-option [value]="r">
+                                {{ r['name'] }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <button mat-icon-button color="primary" aria-label="Refresh" (click)="getDashList()">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+            </ng-container>
+            <mat-progress-bar mode="buffer" *ngIf="loading['list']"></mat-progress-bar>
+        </div>
+    </div>
+    <div class='container-fluid d-flex justify-content-center'>
+        <iframe width="1366" height="788" [src]="selectedReport['iframe'] | domseguro:''" frameborder="0" style="border:0" allowfullscreen *ngIf="selectedReport['iframe']"></iframe>
+    </div>
+</ng-container>
