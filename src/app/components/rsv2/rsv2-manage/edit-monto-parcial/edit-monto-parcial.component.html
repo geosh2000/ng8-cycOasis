@@ -399,30 +399,39 @@
 
     <div class="container d-flex justify-content-around">
 
-        <div class="d-flex justify-content-end align-items-center" *ngIf="i['isQuote'] == '0' && i['isCancel'] == 0">
-            <div class="clientConcept"><b>Reenviar Confirmación:</b></div>
-            <div class="clientInfo" *ngIf="!loading['sendConf']">
-                <button class="ml-3" mat-mini-fab color="primary" (click)="sendConf(true)">
-                    <mat-icon>home</mat-icon>
-                </button>
-                <button class="ml-3" mat-mini-fab color="accent" (click)="sendConf(false)">
-                    <mat-icon>language</mat-icon>
-                </button>
-            </div>
-            <div class="clientInfo" *ngIf="loading['sendConf']">
-                <span><i class="fas fa-spinner fa-pulse"></i></span>
-            </div>
-        </div>
-        <div class="d-flex justify-content-end align-items-center">
-            <div class="clientConcept"><b>Vouchers:</b></div>
-            <div class="clientInfo">
-                <a mat-mini-fab color="primary" [href]="hrIndex + '/vouchers/' + i['itemLocatorId']" target="_blank">
+        <div class="d-flex justify-content-start align-items-start" [style.width.px]="407">
+            <div class="clientConcept"><b>Vouchers:</b><button class="ml-3" mat-icon-button color="accent" (click)="uplImg.emit(i)">
+                <mat-icon>note_add</mat-icon>
+            </button></div>
+            <div class="clientInfo" [style.width.px]="350">
+                <ul>
+                    <ng-container *ngFor="let v of i['referencias']">
+                        <li><a [href]="getVoucherLink(v, 'link')" target="_blank">{{ getVoucherLink(v, 'text') }}</a></li>
+                    </ng-container>
+                </ul>
+                <!-- <a mat-mini-fab color="primary" [href]="hrIndex + '/vouchers/' + i['itemLocatorId']" target="_blank">
                     <mat-icon>remove_red_eye</mat-icon>
                 </a>
                 <button class="ml-3" mat-mini-fab color="accent" (click)="uplImg.emit(i)">
                     <mat-icon>note_add</mat-icon>
-                </button>
+                </button> -->
             </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center">
+            <ng-container *ngIf="i['isQuote'] == '0' && i['isCancel'] == 0">
+                <div class="clientConcept"><b>Reenviar Confirmación:</b></div>
+                <div class="clientInfo" *ngIf="!loading['sendConf']">
+                    <button class="ml-3" mat-mini-fab color="primary" (click)="sendConf(true)">
+                        <mat-icon>home</mat-icon>
+                    </button>
+                    <button class="ml-3" mat-mini-fab color="accent" (click)="sendConf(false)">
+                        <mat-icon>language</mat-icon>
+                    </button>
+                </div>
+                <div class="clientInfo" *ngIf="loading['sendConf']">
+                    <span><i class="fas fa-spinner fa-pulse"></i></span>
+                </div>
+            </ng-container>
         </div>
 
     </div>

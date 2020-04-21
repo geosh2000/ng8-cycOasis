@@ -104,5 +104,21 @@ export class EditMontoParcialComponent implements OnInit {
     return '...' + t.substring(t.length - 8, t.length)
   }
 
+  getVoucherLink( ref, t ){
+
+    switch(t){
+      case 'link':
+        let r = ref.substr(0,ref.indexOf('('))
+        let i = ref.substr(ref.length - 1,1)
+
+        if( i == 1 ){
+          return this._api.extTokenLink( 'https://cyc-oasishoteles.com/voucherPreview/view.php', {ref: r} )
+        }
+
+        return this.hrIndex + '/vouchers/' + this.i['itemLocatorId']
+      case 'text':
+        return ref.substr(0,ref.length - 1)
+    }
+  }
 
 }

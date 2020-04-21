@@ -26,6 +26,6 @@
         </div>
     </div>
     <div class='container-fluid d-flex justify-content-center'>
-        <iframe width="1366" height="788" [src]="selectedReport['iframe'] | domseguro:''" frameborder="0" style="border:0" allowfullscreen *ngIf="selectedReport['iframe']"></iframe>
+        <iframe width="1366" height="788" [src]="selectedReport['iframe'] | domseguro:''" frameborder="0" style="border:0" allowfullscreen id='dashFrame' *ngIf="selectedReport['iframe']"></iframe>
     </div>
 </ng-container>

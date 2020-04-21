@@ -188,7 +188,11 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                     }
 
                     for( let i of data['items'] ){
-                      // console.log(i['links'])
+                      if( i['referencias'] ){
+                        i['referencias'] = i['referencias'].split(',')
+                      }else{
+                        i['referencias'] = []
+                      }
                       if( i['links'] ){
                         // console.log(i['links'])
                         i['links'] = JSON.parse(i['links'])

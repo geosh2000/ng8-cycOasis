@@ -36,6 +36,31 @@ export class ApiService {
     return this.domSanitizer.bypassSecurityTrustUrl( url );
   }
 
+  extTokenLink( url, params={}, loginReq = true ){
+
+    if( loginReq ){
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      url += `?token=${currentUser ? currentUser.token : 'noToken'}`
+      url += `&usn=${currentUser ? currentUser.username : 'noUser'}&usid=${currentUser ? currentUser.hcInfo.id : 'noId'}`
+      url += `&zdId=${currentUser ? currentUser.hcInfo.zdId : 'noId'}&localIp=${this.localIp}`
+
+    }
+
+    for( let p in params ){
+      if( params.hasOwnProperty(p) ){
+        url += `&${p}=${params[p]}`
+      }
+    }
+
+    let urlOK = this.transform( url )
+
+    let headers = new HttpHeaders({
+      'Content-Type':'application/json'
+    });
+
+    return urlOK.changingThisBreaksApplicationSecurity
+  }
+
   postFromApi( params, apiRoute, alternativeRoute? ){
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));

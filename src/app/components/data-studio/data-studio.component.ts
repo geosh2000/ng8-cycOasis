@@ -18,6 +18,7 @@ export class DataStudioComponent implements OnInit, OnDestroy {
   data:any = []
   loading = {}
   selectedReport = {}
+  to:any
 
   constructor(public _api: ApiService,
               public _init: InitService,
@@ -66,6 +67,20 @@ export class DataStudioComponent implements OnInit, OnDestroy {
 
   selected( e ){
     this.selectedReport = e.value
+    this.reload()
+  }
+
+  reload( to = this.to ){
+    if( to ){
+      clearTimeout( to )
+    }
+
+    if( this.selectedReport['refreshRate'] ){
+      this.to = window.setTimeout( () => {
+        jQuery('#dashFrame').src = this.selectedReport['iframe']
+        this.reload()
+      }, this.selectedReport['refreshRate'])
+    }
   }
 
 }
