@@ -187,6 +187,8 @@ import { RsvOpenDatesSetComponent } from './components/rsv2/rsv-open-dates-set/r
 import { RsvUpdateContactComponent } from './components/rsv2/rsv-update-contact/rsv-update-contact.component';
 import { PaymentLinkGenComponent } from './components/rsv2/payment-link-gen/payment-link-gen.component';
 import { DataStudioComponent } from './components/data-studio/data-studio.component';
+import { ClueComponent } from './components/games/clue/clue.component';
+import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp-templates.component';
 
 @NgModule({
   declarations: [
@@ -311,7 +313,9 @@ import { DataStudioComponent } from './components/data-studio/data-studio.compon
     RsvOpenDatesSetComponent,
     RsvUpdateContactComponent,
     PaymentLinkGenComponent,
-    DataStudioComponent
+    DataStudioComponent,
+    ClueComponent,
+    WhatsappTemplatesComponent
 
   ],
   imports: [

@@ -1,8 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { InitService, ApiService } from 'src/app/services/service.index';
 
 declare var jQuery: any;
-import { ApiService } from '../../../services/api.service';
 import * as moment from 'moment-timezone';
 
 @Component({
@@ -25,6 +25,7 @@ export class PaymentLinkGenComponent implements OnInit {
   data:any = []
   items:any = []
   selMon = true
+  selAccount = true
   summary = {}
   mergeFlag = false
   mergeSel = false
@@ -32,7 +33,7 @@ export class PaymentLinkGenComponent implements OnInit {
   links = []
   fullReload = false
 
-  constructor( private _api:ApiService, private toastr:ToastrService ) { }
+  constructor( public _init:InitService, private _api:ApiService, private toastr:ToastrService ) { }
 
   ngOnInit() {
   }
@@ -113,22 +114,34 @@ export class PaymentLinkGenComponent implements OnInit {
       if( !l['status'] ){
 
         let ref = `${this.ml}-${moment().format('x')}`
-
         let params = {
-          link: {
-            reference: ref,
-            amount: parseFloat(l['total']).toFixed(2),
-            moneda: l['moneda'],
-            omitir_notif_default: 0,
-            promociones: l['promo'],
-            st_correo: 0,
-            fh_vigencia: moment().add(2,'days').format('DD/MM/YYYY'),
-            mail_cliente: this.data['master']['correoCliente']
-          },
+          link: {},
           db: [],
           itemsLocators: '',
           mlTicket: this.data['master']['mlTicket']
         }
+
+        if( this.selAccount ){
+          params['link'] = {
+              reference: ref,
+              amount: parseFloat(l['total']).toFixed(2),
+              moneda: l['moneda'],
+              omitir_notif_default: 0,
+              promociones: l['promo'],
+              st_correo: 0,
+              fh_vigencia: moment().add(2,'days').format('DD/MM/YYYY'),
+              mail_cliente: this.data['master']['correoCliente']
+            }
+        }else{
+          params['link'] = {
+            reference: ref,
+            amount: l['total'],
+            moneda: l['moneda'],
+            name: this.data['master']['nombreCliente'],
+            mail_cliente: this.data['master']['correoCliente']
+          }
+        }
+
 
         for( let it of this.summary[l['afiliacion']][l['promo']]['items'] ){
           let tmpArr = {
@@ -162,8 +175,10 @@ export class PaymentLinkGenComponent implements OnInit {
           }
         }
 
+        let url = this.selAccount ? 'Pagos/getLink' : 'Paypal/genInvoice'
+
         this.summary[l['afiliacion']][l['promo']]['status'] = 1
-        this._api.restfulPut( params, 'Pagos/getLink' )
+        this._api.restfulPut( params, url )
                 .subscribe( res => {
 
                   if( res['data']['error'] ){

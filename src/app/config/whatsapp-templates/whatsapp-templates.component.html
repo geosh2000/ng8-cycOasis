@@ -1,0 +1,75 @@
+<div class="alert alert-danger" role="alert" *ngIf="!_init.checkSingleCredential('app_templates')">
+    <p>No cuentas con los permisos para poder visualizar este módulo. Por favor contacta a <span class="font-weight-bold">Gerencia</span> si necesitas accesos.</p>
+</div>
+<div class="container-fluid" *ngIf="_init.checkSingleCredential('app_cotizador')">
+    <div class="container-fluid">
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span><h1 class="display-3">Macros para Whatsapp</h1></span>
+                        <p class="lead">Consulta, crea y edita macros para Whatsapp</p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end" *ngIf="!loading['templates']">
+                    <button mat-raised-button (click)="getTemplates()" color='primary'>Load</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <mat-progress-bar mode="buffer" *ngIf="loading['templates']"></mat-progress-bar>
+    <div class="container-fluid" *ngIf="!loading['templates']">
+
+        <ngx-table [configuration]="config" [data]="templates" [columns]="columns">
+            <ng-template let-row>
+                <td *ngFor="let item of columns;" class='text-center'>
+                    <span [ngSwitch]="item['type']">
+                        <span style="font-size: smaller" *ngSwitchCase="'default'">
+                            {{ row[item['key']] }}
+                        </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'date'">
+                            {{ formatDate(row[item['key']], 'DD MMM YYYY') }}
+                        </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'edit'">
+                        <ng-container *ngIf="row[item['key'] + '_edit']">
+                            <mat-progress-bar mode="buffer"></mat-progress-bar>
+                        </ng-container>
+                        <ng-container *ngIf="!row[item['key'] + '_edit']">
+                            <div [style.width.%]="100" class="d-flex justify-content-between align-items-center">
+                                <div [style.width.%]="100" class="d-flex justify-content-between align-items-center" *ngIf="!row[item['key'] + '_editFlag']">
+                                    <div [innerHtml]="newLine(row[item['key']])" class='text-left'></div>
+                                    <button mat-icon-button color="primary" (click)="row[item['key'] + '_editFlag'] = true"><mat-icon>edit</mat-icon></button>
+                                </div>
+                                <div class="d-flex justify-content-start align-items-center" *ngIf="row[item['key'] + '_editFlag']">
+                                    <div>
+                                        <textarea style="font-size: 11px" [name]="item['key'] + '_area_' + row['id']" [id]="item['key'] + '_area_' + row['id']" placeholder="Monto Total" [ngModel]="row[item['key']]"></textarea>
+                                    </div>
+                                    <button style="zoom: 0.8" mat-icon-button color='warn' (click)="cxlEdit(row, item['key'], item['key'] + '_area_' + row['id'])" [disabled]="row[item['key'] + '_edit']"><mat-icon>cancel</mat-icon></button>
+                                    <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editTmpl(row, item['key'], item['key'] + '_area_' + row['id'])" [disabled]="row[item['key'] + '_edit']"><mat-icon>done</mat-icon></button>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'activate'">
+                            <div [style.width.%]="100" class="d-flex justify-content-between align-items-center" *ngIf="row['load_activate']">
+                                <mat-progress-bar mode="buffer"></mat-progress-bar>
+                            </div>
+                            <div [style.width.%]="100" class="d-flex justify-content-between align-items-center" *ngIf="!row['load_activate']">
+                                <div [ngClass]="{'text-secondary': row[item['key']] != 1, 'text-success': row[item['key']] == 1}">{{ row[item['key']] == 1 ? 'Activo' : 'Inactivo' }}</div>
+                                <button mat-icon-button (click)="activateTmpl(row, row[item['key']] != 1)" [color]="row[item['key']] == 1 ? 'primary' : 'warn'"><mat-icon *ngIf="row[item['key']] == 1">toggle_on</mat-icon><mat-icon *ngIf="row[item['key']] != 1">toggle_off</mat-icon></button>
+                            </div>
+                        </span>
+                    <span style="font-size: smaller" *ngSwitchCase="'delete'">
+                            <div [style.width.%]="100" class="d-flex justify-content-center align-items-center">
+                                <button mat-icon-button [color]="'warn'" [disabled]="row['activo'] == 1"><mat-icon>delete_forever</mat-icon></button>
+                            </div>
+                        </span>
+                    </span>
+                </td>
+            </ng-template>
+        </ngx-table>
+
+    </div>
+</div>

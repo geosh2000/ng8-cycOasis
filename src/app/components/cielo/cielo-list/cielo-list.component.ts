@@ -192,6 +192,7 @@ export class CieloListComponent implements OnInit {
     this.config['rows'] = 20
     this.config['paginationRangeEnabled'] = true
     this.config['tableLayout']['style'] = 'tiny'
+    this.config['searchEnabled'] = true
   }
 
   getTableConfig(){

@@ -117,7 +117,7 @@ export class CieloLlegadasComponent implements OnInit {
       }
 
       let rsv = {
-        rsva: r['RESERV'],
+        rsva: r['RESERVA'],
         hotel: r['SIGLA'],
         complejo: this.complejo[r['SIGLA']],
         mdo: r['MAYORIST'],

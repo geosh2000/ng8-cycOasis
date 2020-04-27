@@ -101,7 +101,11 @@ export class EditMontoParcialComponent implements OnInit {
   }
 
   linkPrint( t ){
-    return '...' + t.substring(t.length - 8, t.length)
+    if( t.length > 11 ){
+      return '...' + t.substring(t.length - 8, t.length)
+    }else{
+      return t
+    }
   }
 
   getVoucherLink( ref, t ){
@@ -119,6 +123,37 @@ export class EditMontoParcialComponent implements OnInit {
       case 'text':
         return ref.substr(0,ref.length - 1)
     }
+  }
+
+  verifyLink( i ){
+    i['loading'] = true;
+
+    this._api.restfulPut( {reference: i['reference']}, 'Paypal/searchInvoice' )
+                .subscribe( res => {
+
+                  i['loading'] = false;
+                  console.log(res['data'])
+
+                  let item = res['data']['items'][0]
+
+                  if( item['status'] != 'PAID' ){
+                    this.toastr.error('El formato no se a pagado por completo', item['status'])
+                    return false
+                  }else{
+                    this.toastr.success('El formato ha sido pagado', item['status'])
+                    return false
+                  }
+
+
+
+                }, err => {
+                  i['loading'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
   }
 
 }

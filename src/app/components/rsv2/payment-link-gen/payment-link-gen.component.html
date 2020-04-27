@@ -5,11 +5,19 @@
                 <div>
                     <h5 class="modal-title" id="genLinkLabel">Generar Liga de Pago para loc {{ ml }}</h5>
                 </div>
-                <div style="text-align: center" class="p-1">
-                    <ui-switch color="green" size="small" [(ngModel)]="selMon" (change)="resetAll()" checkedLabel='MXN' uncheckedLabel='USD'></ui-switch>
-                    <p>
-                        <small>Moneda </small>
-                    </p>
+                <div style="text-align: center" class="p-1 d-flex justify-content-center">
+                    <div class="mr-3" *ngIf="_init.checkSingleCredential('rsv_paypalLink')">
+                        <ui-switch color="red" size="small" [(ngModel)]="selAccount" (change)="resetAll()" checkedLabel='Santander' uncheckedLabel='Paypal'></ui-switch>
+                        <p>
+                            <small>Cuenta </small>
+                        </p>
+                    </div>
+                    <div>
+                        <ui-switch color="green" size="small" [(ngModel)]="selMon" (change)="resetAll()" checkedLabel='MXN' uncheckedLabel='USD'></ui-switch>
+                        <p>
+                            <small>Moneda </small>
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -62,7 +70,7 @@
                                                     <mat-radio-button class="links-radio-button" [value]="lnk['reference']">
                                                         <div class="d-flex align-items-center justify-content-start">
                                                             <span class="mr-2" [style.width.px]="200"><b>{{ lnk['reference'] }}</b></span>
-                                                            <span class="mr-2" [style.width.px]="138">cuenta {{ data['master']['allLinks'][lnk['reference']]['cuenta'] }}</span>
+                                                            <span class="mr-2" [style.width.px]="150">{{ data['master']['allLinks'][lnk['reference']]['cuenta'] }}</span>
                                                             <span class="mr-2" [style.width.px]="150">promo ({{ data['master']['allLinks'][lnk['reference']]['promo'] }})</span>
                                                             <span class="mr-2" [style.width.px]="160">monto: {{ data['master']['allLinks'][lnk['reference']]['total'] | currency:'MXN':'symbol-narrow':'.2-2' }}</span>
                                                             <span class="mr-2">items: {{ data['master']['allLinks'][lnk['reference']]['items'] }}</span>
@@ -132,7 +140,7 @@
 <div class="modal fade" id="showLink" tabindex="-1" role="dialog" aria-labelledby="showLinkLabel" data-backdrop="static" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between">
+            <div class="modal-header d-flex justify-content-end">
                 <div>
                     <h5 class="modal-title" id="showLinkLabel">Ligas Generadas para loc {{ ml }}</h5>
                 </div>

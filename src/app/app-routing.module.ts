@@ -27,6 +27,7 @@ import { ExtranetListComponent } from './components/extranet/extranet-list/extra
 import { WhatsappComponent } from './components/whatsapp/whatsapp.component';
 import { UploadFilesComponent } from './config/upload-files/upload-files.component';
 import { DataStudioComponent } from './components/data-studio/data-studio.component';
+import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp-templates.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -82,6 +83,7 @@ const routes: Routes = [
   { path: 'uploads', component: UploadFilesComponent },
   { path: 'uploads/:param', component: UploadFilesComponent },
 
+  { path: 'templates', component: WhatsappTemplatesComponent },
 ];
 
 @NgModule({

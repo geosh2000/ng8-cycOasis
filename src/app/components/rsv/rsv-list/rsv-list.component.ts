@@ -183,6 +183,7 @@ export class RsvListComponent implements OnInit {
     this.config['paginationEnabled'] = true
     this.config['rows'] = 20
     this.config['paginationRangeEnabled'] = true
+    this.config['searchEnabled'] = true
   }
 
   getDif( i ){

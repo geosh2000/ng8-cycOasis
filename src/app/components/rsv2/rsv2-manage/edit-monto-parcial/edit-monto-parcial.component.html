@@ -96,7 +96,13 @@
                 <ng-container *ngFor="let lk of i['links']; index as lki">
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
-                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                        <ng-container *ngIf="!lk['loading']">
+                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
+                        </ng-container>
+                        <ng-container *ngIf="lk['loading']">
+                            <mat-progress-bar mode='buffer'></mat-progress-bar>
+                        </ng-container>
                     </div>
                 </ng-container>
             </div>
@@ -160,7 +166,13 @@
                 <ng-container *ngFor="let lk of i['links']; index as lki">
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
-                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                        <ng-container *ngIf="!lk['loading']">
+                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
+                        </ng-container>
+                        <ng-container *ngIf="lk['loading']">
+                            <mat-progress-bar mode='buffer'></mat-progress-bar>
+                        </ng-container>
                     </div>
                 </ng-container>
             </div>
@@ -210,7 +222,13 @@
                 <ng-container *ngFor="let lk of i['links']; index as lki">
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
-                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                        <ng-container *ngIf="!lk['loading']">
+                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
+                        </ng-container>
+                        <ng-container *ngIf="lk['loading']">
+                            <mat-progress-bar mode='buffer'></mat-progress-bar>
+                        </ng-container>
                     </div>
                 </ng-container>
             </div>
@@ -285,7 +303,13 @@
                 <ng-container *ngFor="let lk of i['links']; index as lki">
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
-                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                        <ng-container *ngIf="!lk['loading']">
+                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
+                        </ng-container>
+                        <ng-container *ngIf="lk['loading']">
+                            <mat-progress-bar mode='buffer'></mat-progress-bar>
+                        </ng-container>
                     </div>
                 </ng-container>
             </div>
@@ -334,7 +358,13 @@
                 <ng-container *ngFor="let lk of i['links']; index as lki">
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
-                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                        <ng-container *ngIf="!lk['loading']">
+                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
+                        </ng-container>
+                        <ng-container *ngIf="lk['loading']">
+                            <mat-progress-bar mode='buffer'></mat-progress-bar>
+                        </ng-container>
                     </div>
                 </ng-container>
             </div>
@@ -378,7 +408,13 @@
                 <ng-container *ngFor="let lk of i['links']; index as lki">
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
-                        <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['link']) }} <mat-icon>file_copy</mat-icon></button>
+                        <ng-container *ngIf="!lk['loading']">
+                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
+                        </ng-container>
+                        <ng-container *ngIf="lk['loading']">
+                            <mat-progress-bar mode='buffer'></mat-progress-bar>
+                        </ng-container>
                     </div>
                 </ng-container>
             </div>
