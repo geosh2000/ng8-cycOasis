@@ -6,6 +6,7 @@ import { EasyTableServiceService } from '../../services/easy-table-service.servi
 
 declare var jQuery:any;
 import * as moment from 'moment-timezone';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-whatsapp-templates',
@@ -19,6 +20,7 @@ export class WhatsappTemplatesComponent implements OnInit {
   config:EasyTableServiceService
   columns:any = [
     { type: 'default', key: 'id', title: 'ID' },
+    { type: 'edit', key: 'idioma', title: 'Idioma' },
     { type: 'edit', key: 'categoria', title: 'Categoria' },
     { type: 'edit', key: 'titulo', title: 'Titulo' },
     { type: 'edit', key: 'texto', title: 'Template' },
@@ -31,12 +33,20 @@ export class WhatsappTemplatesComponent implements OnInit {
 
   templates = []
   original = []
+  newTemplateForm:FormGroup
 
   constructor(public _api: ApiService,
               public _init: InitService,
               private titleService: Title,
               private _tokenCheck: TokenCheckService,
-              public toastr: ToastrService) { }
+              public toastr: ToastrService) {
+                this.newTemplateForm =  new FormGroup({
+                  ['idioma']:    new FormControl('', [ Validators.required]),
+                  ['categoria']:   new FormControl('', [ Validators.required]),
+                  ['titulo']:   new FormControl('', [ Validators.required]),
+                  ['texto']:   new FormControl('', [ Validators.required])
+                })
+              }
 
   ngOnInit() {
     this.titleService.setTitle('CyC - Templates Manager');
@@ -179,6 +189,35 @@ export class WhatsappTemplatesComponent implements OnInit {
 
   newLine( t ){
     return t.replace(/[\n]/gm,'<br>')
+  }
+
+  openAddTemplate(){
+    this.newTemplateForm.reset()
+    jQuery('#addTemplate').modal('show')
+  }
+
+  addTemplate(){
+    this.loading['addTemplate'] = true;
+    this.loading['templates'] = true;
+
+    this._api.restfulPut( this.newTemplateForm.value, 'Whatsapp/createTemplate' )
+                .subscribe( res => {
+
+                  this.loading['addTemplate'] = false
+                  this.templates.push(res['data'])
+                  this.original.push(res['data'])
+
+                  this.loading['templates'] = false;
+                  jQuery('#addTemplate').modal('hide')
+                }, err => {
+
+                  this.loading['addTemplate'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
   }
 
 

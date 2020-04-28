@@ -13,7 +13,8 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end" *ngIf="!loading['templates']">
-                    <button mat-raised-button (click)="getTemplates()" color='primary'>Load</button>
+                    <button class="ml-1" mat-raised-button (click)="getTemplates()" color='primary'>Load</button>
+                    <button class="ml-1" mat-raised-button (click)="openAddTemplate()" color='success'>Agregar</button>
                 </div>
             </div>
         </div>
@@ -63,7 +64,8 @@
                         </span>
                     <span style="font-size: smaller" *ngSwitchCase="'delete'">
                             <div [style.width.%]="100" class="d-flex justify-content-center align-items-center">
-                                <button mat-icon-button [color]="'warn'" [disabled]="row['activo'] == 1"><mat-icon>delete_forever</mat-icon></button>
+                                <mat-progress-bar mode="buffer" *ngIf="row['load_delete']"></mat-progress-bar>
+                                <button mat-icon-button [color]="'warn'" [disabled]="row['activo'] == 1" (click)="deleteTmpl(row)"  *ngIf="!row['load_delete']"><mat-icon>delete_forever</mat-icon></button>
                             </div>
                         </span>
                     </span>
@@ -71,5 +73,62 @@
             </ng-template>
         </ngx-table>
 
+    </div>
+
+    <!-- ====================== AGREGAR TEMPLATE ====================== -->
+    <div class="modal fade" id="addTemplate" tabindex="-1" role="dialog" aria-labelledby="addTemplateLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTemplateLabel">Agregar Template</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form [formGroup]="newTemplateForm" (ngSubmit)="addTemplate()">
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-center pt-3" *ngIf="!loading['addTemplate']">
+                            <mat-form-field [style.width.px]="200" class="ml-2">
+                                <input matInput placeholder="Idioma" class="text-sm" formControlName="idioma" [style.width.px]="200">
+                                <mat-error *ngIf="newTemplateForm.controls['idioma'].errors && newTemplateForm.controls['idioma'].errors['required']">
+                                    El idioma es obligatorio
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field [style.width.px]="200" class="ml-2">
+                                <input matInput placeholder="Categoria" class="text-sm" formControlName="categoria" [style.width.px]="200">
+                                <mat-error *ngIf="newTemplateForm.controls['categoria'].errors && newTemplateForm.controls['categoria'].errors['required']">
+                                    La categoría es obligatoria
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field [style.width.px]="200" class="ml-2">
+                                <input matInput placeholder="Título" class="text-sm" formControlName="titulo" [style.width.px]="200">
+                                <mat-error *ngIf="newTemplateForm.controls['titulo'].errors && newTemplateForm.controls['titulo'].errors['required']">
+                                    El título es obligatorio
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="d-flex justify-content-center pt-3" *ngIf="!loading['addTemplate']">
+                            <mat-form-field [style.width.px]="520" class="ml-2">
+                                <textarea matInput placeholder="Texto" class="text-sm" formControlName="texto" [style.width.px]="800"></textarea>
+                                <mat-error *ngIf="newTemplateForm.controls['texto'].errors && newTemplateForm.controls['texto'].errors['required']">
+                                    El texto es obligatorio
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <mat-progress-bar color="accent" mode="buffer" *ngIf="loading['addTemplate']"></mat-progress-bar>
+
+                    </div>
+                    <div class="modal-footer">
+                        <ng-container *ngIf="!loading['addTemplate']">
+                            <button mat-raised-button color='warn' data-dismiss="modal">Cerrar</button>
+                            <button mat-raised-button type="submit" color="success" [disabled]="newTemplateForm.status=='INVALID'">Aceptar</button>
+                        </ng-container>
+                        <ng-container *ngIf="loading['addTemplate']">
+                            <mat-progress-bar mode="buffer"></mat-progress-bar>
+                        </ng-container>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
