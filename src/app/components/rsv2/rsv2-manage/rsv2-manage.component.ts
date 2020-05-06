@@ -21,6 +21,7 @@ import { RsvOpenDatesComponent } from '../rsv-open-dates/rsv-open-dates.componen
 import { RsvOpenDatesSetComponent } from '../rsv-open-dates-set/rsv-open-dates-set.component';
 import { RsvUpdateContactComponent } from '../rsv-update-contact/rsv-update-contact.component';
 import { PaymentLinkGenComponent } from '../payment-link-gen/payment-link-gen.component';
+import { RsvCancelItemComponent } from '../rsv-cancel-item/rsv-cancel-item.component';
 
 @Component({
   selector: 'app-rsv2-manage',
@@ -37,6 +38,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   @ViewChild(RsvOpenDatesSetComponent,{static:false}) _ods:RsvOpenDatesSetComponent;
   @ViewChild(RsvUpdateContactComponent,{static:false}) _updU:RsvUpdateContactComponent;
   @ViewChild(PaymentLinkGenComponent,{static:false}) _genL:PaymentLinkGenComponent;
+  @ViewChild(RsvCancelItemComponent,{static:false}) _xld:RsvCancelItemComponent;
 
   penaltyXld:FormGroup
 
@@ -397,6 +399,14 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                 });
   }
 
+  formatHistory( t ){
+    let r = t
+
+    r = r.replace(/[\n]/gm,'<br>')
+
+    return r
+  }
+
   getRsvHistory( zdClientId = this.zdClientId ){
 
     this.loading['rsvHistory'] = true
@@ -421,10 +431,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   }
 
   cancelItem(i){
-    this.cancelItemData = i
-    this.maxPenalidad = i['montoPagado']
-    jQuery('#cancelConfirm').modal('show')
-    this.getRelatedPayments( i )
+    this._xld.cancelItem(i)
   }
 
   confirmItem(i){

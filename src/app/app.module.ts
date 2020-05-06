@@ -189,6 +189,7 @@ import { PaymentLinkGenComponent } from './components/rsv2/payment-link-gen/paym
 import { DataStudioComponent } from './components/data-studio/data-studio.component';
 import { ClueComponent } from './components/games/clue/clue.component';
 import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp-templates.component';
+import { RsvCancelItemComponent } from './components/rsv2/rsv-cancel-item/rsv-cancel-item.component';
 
 @NgModule({
   declarations: [
@@ -315,7 +316,8 @@ import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp
     PaymentLinkGenComponent,
     DataStudioComponent,
     ClueComponent,
-    WhatsappTemplatesComponent
+    WhatsappTemplatesComponent,
+    RsvCancelItemComponent
 
   ],
   imports: [

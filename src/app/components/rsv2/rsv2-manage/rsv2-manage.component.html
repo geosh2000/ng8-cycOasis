@@ -259,7 +259,7 @@
                             <small><b>{{ formatDate(c['Fecha'], 'ddd DD MMM YYYY') }} <span class="text-info">{{ formatDate(c['Fecha'], 'HH:mm') }} hrs</span>:</b></small>
                         </div>
                         <div class="col pl-0">
-                            <span class="text-secondary" [innerHTML]="c['msg']"></span>
+                            <span class="text-secondary" [innerHTML]="formatHistory(c['msg'])"></span>
                         </div>
                     </div>
 
@@ -274,59 +274,7 @@
 </div>
 
 <!-- ====================== CONFIRMAR CANCELACION ====================== -->
-<div class="modal fade" id="cancelConfirm" tabindex="-1" role="dialog" aria-labelledby="cancelConfirmLabel" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cancelConfirmLabel">Confirmar cancelación</h5>
-
-            </div>
-            <div class="modal-body">
-                <div>
-                    Estás seguro que deseas cancelar este item?
-                </div>
-                <br>
-                <!-- <mat-horizontal-stepper [linear]="true" #stepper *ngIf="maxPenalidad>0">
-                    <mat-step [stepControl]="penaltyXld">
-                        <ng-template matStepLabel>Ingresa el monto de penalidad</ng-template>
-                        <div class='conainer p-1 d-flex justify-content-center'>
-                            <mat-form-field>
-                                <input matInput #postalCode type='number' [max]="maxPenalidad" placeholder="Monto Penalidad" [(ngModel)]="xldPenalidad" autocomplete="off">
-                                <mat-hint align="end">A reembolsar: {{ (maxPenalidad - xldPenalidad) | currency:'MXN':'symbol-narrow':'.2-2'}}</mat-hint>
-                            </mat-form-field>
-                        </div>
-                        <div class="d-flex justify-content-end p-2">
-                            <button mat-raised-button class="m-1" color="danger" (click)="closeCancelModal( stepper )" [disabled]="loading['checkOut']">Cancelar</button>
-                            <button mat-raised-button matStepperPrevious [disabled]="true">Back</button>
-                            <button mat-raised-button color="primary" (click)="setPenalty(stepper)" [disabled]="xldPenalidad<0">Next</button>
-                        </div>
-                    </mat-step>
-                    <mat-step [stepControl]="penaltyXld">
-                        <ng-template matStepLabel>Ingresa el monto de penalidad</ng-template>
-                        <div class='conainer p-1 d-flex justify-content-center' *ngIf="loading['rlPay']">
-                            <mat-spinner></mat-spinner>
-                        </div>
-                        <div class='conainer p-1 d-flex justify-content-center' *ngIf="!loading['rlPay']">
-                            <pre>{{ rlPayments | json }}</pre>
-                        </div>
-                        <div class="d-flex justify-content-end p-2">
-                            <button mat-raised-button class="m-1" color="danger" (click)="closeCancelModal( stepper )" [disabled]="loading['checkOut']">Cancelar</button>
-                            <button mat-raised-button matStepperPrevious>Back</button>
-                            <button mat-raised-button color="primary" (click)="stepper.next()" [disabled]="maxPenalidad>=0">Next</button>
-                        </div>
-                    </mat-step>
-                </mat-horizontal-stepper> -->
-
-            </div>
-            <!-- <div class="modal-footer" *ngIf="!xldPenalidad"> -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="loading['cancel']">Cerrar</button>
-                <!-- <button type="button" class="btn btn-danger" (click)="confirmCancel()" [disabled]="loading['cancel'] || (maxPenalidad>=0 && (!xldPenalidad || (maxPenalidad - xldPenalidad)<0))"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button> -->
-                <button type="button" class="btn btn-danger" (click)="confirmCancel()" [disabled]="loading['cancel']"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
-            </div>
-        </div>
-    </div>
-</div>
+<app-rsv-cancel-item (cancelled)="getLoc(viewLoc)"></app-rsv-cancel-item>
 <!-- ====================== FIN CONFIRMAR CANCELACION ====================== -->
 
 <!-- ====================== INGRESAR CONFIRMACION ====================== -->

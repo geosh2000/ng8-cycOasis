@@ -1,0 +1,37 @@
+.category {
+    width: 50%;
+    padding-right: 3px;
+    text-align: right;
+    color: cornflowerblue;
+    vertical-align: middle!important;
+}
+
+.invalid-field {
+    color: #d60a0a!important;
+}
+
+.value {
+    width: 50%;
+    padding-left: 15px;
+    text-align: left;
+    font-family: monospace;
+    vertical-align: middle!important;
+    font-size: large;
+}
+
+.mat-radio-button {
+    font-size: small;
+}
+
+.mat-radio-button~.mat-radio-button {
+    font-size: small;
+}
+
+.check-margin {
+    margin: 0 10px;
+    font-size: small;
+}
+
+.penaltyInput {
+    width: 300px;
+}
