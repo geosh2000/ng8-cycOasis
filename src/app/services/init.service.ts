@@ -15,6 +15,12 @@ export class InitService {
     this.getPreferences()
   }
 
+  copyToClipboard( t ) {
+    let d = $('<input>').val(t).appendTo('body').select()
+    document.execCommand('copy')
+    d.remove()
+  }
+
   getPreferences(){
     if( localStorage.getItem('currentUser') ){
       this._api.restfulGet( '', 'Preferences/userPreferences' )

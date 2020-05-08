@@ -142,20 +142,24 @@ export class RsvPaymentListComponent implements OnInit {
   config:any
   columns:any = [
     { type: 'default', key: 'operacion', title: 'Operacion' },
+    { type: 'default', key: 'aut', title: 'Auth' },
     { type: 'prov', key: 'proveedor', title: 'Proveedor' },
     { type: 'default', key: 'tipo', title: 'Tipo' },
     { type: 'default', key: 'complejo', title: 'Complejo' },
-    { type: 'ticket', key: 'ticket', title: 'ticket' },
-    { type: 'money', key: 'monto', title: 'Monto'},
+    // { type: 'ticket', key: 'ticket', title: 'ticket' },
     { type: 'default', key: 'moneda', title: 'Mon' },
+    { type: 'money', key: 'monto', title: 'Monto'},
+    { type: 'money', key: 'montoSaldo', title: 'Saldo'},
+    { type: 'money', key: 'montoUsado', title: 'Usado'},
+    { type: 'money', key: 'montoReembolso', title: 'Reembolso'},
+    { type: 'refound', key: 'reembolsoAplicado', title: 'Status Remb'},
     { type: 'ref', key: 'referencia', title: 'Ref.' },
-    { type: 'default', key: 'aut', title: 'Aut.' },
+    { type: 'default', key: 'Locs', title: 'Localizadores' },
     { type: 'date', key: 'dtCreated', title: 'F. Pago' },
-    { type: 'default', key: 'accountId', title: 'Id Cuenta' },
-    // { type: 'default', key: 'j', title: 'Jrs' },
-    // { type: 'default', key: 'm', title: 'Mnrs' },
-    { type: 'default', key: 'clientName', title: 'Titular Cuenta' },
-    { type: 'button', key: 'view', title: 'Ver' }
+    // { type: 'default', key: 'accountId', title: 'Id Cuenta' },
+    // { type: 'default', key: 'clientName', title: 'Titular Cuenta' },
+    { type: 'button', key: 'view', title: 'Ver' },
+    { type: 'vouch', key: 'view', title: 'Voucher' }
   ]
 
   constructor(public _api: ApiService,
@@ -227,7 +231,6 @@ export class RsvPaymentListComponent implements OnInit {
 
     this.loading['locs'] = true;
 
-
     this._api.restfulPut( this.search, 'Rsv/listPaymentsV2' )
                 .subscribe( res => {
 
@@ -257,5 +260,17 @@ export class RsvPaymentListComponent implements OnInit {
   toggle(key: string, v: any): void {
     this.config[key] = v;
     this.config = { ...this.config };
+  }
+
+  getVoucherLink( ref ){
+    return this._api.extTokenLink( 'https://cyc-oasishoteles.com/voucherPreview/view.php', {ref} )
+  }
+
+  isVoucher( d ){
+    if( moment(moment(d).format('YYYY-MM-DD')) >= moment('2020-04-21') ){
+      return true
+    }else{
+      return false
+    }
   }
 }

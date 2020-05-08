@@ -99,3 +99,8 @@
     font-style: italic;
     font-family: sans-serif;
 }
+
+.badge-status {
+    width: 33px;
+    margin-right: 1px;
+}

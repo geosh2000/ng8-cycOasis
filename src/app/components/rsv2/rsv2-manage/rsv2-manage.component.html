@@ -70,13 +70,33 @@
                                         </button>
                                     </div>
                                     <ng-container *ngIf="i['isCancel'] == 0">
-                                        <div class="col-2 mt-auto mb-auto text-center text-truncate p-0" [ngClass]="colorConfirm(i['confirm'], isVigente(i['vigencia']), i['isQuote'] == 1)" [matTooltip]="i['confirm']" [matTooltipPosition]="'above'">
-                                            <span class="badge badge-pill badge-success" *ngIf="i['tipoPago'] == 'PT'">PT</span>
-                                            <span class="badge badge-pill badge-secondary" *ngIf="i['tipoPago'] == 'OD'">OD</span>
-                                            <span class="badge badge-pill badge-info" *ngIf="i['tipoPago'] == 'PP'">PP</span>
-                                            <span class="badge badge-pill badge-primary" *ngIf="i['tipoPago'] == 'PH'">PH</span>
-                                            <span class="badge badge-pill badge-alert" *ngIf="i['tipoPago'] == 'PDT'">PDT</span> {{ i['isQuote'] == 1 && !isVigente(i['vigencia']) ? 'Expirada' : i['confirm'] }}
+                                        <div class="d-flex align-items-center flex-wrap justify-content-center col-2 mt-auto mb-auto text-center text-truncate p-0" [ngClass]="colorConfirm(i['confirm'], isVigente(i['vigencia']), i['isQuote'] == 1)" [matTooltip]="i['confirm']" [matTooltipPosition]="'above'">
+                                            <div class='text-center'>
+
+                                                <!-- CONFIRMACION -->
+                                                {{ i['isQuote'] == 1 && !isVigente(i['vigencia']) ? 'Expirada' : i['confirm'] }}<br>
+
+                                                <!-- STATUS PAGO -->
+                                                <span class="badge-status badge badge-pill badge-success" *ngIf="i['tipoPago'] == 'PT'">PT</span>
+                                                <span class="badge-status badge badge-pill badge-secondary" *ngIf="i['tipoPago'] == 'OD'">OD</span>
+                                                <span class="badge-status badge badge-pill badge-info" *ngIf="i['tipoPago'] == 'PP'">PP</span>
+                                                <span class="badge-status badge badge-pill badge-primary" *ngIf="i['tipoPago'] == 'PH'">PH</span>
+                                                <span class="badge-status badge badge-pill badge-warning" *ngIf="i['tipoPago'] == 'PDT'">PDT</span>
+
+                                                <!-- STATUS CIELO -->
+                                                <span class="badge-status badge badge-pill badge-danger" *ngIf="i['cieloStatus'] == 'c'">N</span>
+                                                <span class="badge-status badge badge-pill badge-danger" *ngIf="i['cieloStatus'] == 'n'">C</span>
+                                                <span class="badge-status badge badge-pill badge-success" *ngIf="i['cieloStatus'] == 'b'">B</span>
+                                                <span class="badge-status badge badge-pill badge-success" *ngIf="i['cieloStatus'] == 's'">S</span>
+                                                <span class="badge-status badge badge-pill badge-primary" *ngIf="i['cieloStatus'] == 'r'">R</span>
+                                                <span class="badge-status badge badge-pill badge-info" *ngIf="i['cieloStatus'] == 'o'">O</span>
+                                                <span class="badge-status badge badge-pill badge-warning" *ngIf="i['cieloStatus'] == 'pdt'">PDT</span>
+
+                                            </div>
+
+
                                         </div>
+
                                         <div class="col-2 mt-auto mb-auto text-right">{{ i['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</div>
                                         <div class="col-4 mt-auto mb-auto text-right row">
                                             <div class="col-6 text-right">
@@ -100,6 +120,9 @@
                                 Item marcado como cortesía, relacionado con reservas {{ i['cieloRelates'] }}
                             </div>
                             <app-edit-monto-parcial [i]="i" (openDates)="openOD(i)" (confSent)="getHistory(mlTicket)" (saveMonto)="saveMonto( $event )" (saveName)="saveName( $event )" (uplImg)="uplImg($event)"></app-edit-monto-parcial>
+                            <div class="container d-flex justify-content-end" *ngIf="i['itemType'] == 1">
+                                <div class="mr-auto"><span class="productConceptXL" [style.width.px]="390">Notas Cielo: </span><span class="clientInfo">{{ i['cieloNotas'] }}</span></div>
+                            </div>
                             <div class="container d-flex justify-content-end">
                                 <div class="mr-auto"><span class="productConceptXL" [style.width.px]="390">Notas: </span><span class="clientInfo">{{ i['notas'] }}</span></div>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openOD(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isQuote'] == 0 && i['isCancel'] == 0"><mat-icon>meeting_room</mat-icon> Fechas Abiertas</button>

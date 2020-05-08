@@ -87,7 +87,7 @@ export class RsvCancelItemComponent implements OnInit {
 
   sendCancellation( flag = false ){
 
-    if( this.item['penalidad'] < (this.item['xldType'] != 'reembolso' ? this.policies['minimumPenalty'] : this.item['omit10'] ? 0 : this.policies['minimumPenalty']) ){
+    if( this.item['penalidad'] < (this.item['xldType'] != 'reembolso' ? 0 : this.item['omit10'] ? 0 : this.policies['minimumPenalty']) ){
       this.toastr.error('La tarifa de penalidad establecida es menor a la permitida por el sistema. Revisa las políticas y parámetros seleccionados', 'Penalidad Incorrecta')
       return false
     }
