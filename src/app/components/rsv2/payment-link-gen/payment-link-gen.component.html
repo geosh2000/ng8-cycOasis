@@ -158,7 +158,7 @@
                                     <span class="m-1 text-center" [style.width.px]="105"><b>({{ p }})</b></span>
                                     <span class="m-1 text-center" style="font-size: x-small" [style.width.px]="145"><b>{{ summary[af][p]['reference'] }}</b></span>
                                     <span class="m-1 text-right" [style.width.px]="170">{{ summary[af][p]['total'] | currency:'MXN':'symbol-narrow':'.2-2' }} {{ summary[af][p]['moneda'] }}</span>
-                                    <span class="m-1 text-right text-primary"><b><a [href]="summary[af][p]['link']" target="_blank">{{ summary[af][p]['link'] }}</a></b> <button mat-button color="primery" (click)="copyToClipboard(summary[af][p]['link'])" class="clientInfo text-truncate"><mat-icon>file_copy</mat-icon></button></span>
+                                    <span class="m-1 text-right text-primary"><b><a [href]="summary[af][p]['link']" target="_blank">{{ summary[af][p]['link'] }}</a></b> <button mat-button color="primery" (click)="_init.copyToClipboard(summary[af][p]['link'])" class="clientInfo text-truncate"><mat-icon>file_copy</mat-icon></button></span>
                                 </div>
                             </ng-container>
                         </ng-container>

@@ -6,7 +6,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmRsvModal">Reservación Finalizada</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" *ngIf="_init.checkSingleCredential('rsv_omitTicket')">
                   <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -24,7 +24,7 @@
                     <button class="m-1" mat-stroked-button *ngIf="flagSearchTicket" type="button" (click)="flagSearchTicket = false" [disabled]="loading['callTicket']">Cancelar</button>
                     <button class="m-1" mat-stroked-button color="success" *ngIf="flagSearchTicket" type="button" (click)="getCallTicket( null, lTicket )" [disabled]="loading['callTicket']">Link</button>
                     <div class="d-flex justify-content-end">
-                        <button class="m-1" mat-stroked-button type="button" (click)="omitLink()" [disabled]="loading['linkingTicket']">Omitir</button>
+                        <button class="m-1" mat-stroked-button type="button" (click)="omitLink()" [disabled]="loading['linkingTicket'] || !_init.checkSingleCredential('rsv_omitTicket')">Omitir</button>
                         <button class="m-1" mat-stroked-button color="accent" type="button" (click)="chgTicketLink()" [disabled]="loading['linkingTicket']" *ngIf="!flagSearchTicket">Cambiar Ticket</button>
                         <button class="m-1" mat-stroked-button color="success" type="button" (click)="linkTickets()" [disabled]="loading['linkingTicket'] || flagSearchTicket || updateTicket['ticket'] == ''" *ngIf="!linkedTicketFlag">Si</button>
                     </div>

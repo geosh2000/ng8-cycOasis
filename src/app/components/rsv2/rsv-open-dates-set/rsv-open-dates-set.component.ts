@@ -30,6 +30,7 @@ export class RsvOpenDatesSetComponent implements OnInit {
   notasClte:any
   checkPolicy = false
   idioma = 'idioma_es'
+  ml = ''
 
   loading = false
 
@@ -55,6 +56,7 @@ export class RsvOpenDatesSetComponent implements OnInit {
     this.idioma = lang ? lang : 'idioma_es'
     this.item = arr['itemLocatorId']
     this.itemId = arr['itemId']
+    this.ml = arr['masterLocatorId']
     // this.startDate = arr['llegada']
     // this.endDate = arr['salida'] ? arr['salida'] : arr['llegada']
     if( this.selDate ){
@@ -122,7 +124,8 @@ export class RsvOpenDatesSetComponent implements OnInit {
       dates: { inicio: this.startDate, fin: this.endDate },
       itemId: this.itemId,
       ticket: this.ticket,
-      notas: this.notasClte
+      notas: this.notasClte,
+      masterLocatorId: this.ml
     }
 
     this._api.restfulPut( params, 'Rsv/setDatesForOpen' )

@@ -50,7 +50,7 @@ export class RsvCancelItemComponent implements OnInit {
 
   confirmCancel(){
     if( this.cancelItemData['isQuote'] == 1 ){
-      this.sendCancellation()
+      this.sendCancellation( true )
     }else{
       if( this._init.currentUser.credentials['rsv_cancelAll'] != 1 ){
         // this.sendCancellation( true )
@@ -91,7 +91,7 @@ export class RsvCancelItemComponent implements OnInit {
       this.toastr.error('La tarifa de penalidad establecida es menor a la permitida por el sistema. Revisa las políticas y parámetros seleccionados', 'Penalidad Incorrecta')
       return false
     }
-    
+
     if( this.item['penalidad'] > this.item['montoPagado'] ){
       this.toastr.error('La tarifa de penalidad establecida es mayor al monto pagado por este item. Por favor revisa nuevamente el monto de penalidad', 'Penalidad Incorrecta')
       return false

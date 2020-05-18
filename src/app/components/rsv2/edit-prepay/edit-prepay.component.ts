@@ -68,6 +68,8 @@ export class EditPrepayComponent implements OnInit {
                 .subscribe( res => {
 
                   this.loading['editTotalMonto'] = false;
+                  this.i['montoOriginal'] = this.i['monto']
+                  this.i['montoParcialOriginal'] = this.i['montoParcial']
                   this.i['monto'] = params['newMonto']
                   this.saveMonto.emit( {itemId: this.i['itemId'], isMontoTotal: true, newMonto: params['newMonto'], montoParcial: res['data']['montoParcial']} )
                   this.editTotalFlag = false
@@ -89,6 +91,7 @@ export class EditPrepayComponent implements OnInit {
                 .subscribe( res => {
 
                   this.loading['editMonto'] = false;
+                  this.i['montoParcialOriginal'] = this.i['montoParcial']
                   this.i['montoParcial'] = e['new']['montoParcial']
                   this.saveMonto.emit( res['data'] )
                   this.editFlag = false

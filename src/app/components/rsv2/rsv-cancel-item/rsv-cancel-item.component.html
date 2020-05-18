@@ -55,7 +55,7 @@
                                     </tr>
                                     <tr>
                                         <th class="category">Penalidad Aplicable</th>
-                                        <td class="value">{{ policies['penalidadTotal'] | currency:'MXN':'symbol-narrow':'.2-2' }} <span *ngIf="policies['isNights']==1">( {{ policies['penalty'] }} noches )</span></td>
+                                        <td class="value text-danger"><b>{{ policies['penalidadTotal'] | currency:'MXN':'symbol-narrow':'.2-2' }} <span *ngIf="policies['isNights']==1">( {{ policies['penalty'] }} noches )</span></b></td>
                                     </tr>
                                     <tr>
                                         <th class="category">Penalidad Sugerida</th>

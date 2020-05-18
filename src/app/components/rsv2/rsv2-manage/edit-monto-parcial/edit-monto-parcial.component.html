@@ -97,7 +97,7 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
                         <ng-container *ngIf="!lk['loading']">
-                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-button color="primery" (click)="_init.copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
                             <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
                         </ng-container>
                         <ng-container *ngIf="lk['loading']">
@@ -167,7 +167,7 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
                         <ng-container *ngIf="!lk['loading']">
-                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-button color="primery" (click)="_init.copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
                             <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
                         </ng-container>
                         <ng-container *ngIf="lk['loading']">
@@ -223,7 +223,7 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
                         <ng-container *ngIf="!lk['loading']">
-                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-button color="primery" (click)="_init.copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
                             <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
                         </ng-container>
                         <ng-container *ngIf="lk['loading']">
@@ -304,7 +304,7 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
                         <ng-container *ngIf="!lk['loading']">
-                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-button color="primery" (click)="_init.copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
                             <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
                         </ng-container>
                         <ng-container *ngIf="lk['loading']">
@@ -359,7 +359,7 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
                         <ng-container *ngIf="!lk['loading']">
-                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-button color="primery" (click)="_init.copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
                             <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
                         </ng-container>
                         <ng-container *ngIf="lk['loading']">
@@ -409,7 +409,7 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="productConcept"><b>Link {{ lki + 1 }}:</b></div>
                         <ng-container *ngIf="!lk['loading']">
-                            <button mat-button color="primery" (click)="copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
+                            <button mat-button color="primery" (click)="_init.copyToClipboard(lk['link'])" class="clientInfo text-truncate">{{ linkPrint(lk['ref']) }} <mat-icon>file_copy</mat-icon></button>
                             <button mat-icon-button color="primary" (click)="verifyLink(lk)" *ngIf="lk['paypal'] == 1"><mat-icon>verified_user</mat-icon></button>
                         </ng-container>
                         <ng-container *ngIf="lk['loading']">
@@ -453,7 +453,7 @@
                 </button> -->
             </div>
         </div>
-        <div class="d-flex justify-content-end align-items-center">
+        <!-- <div class="d-flex justify-content-end align-items-center">
             <ng-container *ngIf="i['isQuote'] == '0' && i['isCancel'] == 0">
                 <div class="clientConcept"><b>Reenviar Confirmación:</b></div>
                 <div class="clientInfo" *ngIf="!loading['sendConf']">
@@ -468,7 +468,7 @@
                     <span><i class="fas fa-spinner fa-pulse"></i></span>
                 </div>
             </ng-container>
-        </div>
+        </div> -->
 
     </div>
     <div class="d-flex justify-content-end align-items-center">

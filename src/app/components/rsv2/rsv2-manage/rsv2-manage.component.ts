@@ -268,23 +268,47 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
 
   saveMonto( e ){
 
-    console.log(e)
-
     for( let i of this.data['items'] ){
+
       if( e['itemId'] == i['itemId'] ){
-        console.log( 'items iguales')
+
         if( e['isMontoTotal'] ){
-          console.log( 'change montos')
+
+          console.log(e)
+          console.log('monto', e['newmonto'], i['montoOriginal'], e['newMonto'] - i['montoOriginal'])
+          console.log('montoParcial', e['montoParcial'], i['montoParcialOriginal'], e['montoParcial'] - i['montoParcialOriginal'])
+          console.log(e)
+
+          let dif = e['newMonto'] - i['montoOriginal']
+          let difP = e['montoParcial'] - i['montoParcialOriginal']
+          let mon = i['moneda']
+
           i['monto'] = e['newMonto']
           i['montoParcial'] = e['montoParcial']
+          i['montoSaldoPrepago'] = e['montoParcial'] - i['montoPagado']
+          i['montoSaldoHotel'] = i['monto'] - e['montoParcial']
+
+          this.data['master']['totalMonto' + mon] = parseFloat(this.data['master']['totalMonto' + mon]) + dif
+          this.data['master']['totalMontoHotel' + mon] = parseFloat(this.data['master']['totalMontoHotel' + mon]) + dif
+          this.data['master']['totalMontoSaldo' + mon] = parseFloat(this.data['master']['totalMontoSaldo' + mon]) + difP
+          this.data['master']['totalMontoHotel' + mon] = parseFloat(this.data['master']['totalMontoHotel' + mon]) - difP
         }else{
+          let dif = e['montoParcial'] - i['montoParcialOriginal']
+          let mon = i['moneda']
+
           i['isParcial'] = e['isParcial']
           i['isPagoHotel'] = e['isPagoHotel']
           i['montoParcial'] = e['montoParcial']
           i['tipoPago'] = e['tipoPago']
           i['confirm'] = e['confirm']
           i['isQuote'] = e['isQuote']
+          i['montoSaldoPrepago'] = e['montoParcial'] - i['montoPagado']
+          i['montoSaldoHotel'] = i['monto'] - e['montoParcial']
+
+          this.data['master']['totalMontoSaldo' + mon] = parseFloat(this.data['master']['totalMontoSaldo' + mon]) + dif
+          this.data['master']['totalMontoHotel' + mon] = parseFloat(this.data['master']['totalMontoHotel' + mon]) - dif
         }
+
         break
       }
     }
@@ -624,6 +648,30 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
 
                 });
 
+  }
+
+  sendMailConfirm(){
+    this.loading['sendConf'] = true
+
+    this._api.restfulPut( {loc: this.viewLoc}, 'Rsv/sendFullConf' )
+                .subscribe( res => {
+
+                  this.loading['sendConf'] = false;
+                  this.toastr.success( res['msg'], 'Enviado' );
+                  this.getHistory(this.data['mlTicket'])
+
+                }, err => {
+                  this.loading['sendConf'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  urlCopy( d ){
+    return `https://cyc-oasishoteles.com/api/rf/index.php/Rsv/verConfirmacion/${d['masterlocatorid']}/${encodeURIComponent(d['correoCliente'])}`
   }
 
 }

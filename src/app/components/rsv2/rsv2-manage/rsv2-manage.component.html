@@ -54,8 +54,8 @@
                         <div class="col-2 text-center"><b>Conf.</b></div>
                         <div class="col-2 text-center"><b>Total</b></div>
                         <div class="col-4 text-center row">
-                            <div class="col-6 text-right text-success"><small>Saldo Prepago</small></div>
-                            <div class="col-6 text-right">Saldo Total</div>
+                            <div class="col-6 text-right text-success"><small>Prepago</small></div>
+                            <div class="col-6 text-right text-primary"><small>Pago Hotel</small></div>
                         </div>
                     </div>
                     <hr class="hrItems">
@@ -99,11 +99,11 @@
 
                                         <div class="col-2 mt-auto mb-auto text-right">{{ i['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</div>
                                         <div class="col-4 mt-auto mb-auto text-right row">
-                                            <div class="col-6 text-right">
-                                                <p [ngClass]="{'text-danger': (i['montoParcial'] - i['montoPagado']) > 0, 'text-success': (i['montoParcial'] - i['montoPagado']) <= 0}"><small>{{ (i['montoParcial'] - i['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</small></p>
-                                                <p style="font-size: 10px" class='text-success'>(paid: {{ (i['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }})</p>
+                                            <div class="col-6 text-right p-0">
+                                                <p class="text-success"><small>{{ i['montoPagado'] | currency:'MXN':'symbol-narrow':'.2-2' }}</small></p>
+                                                <p style="font-size: 10px" [ngClass]="{'text-danger': i['montoSaldoPrepago'] > 0, 'text-success': i['montoSaldoPrepago'] <= 0}">(saldo: {{ (i['montoSaldoPrepago']) | currency:'MXN':'symbol-narrow':'.2-2' }})</p>
                                             </div>
-                                            <div class="col-6 text-right" [ngClass]="{'text-danger': (i['monto'] - i['montoPagado']) > 0, 'text-success': (i['monto'] - i['montoPagado']) <= 0}"><b>{{ (i['monto'] - i['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                                            <div class="col-6 text-right" [ngClass]="{'text-primary': i['montoSaldoHotel'] > 0, 'text-success': i['montoSaldoHotel'] <= 0}"><b>{{ i['montoSaldoHotel'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="i['isCancel'] == 1">
@@ -126,7 +126,7 @@
                             <div class="container d-flex justify-content-end">
                                 <div class="mr-auto"><span class="productConceptXL" [style.width.px]="390">Notas: </span><span class="clientInfo">{{ i['notas'] }}</span></div>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openOD(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isQuote'] == 0 && i['isCancel'] == 0"><mat-icon>meeting_room</mat-icon> Fechas Abiertas</button>
-                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openODSet(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isOpen'] == 1 && i['isCancel'] == 0"><mat-icon>beach_access</mat-icon> Establecer Fechas</button>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openODSet(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isOpen'] == 1 && i['isCancel'] == 0 && i['isQuote'] == 0"><mat-icon>beach_access</mat-icon> Establecer Fechas</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)" *ngIf="_init.checkSingleCredential('app_cotizador')"><mat-icon>remove_circle</mat-icon> Cancelar</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="reactivate(i)" *ngIf="_init.checkSingleCredential('rsv_reactivate') && !isVigente(i['vigencia']) && i['isQuote'] == 1 && i['isCancel'] == 0"><ng-container *ngIf="loading['reactivate']"><span><i class="fas fa-spinner fa-pulse"></i></span></ng-container><ng-container *ngIf="!loading['reactivate']"><mat-icon>alarm_add</mat-icon> Reactivar</ng-container></button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="confirmItem(i)" *ngIf="i['isQuote'] == 0 && i['confirmOK'] == null"><mat-icon>done_outline</mat-icon> Confirmar</button>
@@ -140,20 +140,47 @@
 
                     <hr class="hrItems">
                     <div class="container row rowItemNoBorder" style="padding-right: 35px;">
-                        <div class="col-4"><b>TOTAL {{ data['master']['moneda'] }}</b></div>
+                        <div class="col-4"><b>TOTAL MXN</b></div>
                         <div class="col-2"></div>
-                        <div class="col-2 text-right"><b>{{ data['master']['montoTotal'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                        <div class="col-2 text-right"><b>{{ data['master']['totalMontoMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
                         <div class="col-4 text-right row">
-                            <div class="col-6 text-right" [ngClass]="{'text-danger': getDiff(data['master']['montoParcialTotal'], data['master']['montoPagadoTotal']) > 0, 'text-success': getDiff(data['master']['montoParcialTotal'], data['master']['montoPagadoTotal']) <= 0}"><b><small>{{ getDiff(data['master']['montoParcialTotal'], data['master']['montoPagadoTotal']) | currency:'MXN':'symbol-narrow':'.2-2' }}</small></b></div>
-                            <div class="col-6 text-right" [ngClass]="{'text-danger': getDiff(data['master']['montoTotal'], data['master']['montoPagadoTotal']) > 0, 'text-success': getDiff(data['master']['montoTotal'], data['master']['montoPagadoTotal']) <= 0}"><b>{{ getDiff(data['master']['montoTotal'], data['master']['montoPagadoTotal']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                            <div class="col-6 text-right p-0">
+                                <p class="text-success"><b><small>{{ data['master']['totalMontoPagadoMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }}</small></b></p>
+                                <p style="font-size: 10px" [ngClass]="{'text-danger': data['master']['totalMontoSaldoMXN'] > 0, 'text-success': data['master']['totalMontoSaldoMXN'] <= 0}"><b>(saldo: {{ data['master']['totalMontoSaldoMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }})</b></p>
+                            </div>
+                            <div class="col-6 text-right" [ngClass]="{'text-primary': data['master']['totalMontoHotelMXN'] > 0, 'text-success': data['master']['totalMontoHotelMXN'] <= 0}"><b>{{ data['master']['totalMontoHotelMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
                         </div>
                     </div>
+                    <div class="container row rowItemNoBorder" style="padding-right: 35px;">
+                        <div class="col-4"><b>TOTAL USD</b></div>
+                        <div class="col-2"></div>
+                        <div class="col-2 text-right"><b>{{ data['master']['totalMontoUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                        <div class="col-4 text-right row">
+                            <div class="col-6 text-right p-0">
+                                <p class="text-success"><b><small>{{ data['master']['totalMontoPagadoUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }}</small></b></p>
+                                <p style="font-size: 10px" [ngClass]="{'text-danger': data['master']['totalMontoSaldoUSD'] > 0, 'text-success': data['master']['totalMontoSaldoUSD'] <= 0}"><b>(saldo: {{ data['master']['totalMontoSaldoUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }})</b></p>
+                            </div>
+                            <div class="col-6 text-right" [ngClass]="{'text-primary': data['master']['totalMontoHotelUSD'] > 0, 'text-success': data['master']['totalMontoHotelUSD'] <= 0}"><b>{{ data['master']['totalMontoHotelUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <!-- ====================== FIN CUADRO ITEMS ====================== -->
 
             <!-- ====================== INICIO LATERAL CLIENTE ====================== -->
             <div class="clientFrame col-3">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div *ngIf="!loading['sendConf']">
+                        <button style="zoom: 0.8" mat-button color="primary" (click)="sendMailConfirm()"><mat-icon>mail</mat-icon> Enviar Reserva por Correo</button>
+                    </div>
+                    <mat-progress-bar mode="buffer" *ngIf="loading['sendConf']"></mat-progress-bar>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div *ngIf="!loading['sendConf']">
+                        <button style="zoom: 0.8" mat-button color="primary" (click)="_init.copyToClipboard(urlCopy(data['master']))"><mat-icon>file_copy</mat-icon> Copiar link de confirmación</button>
+                    </div>
+                </div>
                 <hr>
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>Titular:</b></div>
@@ -181,7 +208,7 @@
                 </div>
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><button mat-icon-button color="primary" aria-label="edit cc button" (click)="ccFlag = true" *ngIf="!ccFlag">
-                        <mat-icon>edit</mat-icon>
+                        <mat-icon style="zoom: 0.8">edit</mat-icon>
                       </button> <b>CC:</b></div>
                     <div class="clientInfo">
                         <ng-container *ngIf="!ccFlag">
@@ -198,7 +225,7 @@
                 </div>
                 <div class="d-flex justify-content-start align-items-center">
                     <div *ngIf="!_updU.loading">
-                        <button mat-button color="primary" (click)="updateContact()"><mat-icon>refresh</mat-icon> Actualizar datos de contacto</button>
+                        <button style="zoom: 0.8" mat-button color="primary" (click)="updateContact()"><mat-icon>refresh</mat-icon> Actualizar datos de contacto</button>
                     </div>
                     <mat-progress-bar mode="buffer" *ngIf="_updU.loading"></mat-progress-bar>
                 </div>
