@@ -96,7 +96,10 @@
                             <div class="d-flex justify-content-start">
                                 <div style="background-size: cover; background-position: center; width: 100px; height: 35px; border-radius: 30px" [style.background-image]="h['hotelUrl']"></div>
                                 <div class="pl-3" [style.width.px]="80">{{ h['hotelCode'] }}</div>
-                                <span><span class='pl-3 font-weight-bold'>{{ h['habitacion'] }}</span><span class="text-info">({{ h['habCat']}})</span></span>
+                                <div>
+                                    <span><span class='pl-3 font-weight-bold'>{{ h['habitacion'] }}</span><span class="text-info">({{ h['habCat']}})</span></span><br>
+                                    <span class="text-danger" *ngIf="h['promoAplicada']">{{ h['promoAplicada']['promo_es'] }}</span>
+                                </div>
 
 
                             </div>

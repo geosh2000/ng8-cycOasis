@@ -448,6 +448,10 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
                     arr['spl4'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl4']
                     arr['spl3Desc'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl3Desc']
                     arr['spl4Desc'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl4Desc']
+
+                    if( data['habs'][h['code']]['cot'][cat][hab][0]['promoAplicada'] ){
+                      arr['promoAplicada'] = data['habs'][h['code']]['cot'][cat][hab][0]['promoAplicada']
+                    }
                   }
                 }
                 result.push(arr)
