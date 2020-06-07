@@ -190,6 +190,10 @@ import { DataStudioComponent } from './components/data-studio/data-studio.compon
 import { ClueComponent } from './components/games/clue/clue.component';
 import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp-templates.component';
 import { RsvCancelItemComponent } from './components/rsv2/rsv-cancel-item/rsv-cancel-item.component';
+import { DashboardV2Component } from './components/dashboard-v2/dashboard-v2.component';
+import { DashVentaComponent } from './components/dashboard-v2/dash-venta/dash-venta.component';
+import { DashTicketsComponent } from './components/dashboard-v2/dash-tickets/dash-tickets.component';
+import { ChartComponent } from './components/dashboard-v2/chart/chart.component';
 
 @NgModule({
   declarations: [
@@ -317,7 +321,11 @@ import { RsvCancelItemComponent } from './components/rsv2/rsv-cancel-item/rsv-ca
     DataStudioComponent,
     ClueComponent,
     WhatsappTemplatesComponent,
-    RsvCancelItemComponent
+    RsvCancelItemComponent,
+    DashboardV2Component,
+    DashVentaComponent,
+    DashTicketsComponent,
+    ChartComponent
 
   ],
   imports: [

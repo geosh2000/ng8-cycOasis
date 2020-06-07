@@ -28,6 +28,7 @@ import { WhatsappComponent } from './components/whatsapp/whatsapp.component';
 import { UploadFilesComponent } from './config/upload-files/upload-files.component';
 import { DataStudioComponent } from './components/data-studio/data-studio.component';
 import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp-templates.component';
+import { DashboardV2Component } from './components/dashboard-v2/dashboard-v2.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -48,6 +49,7 @@ const routes: Routes = [
   // { path: 'cotizadorV2', component: CotizadorV2Component },
 
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard2', component: DashboardV2Component },
 
   { path: 'boards', component: DataStudioComponent },
 

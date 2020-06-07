@@ -1,0 +1,4 @@
+<div class="d-flex justify-content-center" *ngIf="chartLoading" [style.height.px]="chartHeight">
+    <mat-spinner></mat-spinner>
+</div>
+<div [id]="idName" #chartContainer [style.height.px]="chartHeight"></div>

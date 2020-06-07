@@ -1,0 +1,91 @@
+<div [style.width.px]="1366" [style.height.px]="768" style="background-color: #111212; border-radius: 10px;" class="p-2">
+    <div class='d-flex justify-content-start align-items-center'>
+        <div class="mod-3 module" style='overflow: visible'>
+            <mat-form-field [style.width.px]="125">
+                <mat-label>Fecha</mat-label>
+                <input matInput placeholder="Fecha" class="form-control" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="d.toggle()" id="picker" name="dp" ngbDatepicker #d="ngbDatepicker" [dayTemplate]="t" (dateSelect)="onDateSelection($event, d)" autocomplete="off"
+                    [style.width.px]="150">
+                <ng-template #t let-date="date" let-focused="focused">
+                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                        </span>
+                </ng-template>
+            </mat-form-field>
+            <mat-form-field [style.width.px]="125">
+                <mat-label>Compare</mat-label>
+                <input matInput class="form-control" placeholder="yyyy-mm-dd" [autoClose]="false" (click)="c.toggle()" id="pickerC" name="dpc" ngbDatepicker #c="ngbDatepicker" [dayTemplate]="tc" (dateSelect)="onDateSelection($event, c, 'compare')" autocomplete="off"
+                    [style.width.px]="150">
+                <ng-template #tc let-date="date" let-focused="focused">
+                    <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                        </span>
+                </ng-template>
+            </mat-form-field>
+
+        </div>
+        <div class="mod-2 module ml-auto text-center">
+            <mat-spinner *ngIf="loading['totales']"></mat-spinner>
+            <ng-container *ngIf="!loading['totales']">
+                <h5 style='color: white'>Monto Modificado</h5>
+                <h3 style='color: white'>{{ totales['MDF']['actual'] | currency:'MXN':'symbol-narrow':'.2-2' }}</h3>
+                <span [ngClass]="formatCompare(totales['MDF'], 'class')"><i [ngClass]="formatCompare(totales['MDF'],'icon')"></i> {{ totales['MDF']['var'] | percent:'.0-2' }}</span>
+            </ng-container>
+
+        </div>
+        <div class="mod-1 module ml-auto text-center">
+            <mat-spinner *ngIf="loading['totales']"></mat-spinner>
+            <ng-container *ngIf="!loading['totales']">
+                <h5 style='color: #f66767'>Itm xld</h5>
+                <h3 style='color: #f66767'>{{ totales['XLD']['actualItems'] }}</h3>
+                <span [ngClass]="formatCompare(totales['XLD'], 'class', 'Items')"><i [ngClass]="formatCompare(totales['XLD'],'icon', 'Items')"></i> {{ totales['XLD']['varItems'] | percent:'.0-2' }}</span>
+            </ng-container>
+
+        </div>
+        <div class="mod-2 module ml-auto text-center">
+            <mat-spinner *ngIf="loading['totales']"></mat-spinner>
+            <ng-container *ngIf="!loading['totales']">
+                <h5 style='color: #f66767'>Monto xld</h5>
+                <h3 style='color: #f66767'>{{ totales['XLD']['actual'] | currency:'MXN':'symbol-narrow':'.2-2' }}</h3>
+                <span [ngClass]="formatCompare(totales['XLD'], 'class')"><i [ngClass]="formatCompare(totales['XLD'],'icon')"></i> {{ totales['XLD']['var'] | percent:'.0-2' }}</span>
+            </ng-container>
+
+        </div>
+        <div class="mod-1 module ml-auto text-center">
+            <mat-spinner *ngIf="loading['totales']"></mat-spinner>
+            <ng-container *ngIf="!loading['totales']">
+                <h5 style='color: #64c180'>Itm Venta</h5>
+                <h3 style='color: #64c180'>{{ totales['venta']['actualItems'] }}</h3>
+                <span [ngClass]="formatCompare(totales['venta'], 'class', 'Items')"><i [ngClass]="formatCompare(totales['venta'],'icon', 'Items')"></i> {{ totales['venta']['varItems'] | percent:'.0-2' }}</span>
+            </ng-container>
+
+        </div>
+        <div class="mod-2 module ml-auto text-center">
+            <mat-spinner *ngIf="loading['totales']"></mat-spinner>
+            <ng-container *ngIf="!loading['totales']">
+                <h5 style='color: #64c180'>Monto Venta</h5>
+                <h3 style='color: #64c180'>{{ totales['venta']['actual'] | currency:'MXN':'symbol-narrow':'.2-2' }}</h3>
+                <span [ngClass]="formatCompare(totales['venta'], 'class')"><i [ngClass]="formatCompare(totales['venta'],'icon')"></i> {{ totales['venta']['var'] | percent:'.0-2' }}</span>
+            </ng-container>
+
+        </div>
+    </div>
+    <div class='d-flex justify-content-between align-items-center pt-2' [style.height.px]="655">
+        <div class="mod-7 p-0 text-center">
+            <div class="mod-100 text-center d-flex justify-content-between align-items-center pt-0" style="padding: 0px!important" [style.height.px]="307">
+                <div class="mod-50 module ml-0 text-center mt-0" [style.height.px]="307">
+                    <app-chart idName="itemServ" chartHeight="307" [chartLoading]="loading['serv']" #servItm></app-chart>
+                </div>
+                <div class="mod-50 module ml-0 text-center mt-0" [style.height.px]="307">
+                    <app-chart idName="montoServ" chartHeight="307" [chartLoading]="loading['serv']" #servMnt></app-chart>
+                </div>
+            </div>
+
+            <div class="mod-100 module ml-auto text-center mt-2" [style.height.px]="307">
+                <app-chart idName="stackVD" chartHeight="307" [chartLoading]="loading['dia']" #ventaStackVD></app-chart>
+            </div>
+        </div>
+        <div class="mod-4 module ml-auto text-center" [style.height.%]="97">
+            <!-- <app-chart idName="stackCot" [chartLoading]="loading['cot']" #ticketStackCot></app-chart> -->
+        </div>
+    </div>
+</div>
