@@ -129,6 +129,8 @@ export class DashTicketsComponent implements OnInit {
   isTo = date => equals({ one: date, two: this.toDate });
 
   getData(){
+    jQuery('#picker').val(`${moment(this.inicio).format('DD MMM')} a ${moment(this.fin).format('DD MMM')}`)
+    jQuery('#pickerC').val(`${moment(this.inicioCompare).format('DD MMM')} a ${moment(this.finCompare).format('DD MMM')}`)
     this.getTotales()
   }
 
@@ -227,6 +229,10 @@ export class DashTicketsComponent implements OnInit {
   }
 
   formatCompare(d, type){
+
+    if(!d){
+      return type == 'icon' ? 'fas fa-arrows-alt-h' : 'text-warning'
+    }
 
     if( d['var'] > 0.05 ){
       return type == 'icon' ? 'fas fa-long-arrow-alt-up' : 'text-success'

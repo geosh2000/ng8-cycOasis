@@ -95,10 +95,43 @@ export class ChartComponent implements OnInit {
     options.chart.height = this.chartHeight
 
     if( opts['chartType'] ){
-      if( opts['stacking'] ){
-        options.plotOptions = { [opts['chartType']]: {stacking: opts['stacking'] } }
+
+      switch(opts['chartType']){
+        case 'pie':
+          options['tooltip'] = {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                }
+          options['accessibility'] = {
+                    point: {
+                        valueSuffix: '%'
+                    }
+                }
+          options.plotOptions = {
+                    pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                }
+          options['legend'] = {  }
+          options.chart = {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie',
+                    margin: [0, 0, 0, 0]
+                }
+          break
+        default:
+          if( opts['stacking'] ){
+            options.plotOptions = { [opts['chartType']]: {stacking: opts['stacking'] } }
+          }
+          options.chart.type = opts['chartType']
+          break;
       }
-      options.chart.type = opts['chartType']
     }
 
     if( opts['nodatetime'] ){
@@ -117,57 +150,110 @@ export class ChartComponent implements OnInit {
 
     for(let s in d){
       if( d.hasOwnProperty(s) && s != 'Total' ){
-        series[s] = {data: [], color: ''}
+        series[s] = {data: [], color: null}
       }
     }
 
-    for( let r of data ){
-      if( series[r['serie']] ){
+    console.log('series: ', series)
 
-        if( type == 'date' ){
-          series[r['serie']]['data'].push([ type == 'date' ? parseInt(this.unixTime(moment.tz(r['cat'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))) : r['cat'], Math.round(r['value'])])
-        }else{
-          series[r['serie']]['data'].push(Math.round(r['value']))
-        }
-        series[r['serie']]['color'] = r['color']
+    if( type != 'date' ){
 
-        if( categories.indexOf(r['cat']) < 0 ){
-            categories.push(r['cat'])
+      switch(opts['chartType']){
+        case 'pie':
+          series = {
+              cat: {
+                name: data[0]['titulo'],
+                colorByPoint: true,
+                data: []
+              }
+          }
+          let total = 0
+          for( let r of data ){
+            total += Math.round(r['value'])
+          }
+
+          for( let r of data ){
+            console.log(r['cat'],r['value'],total )
+            series['cat']['data'].push({ name: r['cat'], y: Math.round(r['value'])/total*100 })
+          }
+          break
+        default:
+          let d_arr = {}
+          for( let r of data ){
+            if( categories.indexOf(r['cat']) < 0 ){
+              categories.push(r['cat'])
+            }
+
+            if( !d_arr[r['serie']] ){
+              d_arr[r['serie']] = {
+                [r['cat']]: { value: r['value'], color: r['color']}
+              }
+            }else{
+              d_arr[r['serie']][r['cat']] = { value: r['value'], color: r['color'] }
+            }
+          }
+
+          for( let r in series ){
+            if( series.hasOwnProperty(r) ){
+              for( let c of categories ){
+                if( series[r]['color'] == null ){
+                  series[r]['color'] = d_arr[r] ? (d_arr[r][c] ? d_arr[r][c]['color'] : null) : null
+                }
+
+                series[r]['data'].push(d_arr[r] ? (d_arr[r][c] ? Math.round(d_arr[r][c]['value']) : 0) : 0)
+                }
+              }
+            }
+          break
+      }
+    }else{
+      for( let r of data ){
+        if( series[r['serie']] ){
+          // series[r['serie']]['data'].push([ type == 'date' ? parseInt(this.unixTime(moment.tz(r['cat'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))) : r['cat'], Math.round(r['value'])])
+          if( type == 'date' ){
+            series[r['serie']]['data'].push([ type == 'date' ? parseInt(this.unixTime(moment.tz(r['cat'],this._zh.defaultZone).tz(this._zh.zone).format('YYYY-MM-DD HH:mm:ss'))) : r['cat'], Math.round(r['value'])])
+          }else{
+            series[r['serie']]['data'].push(Math.round(r['value']))
+          }
+          series[r['serie']]['color'] = r['color']
+
         }
       }
     }
 
     let x = 0;
     for( let ser in series ){
-      if( series.hasOwnProperty(ser) ){
+        if( series.hasOwnProperty(ser) ){
 
-        if( this.chart.series[x] ){
-          this.chart.series[x].update( {name: ser, color: series[ser]['color']})
-          this.chart.series[x].setData( series[ser]['data'] )
-        }else{
-          this.chart.addSeries({
-            name: ser,
-            data: series[ser]['data'],
-            color: series[ser]['color']
-          })
+          if( this.chart.series[x] ){
+            this.chart.series[x].update( {name: ser, color: series[ser]['color']})
+            this.chart.series[x].setData( series[ser]['data'] )
+          }else{
+            this.chart.addSeries({
+              name: ser,
+              data: series[ser]['data'],
+              color: series[ser]['color']
+            })
+          }
+
+          console.log(this.idName + ' Serie '+x, series[ser]['color'], series[ser]['data'])
+
+          x++
         }
-
-        x++
       }
-    }
 
     if( this.chart.series.length > x ){
-      for(let i=x; i <= this.chart.series.length; i++ ){
-        this.chart.series[x].remove()
+        for(let i=x; i <= this.chart.series.length; i++ ){
+          this.chart.series[x].remove()
+        }
       }
-    }
 
     if( !opts['title'] ){
-      this.chart.title.hide()
-    }else{
-      this.chart.title.update({ text: opts['title'] });
-      this.chart.title.show();
-    }
+        this.chart.title.hide()
+      }else{
+        this.chart.title.update({ text: opts['title'] });
+        this.chart.title.show();
+      }
 
     if( opts['yAxis'] ){
       if( opts['chartType'] && opts['chartType'] == 'bar' ){
@@ -186,7 +272,7 @@ export class ChartComponent implements OnInit {
 
   }
 
-  unixTime( time ){
+unixTime( time ){
     // DEFINE UNIX TIME
     let m = moment.tz(`${ time }`, this._zh.defaultZone)
     let local = m.clone().tz( this._zh.zone )

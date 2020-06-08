@@ -45,6 +45,9 @@ export class DashVentaComponent implements OnInit {
   @ViewChild('ventaStackVD', {static: false}) _stackVD:ChartComponent
   @ViewChild('servItm', {static: false}) _servItm:ChartComponent
   @ViewChild('servMnt', {static: false}) _servMnt:ChartComponent
+  @ViewChild('pieCampaign', {static: false}) pieCampaign:ChartComponent
+  @ViewChild('pieAgent', {static: false}) pieAgent:ChartComponent
+  @ViewChild('pieVia', {static: false}) pieVia:ChartComponent
 
   maxDate:NgbDateStruct = {
     day: parseInt(moment().format('DD')),
@@ -111,7 +114,7 @@ export class DashVentaComponent implements OnInit {
         this.finCompare = moment({year: date.year, month: date.month - 1, day: date.day}).format('YYYY-MM-DD');
         jQuery('#pickerC').val(`${moment(this.inicioCompare).format('DD/MM')} a ${moment({year: date.year, month: date.month - 1, day: date.day}).format('DD/MM')}`);
         el.close();
-        this.getData()
+        this.getData( true )
         // this.getAsistencia()
       } else {
         this.toDate = null;
@@ -128,16 +131,24 @@ export class DashVentaComponent implements OnInit {
   isFrom = date => equals({ one: date, two: this.fromDate });
   isTo = date => equals({ one: date, two: this.toDate });
 
-  getData(){
-    this.getTotales()
+  getData( flag = false ){
+    jQuery('#picker').val(`${moment(this.inicio).format('DD MMM')} a ${moment(this.fin).format('DD MMM')}`)
+    jQuery('#pickerC').val(`${moment(this.inicioCompare).format('DD MMM')} a ${moment(this.finCompare).format('DD MMM')}`)
+    this.getTotales( flag )
   }
 
-  getTotales() {
+  getTotales( only = false ) {
 
     this.loading['totales'] = true;
-    this.loading['dia'] = true;
-    this.loading['serv'] = true;
-    this.loading['agent'] = true;
+
+    if( !only ){
+      this.loading['dia'] = true;
+      this.loading['serv'] = true;
+      this.loading['campaign'] = true;
+      this.loading['agentSh'] = true;
+      this.loading['viaSh'] = true;
+    }
+
 
 
     this._api.restfulPut( {inicio: this.inicio, fin: this.fin, inicioCompare: this.inicioCompare, finCompare: this.finCompare}, 'Datastudio/ventaStatus' )
@@ -145,15 +156,23 @@ export class DashVentaComponent implements OnInit {
 
                   this.loading['totales'] = false;
                   this.totales = res['data']
-                  this.getDates()
-                  this.getServ()
-                  // this.getAgent()
+
+                  if( !only ){
+                    this.getDates()
+                    this.getServ()
+                    this.getCampaign()
+                    this.getAgentSh()
+                    this.getViaSh()
+                    // this.getAgent()
+                  }
 
                 }, err => {
                   this.loading['totales'] = false;
                   this.loading['dia'] = false;
                   this.loading['serv'] = false;
-                  this.loading['agent'] = false;
+                  this.loading['campaign'] = false;
+                  this.loading['agentSh'] = false;
+                  this.loading['viaSh'] = false;
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );
@@ -214,19 +233,61 @@ export class DashVentaComponent implements OnInit {
                 });
   }
 
-  getAgent() {
+  getCampaign() {
 
-    this.loading['agent'] = true;
+    this.loading['campaign'] = true;
 
 
-    this._api.restfulPut( {inicio: this.inicio, fin: this.fin}, 'Datastudio/ticketAgent' )
+    this._api.restfulPut( {inicio: this.inicio, fin: this.fin}, 'Datastudio/ventaCamp' )
                 .subscribe( res => {
 
-                  this.loading['agent'] = false;
-                  // this._stackAg.setData(this.totales, res['data'], {id: 'stackCot', yAxis: 'Q Por Agente', xAxis: 'Agente', stacking: 'normal', chartType: 'bar', nodatetime: true}, 'text')
+                  this.loading['campaign'] = false;
+                  this.pieCampaign.setData({}, res['data'], {id: 'pieCampaign', yAxis: 'Share Campañas', chartType: 'pie', nodatetime: true}, 'text')
 
                 }, err => {
-                  this.loading['agent'] = false;
+                  this.loading['campaign'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  getAgentSh() {
+
+    this.loading['agentSh'] = true;
+
+
+    this._api.restfulPut( {inicio: this.inicio, fin: this.fin}, 'Datastudio/ventaAgentSh' )
+                .subscribe( res => {
+
+                  this.loading['agentSh'] = false;
+                  this.pieAgent.setData({}, res['data'], {id: 'pieAgent', yAxis: 'Share Agentes', chartType: 'pie', nodatetime: true}, 'text')
+
+                }, err => {
+                  this.loading['agentSh'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  getViaSh() {
+
+    this.loading['viaSh'] = true;
+
+
+    this._api.restfulPut( {inicio: this.inicio, fin: this.fin}, 'Datastudio/ventaViaSh' )
+                .subscribe( res => {
+
+                  this.loading['viaSh'] = false;
+                  this.pieVia.setData({}, res['data'], {id: 'pieVia', yAxis: 'Share Canales', chartType: 'pie', nodatetime: true}, 'text')
+
+                }, err => {
+                  this.loading['viaSh'] = false;
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );
@@ -236,6 +297,10 @@ export class DashVentaComponent implements OnInit {
   }
 
   formatCompare(d, type, sfx = ''){
+
+    if(!d){
+      return type == 'icon' ? 'fas fa-arrows-alt-h' : 'text-warning'
+    }
 
     if( d['var' + sfx] > 0.05 ){
       return type == 'icon' ? 'fas fa-long-arrow-alt-up' : 'text-success'

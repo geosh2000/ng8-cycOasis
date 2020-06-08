@@ -27,8 +27,8 @@
             <mat-spinner *ngIf="loading['totales']"></mat-spinner>
             <ng-container *ngIf="!loading['totales']">
                 <h5 style='color: #62aced'>Llamadas</h5>
-                <h3 style='color: #62aced'>{{ totales['voice-inbound']['actual'] }}</h3>
-                <span [ngClass]="formatCompare(totales['voice-inbound'], 'class')"><i [ngClass]="formatCompare(totales['voice-inbound'],'icon')"></i> {{ totales['voice-inbound']['var'] | percent:'.0-2' }}</span>
+                <h3 style='color: #62aced'>{{ totales['voice-inbound'] ? totales['voice-inbound']['actual'] : 0 }}</h3>
+                <span [ngClass]="formatCompare(totales['voice-inbound'], 'class')"><i [ngClass]="formatCompare(totales['voice-inbound'],'icon')"></i> {{ (totales['voice-inbound'] ? totales['voice-inbound']['var'] : 0) | percent:'.0-2' }}</span>
             </ng-container>
 
         </div>
@@ -36,8 +36,8 @@
             <mat-spinner *ngIf="loading['totales']"></mat-spinner>
             <ng-container *ngIf="!loading['totales']">
                 <h5 style='color: #c47ed0'>Formulario</h5>
-                <h3 style='color: #c47ed0'>{{ totales['Formulario .com']['actual'] }}</h3>
-                <span [ngClass]="formatCompare(totales['Formulario .com'], 'class')"><i [ngClass]="formatCompare(totales['Formulario .com'],'icon')"></i> {{ totales['Formulario .com']['var'] | percent:'.0-2' }}</span>
+                <h3 style='color: #c47ed0'>{{ totales['Formulario .com'] ? totales['Formulario .com']['actual'] : 0 }}</h3>
+                <span [ngClass]="formatCompare(totales['Formulario .com'], 'class')"><i [ngClass]="formatCompare(totales['Formulario .com'],'icon')"></i> {{ (totales['Formulario .com'] ? totales['Formulario .com']['var'] : 0) | percent:'.0-2' }}</span>
             </ng-container>
 
         </div>
@@ -45,8 +45,8 @@
             <mat-spinner *ngIf="loading['totales']"></mat-spinner>
             <ng-container *ngIf="!loading['totales']">
                 <h5 style='color: white'>Email</h5>
-                <h3 style='color: white'>{{ totales['email']['actual'] }}</h3>
-                <span [ngClass]="formatCompare(totales['email'], 'class')"><i [ngClass]="formatCompare(totales['email'],'icon')"></i> {{ totales['email']['var'] | percent:'.0-2' }}</span>
+                <h3 style='color: white'>{{ totales['email'] ? totales['email']['actual'] : 0 }}</h3>
+                <span [ngClass]="formatCompare(totales['email'], 'class')"><i [ngClass]="formatCompare(totales['email'],'icon')"></i> {{ (totales['email'] ? totales['email']['var'] : 0) | percent:'.0-2' }}</span>
             </ng-container>
 
         </div>
@@ -54,8 +54,8 @@
             <mat-spinner *ngIf="loading['totales']"></mat-spinner>
             <ng-container *ngIf="!loading['totales']">
                 <h5 style='color: rgb(108, 199, 66)'>Whatsapp</h5>
-                <h3 style='color: rgb(108, 199, 66)'>{{ totales['whatsapp']['actual'] }}</h3>
-                <span [ngClass]="formatCompare(totales['whatsapp'], 'class')"><i [ngClass]="formatCompare(totales['whatsapp'],'icon')"></i> {{ totales['whatsapp']['var'] | percent:'.0-2' }}</span>
+                <h3 style='color: rgb(108, 199, 66)'>{{ totales['whatsapp'] ? totales['whatsapp']['actual'] : 0 }}</h3>
+                <span [ngClass]="formatCompare(totales['whatsapp'], 'class')"><i [ngClass]="formatCompare(totales['whatsapp'],'icon')"></i> {{ (totales['whatsapp'] ? totales['whatsapp']['var'] : 0) | percent:'.0-2' }}</span>
             </ng-container>
 
         </div>
@@ -63,8 +63,8 @@
             <mat-spinner *ngIf="loading['totales']"></mat-spinner>
             <ng-container *ngIf="!loading['totales']">
                 <h5 style='color: rgb(250, 189, 77)'>Chat</h5>
-                <h3 style='color: rgb(250, 189, 77)'>{{ totales['chat']['actual'] }}</h3>
-                <span [ngClass]="formatCompare(totales['chat'], 'class')"><i [ngClass]="formatCompare(totales['chat'],'icon')"></i> {{ totales['chat']['var'] | percent:'.0-2' }}</span>
+                <h3 style='color: rgb(250, 189, 77)'>{{ totales['chat'] ? totales['chat']['actual'] : 0 }}</h3>
+                <span [ngClass]="formatCompare(totales['chat'], 'class')"><i [ngClass]="formatCompare(totales['chat'],'icon')"></i> {{ (totales['chat'] ? totales['chat']['var'] : 0) | percent:'.0-2' }}</span>
             </ng-container>
 
         </div>
@@ -72,8 +72,8 @@
             <mat-spinner *ngIf="loading['totales']"></mat-spinner>
             <ng-container *ngIf="!loading['totales']">
                 <h5 style='color: rgb(240, 138, 231)'>Api</h5>
-                <h3 style='color: rgb(240, 138, 231)'>{{ totales['api']['actual'] }}</h3>
-                <span [ngClass]="formatCompare(totales['api'], 'class')"><i [ngClass]="formatCompare(totales['api'],'icon')"></i> {{ totales['api']['var'] | percent:'.0-2' }}</span>
+                <h3 style='color: rgb(240, 138, 231)'>{{ totales['api'] ? totales['api']['actual'] : 0 }}</h3>
+                <span [ngClass]="formatCompare(totales['api'], 'class')"><i [ngClass]="formatCompare(totales['api'],'icon')"></i> {{ (totales['api'] ? totales['api']['var'] : 0) | percent:'.0-2' }}</span>
             </ng-container>
 
         </div>
@@ -81,8 +81,8 @@
             <mat-spinner *ngIf="loading['totales']"></mat-spinner>
             <ng-container *ngIf="!loading['totales']">
                 <h5 style='color: white'>Total</h5>
-                <h3 style='color: white'>{{ totales['Total']['actual'] }}</h3>
-                <span [ngClass]="formatCompare(totales['Total'], 'class')"><i [ngClass]="formatCompare(totales['Total'],'icon')"></i> {{ totales['Total']['var'] | percent:'.0-2' }}</span>
+                <h3 style='color: white'>{{ totales['Total'] ? totales['Total']['actual'] : 0 }}</h3>
+                <span [ngClass]="formatCompare(totales['Total'], 'class')"><i [ngClass]="formatCompare(totales['Total'],'icon')"></i> {{ (totales['Total'] ? totales['Total']['var'] : 0) | percent:'.0-2' }}</span>
             </ng-container>
 
         </div>
@@ -104,3 +104,4 @@
         </div>
     </div>
 </div>
+<button mat-button (click)="getData()" [disabled]="loading['totales']">Reload</button>

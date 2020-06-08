@@ -85,7 +85,13 @@
             </div>
         </div>
         <div class="mod-4 module ml-auto text-center" [style.height.%]="97">
-            <!-- <app-chart idName="stackCot" [chartLoading]="loading['cot']" #ticketStackCot></app-chart> -->
+            <app-chart idName="pieCampaign" chartHeight="198" [chartLoading]="loading['campaign']" #pieCampaign></app-chart>
+
+            <app-chart idName="pieAgent" chartHeight="198" [chartLoading]="loading['agentSh']" #pieAgent></app-chart>
+
+            <app-chart idName="pieVia" chartHeight="198" [chartLoading]="loading['viaSh']" #pieVia></app-chart>
+
         </div>
     </div>
 </div>
+<button mat-button (click)="getData()" [disabled]="loading['totales']">Reload</button>
