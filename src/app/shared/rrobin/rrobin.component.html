@@ -3,6 +3,10 @@
     <span *ngIf="loading"><i class="fa fa-spinner fa-pulse"></i></span>
 </button>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="login()" [disabled]="rr.st">Login</button>
-    <button mat-menu-item (click)="logout()" [disabled]="!rr.st">Logout</button>
+    <mat-spinner *ngIf="rr.loading"></mat-spinner>
+    <ng-container *ngIf="!rr.loading">
+        <button mat-menu-item (click)="login()" [disabled]="rr.st">Login</button>
+        <button mat-menu-item (click)="logout()" [disabled]="!rr.st">Logout</button>
+        <button mat-menu-item (click)="rr.checkStatus()">Refresh</button>
+    </ng-container>
 </mat-menu>

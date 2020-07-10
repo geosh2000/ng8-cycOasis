@@ -48,6 +48,10 @@ export class ConversationsComponent implements OnInit, OnDestroy {
 
   getTickets( s = this.selected, to = true ){
 
+    if( this.timeout ){
+      clearTimeout(this.timeout)
+    }
+
     this.loading['tickets'] = true;
 
     this._api.restfulGet( s, 'Whatsapp/listConv' )
@@ -80,7 +84,7 @@ export class ConversationsComponent implements OnInit, OnDestroy {
                   if( to ){
                     this.timeout = setTimeout( () => {
                       this.getTickets()
-                    },10000)
+                    },30000)
                   }
 
                 }, err => {
@@ -89,7 +93,7 @@ export class ConversationsComponent implements OnInit, OnDestroy {
                   if( to ){
                     this.timeout = setTimeout( () => {
                       this.getTickets()
-                    },10000)
+                    },30000)
                   }
 
                   const error = err.error;

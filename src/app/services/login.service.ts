@@ -3,11 +3,12 @@ import 'rxjs/add/operator/map';
 
 import { ApiService } from './api.service';
 import { InitService } from './init.service';
+import { WsService } from './ws.service';
 
 @Injectable()
 export class LoginService {
 
-  constructor( private _api:ApiService, private _init:InitService ) { }
+  constructor( private _api:ApiService, private _init:InitService, private ws: WsService ) { }
 
   loginCyC( logInfo ){
 
@@ -25,6 +26,7 @@ export class LoginService {
                           credentials: res['credentials']
                         })
         );
+        this.ws.cargarStorage()
         this._init.getPreferences()
         return { status: true, msg: 'Logueo Correcto', err: 'NA', isAffiliate: res['credentials']['viewOnlyAffiliates'] == '1' ? true : false}
       }, err => {

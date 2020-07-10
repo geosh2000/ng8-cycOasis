@@ -27,6 +27,7 @@
     </div>
     <div class='container-fluid d-flex justify-content-center'>
         <app-dash-venta *ngIf="reportValue == 'venta'"></app-dash-venta>
+        <app-dash-agents *ngIf="reportValue == 'agents'"></app-dash-agents>
         <app-dash-tickets *ngIf="reportValue == 'tickets'"></app-dash-tickets>
     </div>
 </ng-container>

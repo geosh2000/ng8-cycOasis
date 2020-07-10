@@ -9,9 +9,9 @@ import { ChatService } from '../../services/chat.service';
 export class ChatMonitorComponent implements OnInit {
 
   constructor( private chatService: ChatService ) { 
-    chatService.message.subscribe( msg => {
-      console.log('Response from server: ', msg)
-    } )
+    // chatService.message.subscribe( msg => {
+    //   console.log('Response from server: ', msg)
+    // } )
   }
 
   private message = {
@@ -20,8 +20,8 @@ export class ChatMonitorComponent implements OnInit {
   }
 
   sendMsg(){
-    console.log('Nuevo mensaje enviado por el cliente')
-    this.chatService.message.next(this.message)
+    // console.log('Nuevo mensaje enviado por el cliente')
+    // this.chatService.message.next(this.message)
   }
 
   ngOnInit() {

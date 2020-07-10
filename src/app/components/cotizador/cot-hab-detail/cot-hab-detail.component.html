@@ -11,10 +11,16 @@
             <div class="p-1 text-left">
                 <span><i class="fas fa-user-friends"></i><span class='pl-1'>{{ hb['adults'] }} Adultos, {{ hb['minors'] }} Menores {{ hb['minors'] > 0 ? '(' + hb['m1'] + (hb['minors'] > 1 ? ','+hb['m2'] : '') + (hb['minors'] > 2 ? ','+hb['m3'] : '') + ')' : '' }}</span></span>
             </div>
-            <div class="p-1 text-left" *ngIf="paymentSelect">
+            <!-- <div class="p-1 text-left" *ngIf="paymentSelect">
                 <mat-radio-group aria-label="Forma de Pago" [(ngModel)]="hb['fdp']" (change)="calcTotal()">
                     <mat-radio-button value="0">Pre-pago</mat-radio-button>
                     <mat-radio-button value="1" [disabled]="hb['isNR']=='1' || hb['gpotfaOK']=='ccenter_pkgSB2020'">Hotel</mat-radio-button>
+                </mat-radio-group>
+            </div> -->
+            <div class="p-1 text-left" *ngIf="paymentSelect">
+                <mat-radio-group aria-label="Tipo de Cama" [(ngModel)]="hb['bedPreference']" (change)="calcTotal()">
+                    <mat-radio-button value="2">Dos Camas</mat-radio-button>
+                    <mat-radio-button value="1">King</mat-radio-button>
                 </mat-radio-group>
             </div>
             <div class="d-flex justify-content-around">
@@ -67,8 +73,8 @@
                         </div>
                     </div>
                     <div *ngIf="paymentSelect">
-                        <div class="alert alert-warning" role="alert" *ngIf="!hb['fdp']">
-                            Selecciona una forma de pago
+                        <div class="alert alert-warning" role="alert" *ngIf="!hb['bedPreference']">
+                            Selecciona un tipo de cama <span class="text-danger"><b>Sujeta a Dispo</b></span>
                         </div>
                         <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
                             <div [style.width.px]="110" class='text-right pl-3 text-success font-weight-bold'>

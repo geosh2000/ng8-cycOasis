@@ -3,6 +3,10 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import { environment } from '../environments/environment';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: environment.wsUrl, options: {} };
 
 // Services
 import { NavbarService, AsesoresService, LoginService, CredentialsService, TokenCheckService, ApiService, InitService, GlobalServicesService, RrobinService } from './services/service.index';
@@ -194,6 +198,9 @@ import { DashboardV2Component } from './components/dashboard-v2/dashboard-v2.com
 import { DashVentaComponent } from './components/dashboard-v2/dash-venta/dash-venta.component';
 import { DashTicketsComponent } from './components/dashboard-v2/dash-tickets/dash-tickets.component';
 import { ChartComponent } from './components/dashboard-v2/chart/chart.component';
+import { DashAgentsComponent } from './components/dashboard-v2/dash-agents/dash-agents.component';
+import { ConexionesWhatsComponent } from './components/monitores/conexiones-whats/conexiones-whats.component';
+
 
 @NgModule({
   declarations: [
@@ -325,7 +332,9 @@ import { ChartComponent } from './components/dashboard-v2/chart/chart.component'
     DashboardV2Component,
     DashVentaComponent,
     DashTicketsComponent,
-    ChartComponent
+    ChartComponent,
+    DashAgentsComponent,
+    ConexionesWhatsComponent
 
   ],
   imports: [
@@ -402,7 +411,8 @@ import { ChartComponent } from './components/dashboard-v2/chart/chart.component'
     // END ANGULAR MATERIAL
     // ==================================================
     NgxMaterialTimepickerModule.setLocale('es-MX'),
-    NgxAudioPlayerModule
+    NgxAudioPlayerModule,
+    SocketIoModule.forRoot(config),
   ],
   providers: [
     NavbarService,

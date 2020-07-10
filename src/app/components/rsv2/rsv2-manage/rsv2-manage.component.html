@@ -70,27 +70,30 @@
                                         </button>
                                     </div>
                                     <ng-container *ngIf="i['isCancel'] == 0">
-                                        <div class="d-flex align-items-center flex-wrap justify-content-center col-2 mt-auto mb-auto text-center text-truncate p-0" [ngClass]="colorConfirm(i['confirm'], isVigente(i['vigencia']), i['isQuote'] == 1)" [matTooltip]="i['confirm']" [matTooltipPosition]="'above'">
+                                        <div class="d-flex align-items-center flex-wrap justify-content-center col-2 mt-auto mb-auto text-center text-truncate p-0" [ngClass]="colorConfirm(i['confirm'], isVigente(i['vigencia']), i['isQuote'] == 1)">
                                             <div class='text-center'>
 
                                                 <!-- CONFIRMACION -->
                                                 {{ i['isQuote'] == 1 && !isVigente(i['vigencia']) ? 'Expirada' : i['confirm'] }}<br>
 
                                                 <!-- STATUS PAGO -->
-                                                <span class="badge-status badge badge-pill badge-success" *ngIf="i['tipoPago'] == 'PT'">PT</span>
-                                                <span class="badge-status badge badge-pill badge-secondary" *ngIf="i['tipoPago'] == 'OD'">OD</span>
-                                                <span class="badge-status badge badge-pill badge-info" *ngIf="i['tipoPago'] == 'PP'">PP</span>
-                                                <span class="badge-status badge badge-pill badge-primary" *ngIf="i['tipoPago'] == 'PH'">PH</span>
-                                                <span class="badge-status badge badge-pill badge-warning" *ngIf="i['tipoPago'] == 'PDT'">PDT</span>
+                                                <span [matTooltip]="i['confirm']" [matTooltipPosition]="'above'" class="badge-status badge badge-pill badge-success" *ngIf="i['tipoPago'] == 'PT'">PT</span>
+                                                <span [matTooltip]="i['confirm']" [matTooltipPosition]="'above'" class="badge-status badge badge-pill badge-secondary" *ngIf="i['tipoPago'] == 'OD'">OD</span>
+                                                <span [matTooltip]="i['confirm']" [matTooltipPosition]="'above'" class="badge-status badge badge-pill badge-info" *ngIf="i['tipoPago'] == 'PP'">PP</span>
+                                                <span [matTooltip]="i['confirm']" [matTooltipPosition]="'above'" class="badge-status badge badge-pill badge-primary" *ngIf="i['tipoPago'] == 'PH'">PH</span>
+                                                <span [matTooltip]="i['confirm']" [matTooltipPosition]="'above'" class="badge-status badge badge-pill badge-warning" *ngIf="i['tipoPago'] == 'PDT'">PDT</span>
 
                                                 <!-- STATUS CIELO -->
-                                                <span class="badge-status badge badge-pill badge-danger" *ngIf="i['cieloStatus'] == 'c'">N</span>
-                                                <span class="badge-status badge badge-pill badge-danger" *ngIf="i['cieloStatus'] == 'n'">C</span>
-                                                <span class="badge-status badge badge-pill badge-success" *ngIf="i['cieloStatus'] == 'b'">B</span>
-                                                <span class="badge-status badge badge-pill badge-success" *ngIf="i['cieloStatus'] == 's'">S</span>
-                                                <span class="badge-status badge badge-pill badge-primary" *ngIf="i['cieloStatus'] == 'r'">R</span>
-                                                <span class="badge-status badge badge-pill badge-info" *ngIf="i['cieloStatus'] == 'o'">O</span>
-                                                <span class="badge-status badge badge-pill badge-warning" *ngIf="i['cieloStatus'] == 'pdt'">PDT</span>
+                                                <span [ngSwitch]="i['cieloStatus']" [matTooltip]="i['cieloStatus']" [matTooltipPosition]="'above'">
+                                                    <span class="badge-status badge badge-pill badge-danger" *ngSwitchCase="'c'">N</span>
+                                                <span class="badge-status badge badge-pill badge-danger" *ngSwitchCase="'n'">C</span>
+                                                <span class="badge-status badge badge-pill badge-success" *ngSwitchCase="'b'">B</span>
+                                                <span class="badge-status badge badge-pill badge-success" *ngSwitchCase="'s'">S</span>
+                                                <span class="badge-status badge badge-pill badge-primary" *ngSwitchCase="'r'">R</span>
+                                                <span class="badge-status badge badge-pill badge-info" *ngSwitchCase="'o'">O</span>
+                                                <span class="badge-status badge badge-pill badge-warning" *ngSwitchCase="'pdt'">PDT</span>
+                                                <span class="badge-status badge badge-pill badge-success" *ngSwitchDefault>D</span>
+                                                </span>
 
                                             </div>
 

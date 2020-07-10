@@ -34,12 +34,12 @@ export class NgbDateNativeAdapter extends NgbDateAdapter<any> {
   }
 }
 @Component({
-  selector: 'app-dash-venta',
-  templateUrl: './dash-venta.component.html',
+  selector: 'app-dash-agents',
+  templateUrl: './dash-agents.component.html',
   providers: [NgbDatepickerConfig],
-  styleUrls: ['./dash-venta.component.css']
+  styleUrls: ['./dash-agents.component.css']
 })
-export class DashVentaComponent implements OnInit {
+export class DashAgentsComponent implements OnInit {
 
   // @ViewChild('ticketStack100', {static: false}) _stack100:ChartComponent
   @ViewChild('ventaStackVD', {static: false}) _stackVD:ChartComponent
@@ -147,7 +147,6 @@ export class DashVentaComponent implements OnInit {
       this.loading['campaign'] = true;
       this.loading['agentSh'] = true;
       this.loading['viaSh'] = true;
-      this.loading['agente'] = true;
     }
 
 
@@ -164,7 +163,6 @@ export class DashVentaComponent implements OnInit {
                     this.getCampaign()
                     this.getAgentSh()
                     this.getViaSh()
-                    this.getVentaAgente()
                     // this.getAgent()
                   }
 
@@ -175,7 +173,6 @@ export class DashVentaComponent implements OnInit {
                   this.loading['campaign'] = false;
                   this.loading['agentSh'] = false;
                   this.loading['viaSh'] = false;
-                  this.loading['agente'] = false;
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );
@@ -223,6 +220,7 @@ export class DashVentaComponent implements OnInit {
                     itm.push({cat: r['servicio'], serie: r['st'], color: r['color'], value: r['items']})
                     mnt.push({cat: r['servicio'], serie: r['st'], color: r['color'], value: r['monto']})
                   }
+                  this._servItm.setData(res['data']['cats'], itm, {id: 'itemServ', yAxis: 'Items x Servicio', xAxis: 'Servicio', stacking: 'normal', chartType: 'bar', nodatetime: true}, 'text')
                   this._servMnt.setData(res['data']['cats'], mnt, {id: 'montoServ', yAxis: 'Monto x Servicio', xAxis: 'Servicio', stacking: 'normal', chartType: 'bar', nodatetime: true}, 'text')
 
                 }, err => {
@@ -248,29 +246,6 @@ export class DashVentaComponent implements OnInit {
 
                 }, err => {
                   this.loading['campaign'] = false;
-
-                  const error = err.error;
-                  this.toastr.error( error.msg, err.status );
-                  console.error(err.statusText, error.msg);
-
-                });
-  }
-
-  getVentaAgente() {
-
-    this.loading['agente'] = true;
-
-
-    this._api.restfulPut( {inicio: this.inicio, fin: this.fin}, 'Datastudio/ventaAgente' )
-                .subscribe( res => {
-
-                  this.loading['agente'] = false;
-                  this._servItm.setData(res['data']['cats'], res['data']['data'], {id: 'stackVD', yAxis: 'Monto Venta', stacking: 'normal', chartType: 'column', nodatetime: true, legend: 'hidden'}, 'text')
-
-
-
-                }, err => {
-                  this.loading['agente'] = false;
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );

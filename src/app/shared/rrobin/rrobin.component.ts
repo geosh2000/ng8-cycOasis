@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiService, TokenCheckService, RrobinService } from 'src/app/services/service.index';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ApiService, TokenCheckService, RrobinService, InitService } from 'src/app/services/service.index';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-rrobin',
@@ -45,16 +47,29 @@ import { ToastrService } from 'ngx-toastr';
     }
   `]
 })
-export class RrobinComponent implements OnInit {
+export class RrobinComponent implements OnInit, OnDestroy {
 
   loading = false
 
+  rrobinObs: Subscription
+
   constructor( private _srv:TokenCheckService,
-              private _api:ApiService,
-              public rr:RrobinService,
-              public toastr: ToastrService ) { }
+               private _api:ApiService,
+               private chat:ChatService,
+               private _init: InitService,
+               public rr:RrobinService,
+               public toastr: ToastrService ) { }
 
   ngOnInit() {
+    this.rrobinObs = this.chat.rrobinSt( this._init.currentUser['hcInfo']['zdId'] ).subscribe(
+      msg => {
+        console.log( 'status recibido', msg)
+        this.rr['st'] = msg === true
+      })
+  }
+
+  ngOnDestroy() {
+   this.rrobinObs.unsubscribe()
   }
 
   login(){

@@ -6,7 +6,7 @@ import { Usuario } from '../classes/Usuarios';
 @Injectable({
   providedIn: 'root'
 })
-export class WebsocketService {
+export class WsService {
 
   public socketStatus = false;
   public usuario: Usuario;
@@ -67,6 +67,25 @@ export class WebsocketService {
 
   }
 
+  // setUrl( url: string = window.location.origin ) {
+  setUrl( url: string = window.location.href + ' -- ' + window.navigator.userAgent ) {
+
+    return new Promise( (resolve, reject ) => {
+
+      this.emit( 'desde-url', { url }, res => {
+
+        // this.usuario = new Usuario( url );
+        // this.guardarStorage();
+
+        resolve();
+
+      });
+
+    });
+
+
+  }
+
   setTicket( ticket: string ) {
 
     return new Promise( (resolve, reject ) => {
@@ -85,6 +104,7 @@ export class WebsocketService {
 
   }
 
+
   guardarStorage() {
 
     localStorage.setItem( 'usuario', JSON.stringify( this.usuario ) );
@@ -96,6 +116,7 @@ export class WebsocketService {
     if ( localStorage.getItem( 'currentUser' ) ) {
       this.usuario = JSON.parse( localStorage.getItem( 'currentUser' ) );
       this.loginWS( this.usuario['username'] )
+      this.setUrl( )
     }
 
   }
@@ -126,3 +147,5 @@ export class WebsocketService {
   }
 
 }
+
+

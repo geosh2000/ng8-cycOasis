@@ -39,7 +39,7 @@
                     <div class="form-group p-1">
                         <label for="grupo">Código</label>
                         <select [(ngModel)]="selectedCode" name="grupo" id="grupo" class="form-control">
-                                                <option [value]="gp['grupo']" *ngFor="let gp of groupsTfa">{{ gp['grupo'] }}</option>
+                                                <option [value]="gp['grupo']" *ngFor="let gp of groupsTfa">{{ gp['gpoTitle'] ? gp['gpoTitle'] : gp['grupo'] }}</option>
                                             </select>
                     </div>
 

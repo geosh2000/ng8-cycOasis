@@ -150,8 +150,8 @@ export class CreateRsvComponent implements OnInit {
 
     if( this.tipo == 'hotel' ){
       for( let h of arr['item']['habs'] ){
-        if( !h['fdp'] ){
-          this.error.emit('Debes elegir una forma de pago para cada habitación')
+        if( !h['bedPreference'] ){
+          this.error.emit('Debes elegir una preferencia de cama para cada habitación')
           return
         }
 
@@ -172,6 +172,7 @@ export class CreateRsvComponent implements OnInit {
               noches: h['noches'],
               isNR: h['isNR'],
               isLocal: h['grupo'] == 'CCQROO' ? 1 : 0,
+              bedPreference: h['bedPreference']
             },
             monto: {
               montoOriginal: this.moneda ? h['MXN'] : h['USD'],
@@ -325,6 +326,14 @@ export class CreateRsvComponent implements OnInit {
         return false
       }
     }
+
+    // if( this.tipo == 'hotel' ){
+    //   for( let h of this.data['habs'] ){
+    //     if( !this.data['habs']['bedPreference'] ){
+    //       return false
+    //     }
+    //   }
+    // }
     return true
   }
 

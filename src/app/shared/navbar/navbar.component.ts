@@ -1,16 +1,18 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 
-import { NavbarService, LoginService, TokenCheckService, ApiService, ZonaHorariaService } from '../../services/service.index';
+import { NavbarService, LoginService, TokenCheckService, ApiService, ZonaHorariaService, InitService } from '../../services/service.index';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { LogoutComponent } from '../logout/logout.component';
+import { Subscription } from 'rxjs';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
 
   @ViewChild(LogoutComponent,{static:false}) private _logout:LogoutComponent
   @Input() sbStatus:boolean
@@ -23,12 +25,12 @@ export class NavbarComponent {
   sideBarShow:boolean = false
 
   menu:any = [];
-  test:string='NavBar Component success';
+  test='NavBar Component success';
   l2menu:any[];
-  l2flag:boolean = false;
-  token:boolean=false;
-  lastLog:boolean=false;
-  expired= false;
+  l2flag = false;
+  token = false;
+  lastLog = false;
+  expired = false;
   expiration
   licenses:any[]
   menuCredentials:Object
@@ -36,12 +38,15 @@ export class NavbarComponent {
 
   currentUser:any
 
+
   constructor( private _navbar:NavbarService,
-                private _tokenCheck:TokenCheckService,
-                private _login:LoginService,
-                private _api:ApiService,
-                private route:Router,
-                private _zh:ZonaHorariaService ) {
+               private _tokenCheck:TokenCheckService,
+               private _login:LoginService,
+               private _api:ApiService,
+               private chat:ChatService,
+               private _init: InitService,
+               private route:Router,
+               private _zh:ZonaHorariaService ) {
 
                   this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
@@ -51,7 +56,7 @@ export class NavbarComponent {
   ngOnInit() {
     this.tokenCheck();
 
-    setInterval(()=>{ this.tokenCheck() }  ,1000);
+    setInterval(()=>{ this.tokenCheck() }  ,1000)
 
   }
 

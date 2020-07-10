@@ -223,21 +223,27 @@ export class PaymentLinkGenComponent implements OnInit {
 
   validate( i ){
 
+    console.log('Validanto '+ i['itemLocatorId'])
+
     if( i['isCancel'] == 1 ){
+      console.log('false isCancel')
       return false
     }
 
     if( moment() > moment(i['vigencia']) && i['isQuote'] == 1 ){
+      console.log('false vigencia')
       return false
     }
 
 
     // CHANGE OPERATOR FOR <= TO SKIP TESTS
     if( parseFloat(i['montoParcial']) <= parseFloat(i['montoPagado']) ){
+      console.log('false montoParcial')
       return false
     }
 
     if( i['moneda'] != (this.selMon ? 'MXN' : 'USD') ){
+      console.log('false Moneda')
       return false
     }
 

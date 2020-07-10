@@ -29,6 +29,7 @@ import { UploadFilesComponent } from './config/upload-files/upload-files.compone
 import { DataStudioComponent } from './components/data-studio/data-studio.component';
 import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp-templates.component';
 import { DashboardV2Component } from './components/dashboard-v2/dashboard-v2.component';
+import { ConexionesWhatsComponent } from './components/monitores/conexiones-whats/conexiones-whats.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -86,6 +87,8 @@ const routes: Routes = [
   { path: 'uploads/:param', component: UploadFilesComponent },
 
   { path: 'templates', component: WhatsappTemplatesComponent },
+
+  { path: 'conn-whats', component: ConexionesWhatsComponent },
 ];
 
 @NgModule({

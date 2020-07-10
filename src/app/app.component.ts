@@ -1,10 +1,11 @@
-import {Component, ViewContainerRef, ViewChild} from '@angular/core';
+import {Component, ViewContainerRef, ViewChild, OnInit} from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 
 import { ApiService, GlobalServicesService, InitService, TokenCheckService } from './services/service.index';
+import { WsService } from './services/ws.service';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 
 import * as Globals from './globals';
@@ -16,7 +17,7 @@ import { LogoutComponent } from './shared/logout/logout.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
   display = {
     navbar  : true
@@ -46,7 +47,8 @@ export class AppComponent {
           private _global: GlobalServicesService,
           private _init: InitService,
           private _tokenCheck: TokenCheckService,
-          public toastr: ToastrService
+          public toastr: ToastrService,
+          public _ws: WsService 
           ) {
              this.version = `${Globals.CYCTITLE} ${Globals.CYCYEAR} ${Globals.VER}`;
 
@@ -66,6 +68,14 @@ export class AppComponent {
              this.getVer()
              this.timerCheck()
           }
+
+    ngOnInit() {
+      this.router.events.subscribe((val) => {
+        if( val instanceof NavigationEnd ){
+          this._ws.setUrl( val.urlAfterRedirects + ' -- ' + window.navigator.userAgent )
+        }
+    });
+    }
 
    getVer(){
     //  this._api.restfulGet( '', `Lists/cycVersion` )

@@ -1,0 +1,30 @@
+<h1>Conexiones Activas</h1>
+<span class="text-success" *ngIf="wsService.socketStatus">Online</span>
+<span class="text-danger" *ngIf="!wsService.socketStatus">Offline</span>
+<span class="badge badge-primary">Sesiones CyC {{ totalUsers['cyc'] }}</span>
+<span class="badge badge-success">Sesiones WP {{ totalUsers['wp'] }}</span>
+<hr>
+<div class="container-fluid d-flex justify-content-start flex-wrap">
+
+    <div class="card m-2" style="width: 18rem;" *ngFor="let usuario of activeUsers">
+        <div class="card-body">
+            <h5 class="card-title">{{ usuario.nombre }}</h5>
+            <h6 class="card-subtitle mb-2 text-primary">Sesiones Cyc {{ usuario.sesiones }}</h6>
+            <h6 class="card-subtitle mb-2 text-success">Sesiones Whats {{ usuario.sesionesWhats }}</h6>
+            <p class="card-text text-truncate" *ngFor="let r of usuario['details']"><span class="badge" [ngClass]="{'badge-info': !isWhats(urlRefine(r['urlRef'])), 'badge-success': isWhats(urlRefine(r['urlRef']))}" [matTooltip]="urlRefine(r['urlRef'],false) + ' / id: ' + r['id']" matTooltipPosition="above">{{ urlRefine(r['urlRef']) }}</span></p>
+        </div>
+    </div>
+
+    <!-- <div class="card" style="width: 18rem;" *ngFor="let usuario of activeUsers">
+        <div class="card-body">
+            <h5 class="card-title">{{ usuario.nombre }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ usuario.id }}</h6>
+            <p class="card-text" *ngIf="usuario['activeTicket'] != 'Unknown'">Viendo ticket: <span class="badge badge-secondary">{{ usuario['activeTicket'] }}</span></p>
+            <p class="card-text">Desde URL:</p>
+            <p class="card-text text-truncate"><span class="badge badge-secondary" [matTooltip]="urlRefine(usuario['urlRef'])" matTooltipPosition="above">{{ urlRefine(usuario['urlRef']) }}</span></p>
+            <p class="card-text text-truncate"><span class="badge badge-secondary" [matTooltip]="urlRefine(usuario['urlRef'], false)" matTooltipPosition="above">{{ urlRefine(usuario['urlRef'], false) }}</span></p>
+        </div>
+    </div> -->
+
+
+</div>

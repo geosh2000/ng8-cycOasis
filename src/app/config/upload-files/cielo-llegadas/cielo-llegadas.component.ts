@@ -157,7 +157,8 @@ export class CieloLlegadasComponent implements OnInit {
         guest3_nombre: this.validateText(r['NOMBRE3'], false, null),
         guest4_apellido: this.validateText(r['APELLIDO4'], false, null),
         guest4_nombre: this.validateText(r['NOMBRE4'], false, null),
-        bedType: this.validateText(r['C'], false, null)
+        bedType: this.validateText(r['C'], false, null),
+        cieloMail: this.validateText(r['EMAIL'], true, null),
       }
       cielo[index].push(rsv)
       i++

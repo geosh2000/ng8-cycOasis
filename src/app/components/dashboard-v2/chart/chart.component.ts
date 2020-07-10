@@ -144,6 +144,10 @@ export class ChartComponent implements OnInit {
       }
     }
 
+    if( opts['legend'] == 'hidden' ){
+      options.legend = { enabled: false }
+    }
+
     this.chart = Highcharts.chart(this.idName, options);
 
     let series = {}
@@ -265,7 +269,7 @@ export class ChartComponent implements OnInit {
       }else{
         this.chart.yAxis[0].setTitle({ text: opts['yAxis'] });
         if( type != 'date' ){
-          this.chart.yAxis[0].setCategories( categories )
+          this.chart.xAxis[0].setCategories( categories )
         }
       }
     }

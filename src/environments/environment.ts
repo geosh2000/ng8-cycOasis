@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   CHAT_URL: 'wss://rtm.zopim.com/stream',
-  CHAT_ECHO: 'ws://echo.websocket.org/'
+  CHAT_ECHO: 'ws://echo.websocket.org/',
+  // wsUrl: 'localhost:5000'
+  wsUrl: 'https://cyc-socket.herokuapp.com'
 };
 
 /*
