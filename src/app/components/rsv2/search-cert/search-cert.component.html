@@ -1,0 +1,32 @@
+<mat-form-field class="search-form-field">
+    <mat-label>Ingresa tu búsqueda de certificado</mat-label>
+    <input matInput type="text" [(ngModel)]="value" (keyup.enter)="getCert()">
+    <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="clearVal()" autocomplete="off">
+      <mat-icon>close</mat-icon>
+    </button>
+    <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="getCert()">
+        <mat-icon>search</mat-icon>
+      </button>
+  </mat-form-field>
+
+  <hr>
+
+  <mat-progress-bar mode="buffer" *ngIf="loading['cert']"></mat-progress-bar>
+
+  <div class="container-fluid d-flex flex-wrap justify-content-start">
+    <div class="card m-2" style="width: 35rem;" *ngFor="let r of results">
+        <div class="card-body">
+          <h5 class="card-title">{{ r['hotel'] }} - {{ r['rsva'] }} <span class="test-bold text-success" *ngIf="r['aplicaBeFree']==1">Aplica BeFree</span> <span class="test-bold text-danger" *ngIf="r['aplicaBeFree']!=1">NO APLICA BeFree</span></h5>
+          <h6 class="card-subtitle mb-2 text-muted">Folio: {{ r['id'] }} | Status <span [ngClass]="{'text-danger': r['e'] == 'n' || r == 'c', 'text-success': r['e']=='o'}">{{ r['e'] }}</span></h6>
+          <ul class="list-group">
+            <li class="list-group-item text-sm"><b>Titular: </b>{{ r['nombre'] }}</li>
+            <li class="list-group-item text-sm"><b>Correo: </b>{{ r['cieloMail'] }}</li>
+            <li class="list-group-item text-sm"><b>Agencia: </b>{{ r['agencia']  }}</li>
+            <li class="list-group-item text-sm"><b>Fechas: </b>{{ r['llegada']  }} a {{ r['salida'] }} ({{ r['noches'] }} noches)</li>
+            <li class="list-group-item text-sm"><b>Agencia: </b>{{ r['agencia']  }}</li>
+            <li class="list-group-item text-sm"><b>Notas: </b>{{ r['rp_char04']  }}</li>
+          </ul>
+
+        </div>
+      </div>
+  </div>

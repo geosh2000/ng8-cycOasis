@@ -30,6 +30,7 @@ import { DataStudioComponent } from './components/data-studio/data-studio.compon
 import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp-templates.component';
 import { DashboardV2Component } from './components/dashboard-v2/dashboard-v2.component';
 import { ConexionesWhatsComponent } from './components/monitores/conexiones-whats/conexiones-whats.component';
+import { SearchCertComponent } from './components/rsv2/search-cert/search-cert.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -73,6 +74,7 @@ const routes: Routes = [
   { path: 'rsvList', component: RsvListComponent },
   { path: 'rsvPaymentList', component: RsvPaymentListComponent },
   { path: 'dayPassList', component: RsvDayPassListComponent },
+  { path: 'certificados', component: SearchCertComponent },
 
   { path: 'cieloList', component: CieloListComponent },
 

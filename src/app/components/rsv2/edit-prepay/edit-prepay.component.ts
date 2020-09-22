@@ -51,7 +51,7 @@ export class EditPrepayComponent implements OnInit {
 
   editTotalMonto( m, c ){
 
-    if( m.value < this.i['montoPagado']){
+    if( parseFloat(m.value) < parseFloat(this.i['montoPagado']) ){
       this.toastr.error('El monto pagado es mayor al monto total indicado. Esta operación no es válida', 'Error!')
       return false
     }

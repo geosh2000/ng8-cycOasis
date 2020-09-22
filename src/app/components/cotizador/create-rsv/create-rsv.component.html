@@ -94,6 +94,17 @@
                             <p><span class=''>Categoría: {{ data['habitacion'] }}</span><span class="text-info"> ({{ data['habCat']}})</span></p>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-center container-fluid align-content-center bg-light p-2 alert" [ngClass]="{'alert-warning': !hasTransfer, 'alert-success': hasTransfer}" role="alert" *ngIf="isNew">
+                        <div class="text-left mr-2">
+                            Esta reservación incluye traslados en cortesía?
+                        </div>
+                        <div class="ml-2 text-right">
+                            <mat-radio-group aria-label="Incluye Transportación en cortesía" [(ngModel)]="hasTransfer">
+                                <mat-radio-button [value]="false">No</mat-radio-button>
+                                <mat-radio-button [value]="true">Si</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
                     <app-cot-hab-detail [habs]="data['habs']" [level]="data['lSelected']" (total)="total = $event" [moneda]="moneda" [paymentSelect]="true"></app-cot-hab-detail>
                     <div class="d-flex justify-content-end pr-3">
 

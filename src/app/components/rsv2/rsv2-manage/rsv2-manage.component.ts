@@ -22,6 +22,7 @@ import { RsvOpenDatesSetComponent } from '../rsv-open-dates-set/rsv-open-dates-s
 import { RsvUpdateContactComponent } from '../rsv-update-contact/rsv-update-contact.component';
 import { PaymentLinkGenComponent } from '../payment-link-gen/payment-link-gen.component';
 import { RsvCancelItemComponent } from '../rsv-cancel-item/rsv-cancel-item.component';
+import { ValidateCertificateComponent } from '../validate-certificate/validate-certificate.component';
 
 @Component({
   selector: 'app-rsv2-manage',
@@ -39,6 +40,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   @ViewChild(RsvUpdateContactComponent,{static:false}) _updU:RsvUpdateContactComponent;
   @ViewChild(PaymentLinkGenComponent,{static:false}) _genL:PaymentLinkGenComponent;
   @ViewChild(RsvCancelItemComponent,{static:false}) _xld:RsvCancelItemComponent;
+  @ViewChild(ValidateCertificateComponent,{static:false}) vc:ValidateCertificateComponent;
 
   penaltyXld:FormGroup
 
@@ -134,6 +136,40 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
     this.penaltyXld.controls['penalty'].setValue(this.xldPenalidad)
     console.log(this.penaltyXld)
     e.next()
+  }
+
+  addBlacklist(){
+    this.loading['loc'] = true
+
+    this._api.restfulPut( {ml: this.data['master']['masterlocatorid'], mlTicket: this.data['master']['mlTicket'], zdId: this.data['master']['zdUserId']}, 'Rsv/addBlacklist' )
+                .subscribe( res => {
+
+                  this.getLoc( this.data['master']['masterlocatorid'] )
+                }, err => {
+                  this.loading['loc'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  removeBlacklist(){
+    this.loading['loc'] = true
+
+    this._api.restfulPut( {ml: this.data['master']['masterlocatorid'], mlTicket: this.data['master']['mlTicket'], zdId: this.data['master']['zdUserId']}, 'Rsv/resetBlacklist' )
+                .subscribe( res => {
+
+                  this.getLoc( this.data['master']['masterlocatorid'] )
+                }, err => {
+                  this.loading['loc'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
   }
 
   getRelatedPayments( i ){
@@ -658,7 +694,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
 
                   this.loading['sendConf'] = false;
                   this.toastr.success( res['msg'], 'Enviado' );
-                  this.getHistory(this.data['mlTicket'])
+                  this.getHistory(this.mlTicket)
 
                 }, err => {
                   this.loading['sendConf'] = false;
@@ -674,4 +710,28 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
     return `https://cyc-oasishoteles.com/api/rf/index.php/Rsv/verConfirmacion/${d['masterlocatorid']}/${encodeURIComponent(d['correoCliente'])}`
   }
 
+  validateCert( i ){
+    this.vc.open( i )
+  }
+
+  addCourtesyTransfer( flag = true ){
+    this.loading['cTransfer'] = true
+
+    this._api.restfulPut( {mlTicket: this.mlTicket, loc: this.viewLoc, flag: flag}, 'Rsv/hasTransfer' )
+                .subscribe( res => {
+
+                  this.loading['cTransfer'] = false;
+                  this.toastr.success( res['msg'], flag ? 'Traslado en cortesía marcado' : 'Traslado en cortesía eliminado' );
+                  this.data['master']['hasTransfer'] = flag
+                  this.getHistory(this.mlTicket)
+
+                }, err => {
+                  this.loading['cTransfer'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
 }

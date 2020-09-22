@@ -1,0 +1,73 @@
+<div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="validateCert" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <mat-horizontal-stepper [linear]="true" #stepper>
+                <mat-step>
+                    <div class='container-fluid d-flex justify-content-center'>
+                        <ng-template matStepLabel>Busca el Certificado</ng-template>
+                        <mat-form-field>
+                            <mat-label>Folio Certificado</mat-label>
+                            <input matInput type="text" [(ngModel)]="folio" (keyup.enter)="getCert( stepper )">
+                            <button mat-button *ngIf="folio" matSuffix mat-icon-button aria-label="Clear" (click)="folio=''">
+                              <mat-icon>close</mat-icon>
+                            </button>
+                          </mat-form-field>
+                    </div>
+                    <div class="alert alert-danger" role="alert" *ngIf="results.length == 0 && !initFlag">
+                    No se encontraron resultados, intenta nuevamente
+                    </div>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>Elige el correcto</ng-template>
+                    <div class='container' *ngIf="loading['cert']">
+                        <mat-progress-bar mode="buffer"></mat-progress-bar>
+                    </div>
+                    <mat-list role='list'>
+                        <mat-list-item role='listitem' *ngFor="let r of results">
+                            <div class="row">
+                                <div class='col-10'>
+                                    {{ r['id'] }} -> {{ r['hotel'] }} | rsva: {{ r['rsva'] }} | voucher: {{ r['voucher']}} | titular: {{ r['nombre'] }} | correo: {{ r['cieloMail']}} ({{r['noches']}} noches / {{ r['adultos'] }} adultos) | Status: {{ r['e'] }} || NOTAS: {{ r['p_num04'] == 1 ? 'Usado en loc ' + r['p_char03'] : 'Sin usar ' + r['rp_char04'] }}
+                                </div>
+                                <div class='col-2'>
+                                    <button mat-raised-button color="primary" (click)="selectCert(r,stepper)" *ngIf="r['p_num04'] != 1">Select</button>
+                                </div>
+                            </div>
+                        </mat-list-item>
+                    </mat-list>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>Confirma tu operación</ng-template>
+                    <div class="alert alert-danger" role="alert" *ngIf="selectedCert == {}">
+                        Debes seleccionar un certificado para finalizar
+                    </div>
+                    <div class="d-flex justify-content-center" *ngIf="loading['saveCert']">
+                        <mat-spinner></mat-spinner>
+                    </div>
+                    <div  *ngIf="selectedCert != {} && !loading['saveCert']">
+                        <h3>Realmente deseas aplicar el siguiente certificado?</h3>
+                        <hr>
+                        <div class='d-flex justify-content-center'>
+                            <div style="width: 600px">
+                                <h5 class="card-title">{{ selectedCert['hotel'] }} - {{ selectedCert['rsva'] }} <span class="test-bold text-success" *ngIf="selectedCert['aplicaBeFree']==1">Aplica BeFree</span> <span class="test-bold text-danger" *ngIf="selectedCert['aplicaBeFree']!=1">NO APLICA BeFree</span></h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Folio: {{ selectedCert['id'] }} | Status <span [ngClass]="{'text-danger': selectedCert['e'] == 'n' || selectedCert == 'c', 'text-success': selectedCert['e']=='o'}">{{ selectedCert['e'] }}</span></h6>
+                                <ul class="list-group">
+                                    <li class="list-group-item text-sm"><b>Titular: </b>{{ selectedCert['nombre'] }}</li>
+                                    <li class="list-group-item text-sm"><b>Correo: </b>{{ selectedCert['cieloMail'] }}</li>
+                                    <li class="list-group-item text-sm"><b>Agencia: </b>{{ selectedCert['agencia']  }}</li>
+                                    <li class="list-group-item text-sm"><b>Fechas: </b>{{ selectedCert['llegada']  }} a {{ selectedCert['salida'] }} ({{ selectedCert['noches'] }} noches)</li>
+                                    <li class="list-group-item text-sm"><b>Agencia: </b>{{ selectedCert['agencia']  }}</li>
+                                    <li class="list-group-item text-sm"><b>Notas: </b>{{ selectedCert['rp_char04']  }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-end">
+                            <button mat-raised-button color="primary" class="m-1" (click)="stepper.previous()">Regresar</button>
+                            <button mat-raised-button color="primary" class="m-1" (click)="saveCert(stepper)">Confirmar</button>
+                        </div>
+                    </div>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </div>
+    </div>
+</div>

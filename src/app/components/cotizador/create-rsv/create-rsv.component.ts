@@ -53,6 +53,7 @@ export class CreateRsvComponent implements OnInit {
   masterLoc:any
   total = 0
   all:any
+  hasTransfer = false
 
   idiomas:Object = [
     {idioma: 'español', lang: 'idioma_es'},
@@ -141,7 +142,8 @@ export class CreateRsvComponent implements OnInit {
       item: this.data,
       habs: [],
       type: this.tipo,
-      moneda: this.moneda
+      moneda: this.moneda,
+      hasTransfer: this.hasTransfer
     }
 
     if( !this.isNew ){
@@ -210,6 +212,7 @@ export class CreateRsvComponent implements OnInit {
 
                   jQuery('#rsvPop').modal('hide')
                   this.save.emit(res['data'])
+                  this.hasTransfer = false
 
                 }, err => {
                   this.loading['save'] = false;

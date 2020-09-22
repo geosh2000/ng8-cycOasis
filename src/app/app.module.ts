@@ -200,6 +200,8 @@ import { DashTicketsComponent } from './components/dashboard-v2/dash-tickets/das
 import { ChartComponent } from './components/dashboard-v2/chart/chart.component';
 import { DashAgentsComponent } from './components/dashboard-v2/dash-agents/dash-agents.component';
 import { ConexionesWhatsComponent } from './components/monitores/conexiones-whats/conexiones-whats.component';
+import { SearchCertComponent } from './components/rsv2/search-cert/search-cert.component';
+import { ValidateCertificateComponent } from './components/rsv2/validate-certificate/validate-certificate.component';
 
 
 @NgModule({
@@ -334,7 +336,9 @@ import { ConexionesWhatsComponent } from './components/monitores/conexiones-what
     DashTicketsComponent,
     ChartComponent,
     DashAgentsComponent,
-    ConexionesWhatsComponent
+    ConexionesWhatsComponent,
+    SearchCertComponent,
+    ValidateCertificateComponent
 
   ],
   imports: [

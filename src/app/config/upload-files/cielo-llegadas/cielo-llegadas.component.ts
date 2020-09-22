@@ -107,9 +107,9 @@ export class CieloLlegadasComponent implements OnInit {
         i = 0
       }
 
-      let llegada = typeof r['LLEGADA'] != 'number' ? r['LLEGADA'].split('/') : []
-      let salida = typeof r['SALIDA'] != 'number' ? r['SALIDA'].split('/') : []
-      let dtCreated = typeof r['FECHACAP'] != 'number' ? r['FECHACAP'].split('/') : []
+      let llegada = typeof r['LLEGADA'] != 'number' ? String(r['LLEGADA']).split('/') : []
+      let salida = typeof r['SALIDA'] != 'number' ? String(r['SALIDA']).split('/') : []
+      let dtCreated = typeof r['FECHACAP'] != 'number' ? String(r['FECHACAP']).split('/') : []
       let dtCancel = []
 
       if( r['S'] == 'C' ){
@@ -174,7 +174,7 @@ export class CieloLlegadasComponent implements OnInit {
   }
 
   validateText( t, trim, nt){
-    return t ? (trim ? t.trim() : (t == ' ' ? null : t)) : nt
+    return t ? (trim ? String(t).trim() : (t == ' ' ? null : t)) : nt
   }
 
   submitChanges( ){

@@ -2,7 +2,7 @@
     <div class="col d-flex justify-content-center flex-wrap" style="max-height: 550px">
         <div class="p-1">
             <mat-form-field>
-                <input matInput placeholder="Nombre o Correo" name="mail" [(ngModel)]="mail">
+                <input matInput placeholder="Nombre o Correo" name="mail" [(ngModel)]="mail"  (keyup.enter)="search()">
             </mat-form-field>
         </div>
         <div class="p-1">
@@ -109,7 +109,7 @@
                 </mat-error>
             </mat-form-field>
             <div class='p-1'>
-                <button mat-raised-button type="submit" color="accent" [disabled]="newClientForm.status=='INVALID'">{{ editFlag ? 'Editar' : 'Crear' }} Cliente</button>
+                <button mat-raised-button type="submit" color="accent" [disabled]="newClientForm.status=='INVALID'">{{ editFlag ? 'Guardar Cambios' : 'Crear Cliente' }}</button>
             </div>
         </div>
         <mat-progress-bar color="accent" mode="buffer" *ngIf="loading['create']"></mat-progress-bar>
