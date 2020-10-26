@@ -3,34 +3,36 @@
   Launch demo modal
 </button> -->
 <!-- Modal -->
-<div class="modal fade" id="formUploadImageComponent" tabindex="-1" role="dialog" aria-labelledby="formUploadImageComponentLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-            </div>
-            <div class="modal-body">
-                <form [formGroup]="imageForm">
-                    <div class="form-row align-items-center">
-                        <div class="col-auto">
-                            <label class="sr-only" for="formUploadImage">Archivo</label>
-                            <input (change)="setImagePath( $event )" type="file" class="form-control mb-2 mb-sm-0" id="formUploadImage" placeholder="Archivo" #imageFile formControlName="imageFile">
-                        </div>
-                    </div>
-                </form>
-                <hr>
-                <div *ngIf="previewSrc">
-                    <p>Preview:</p>
-                    <p><img src="" alt="" height="150" id="formUploadImagePreview"></p>
+<ng-container *ngIf="modalMode">
+    <div class="modal fade" id="formUploadImageComponent" tabindex="-1" role="dialog" aria-labelledby="formUploadImageComponentLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading">Close</button>
-                <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="invalidForm || loading">Subir Archivo <span *ngIf="loading"><i class="fas fa-spinner fa-pulse"></i></span></button>
+                <div class="modal-body">
+                    <form [formGroup]="imageForm">
+                        <div class="form-row align-items-center">
+                            <div class="col-auto">
+                                <label class="sr-only" for="formUploadImage">Archivo</label>
+                                <input (change)="setImagePath( $event )" type="file" class="form-control mb-2 mb-sm-0" id="formUploadImage" placeholder="Archivo" #imageFile formControlName="imageFile">
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                    <div *ngIf="previewSrc">
+                        <p>Preview:</p>
+                        <p><img src="" alt="" height="150" id="formUploadImagePreview"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading">Close</button>
+                    <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="invalidForm || loading">Subir Archivo <span *ngIf="loading"><i class="fas fa-spinner fa-pulse"></i></span></button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</ng-container>

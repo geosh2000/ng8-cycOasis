@@ -1,140 +1,292 @@
-<mat-list>
-    <ng-container *ngFor="let hb of habs; index as i">
-
-        <div class="d-flex justify-content-between container-fluid align-content-center bg-light p-2">
-            <div class="p-1 text-left">
-                <h3><i class="fas fa-bed p-1"></i> {{ i + 1 }}</h3>
-            </div>
-            <div class="p-1 text-left" *ngIf="paymentSelect">
-                <span><i class="far fa-calendar-check"></i><span class='pl-1'>{{ hb['@inicio'] }} - {{ hb['@fin'] }}</span></span>
-            </div>
-            <div class="p-1 text-left">
-                <span><i class="fas fa-user-friends"></i><span class='pl-1'>{{ hb['adults'] }} Adultos, {{ hb['minors'] }} Menores {{ hb['minors'] > 0 ? '(' + hb['m1'] + (hb['minors'] > 1 ? ','+hb['m2'] : '') + (hb['minors'] > 2 ? ','+hb['m3'] : '') + ')' : '' }}</span></span>
-            </div>
-            <!-- <div class="p-1 text-left" *ngIf="paymentSelect">
-                <mat-radio-group aria-label="Forma de Pago" [(ngModel)]="hb['fdp']" (change)="calcTotal()">
-                    <mat-radio-button value="0">Pre-pago</mat-radio-button>
-                    <mat-radio-button value="1" [disabled]="hb['isNR']=='1' || hb['gpotfaOK']=='ccenter_pkgSB2020'">Hotel</mat-radio-button>
-                </mat-radio-group>
-            </div> -->
-            <div class="p-1 text-left" *ngIf="paymentSelect">
-                <mat-radio-group aria-label="Tipo de Cama" [(ngModel)]="hb['bedPreference']" (change)="calcTotal()">
-                    <mat-radio-button value="2">Dos Camas</mat-radio-button>
-                    <mat-radio-button value="1">King</mat-radio-button>
-                </mat-radio-group>
-            </div>
-            <div class="d-flex justify-content-around">
-                <ng-container *ngIf="hb['isOk'] == 0 || (moneda && hb['MXN'] == 0) || (!moneda && hb['USD'] == 0)">
-                    <div class="text-black-50 font-italic">
-                        {{ moneda && hb['MXN'] == 0 ? 'Sin tarifas cargadas' : !moneda && hb['USD'] == 0 ? 'Sin tarifas cargadas' : hb['r5'] ? hb['r5'] : hb['r1'] ? hb['r1'] : hb['r2'] ? hb['r2'] : hb['r3'] ? hb['r3'] : hb['r4'] }}
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="hb['isOk'] != 0 && !(moneda && hb['MXN'] == 0) && !(!moneda && hb['USD'] == 0)">
-                    <div *ngIf="!paymentSelect">
-                        <div class="d-flex justify-content-between">
-                            <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">
-                                <p>{{ (moneda ? hb['MXN'] : hb['USD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</p>
+<!-- DESKTOP -->
+<div class="detailDesktop">
+    <mat-list>
+        <ng-container *ngFor="let hb of habs; index as i">
+    
+            <div class="d-flex justify-content-between container-fluid align-content-center bg-light p-2">
+                <div class="p-1 text-left">
+                    <h3><i class="fas fa-bed p-1"></i> {{ i + 1 }}</h3>
+                </div>
+                <div class="p-1 text-left" *ngIf="paymentSelect">
+                    <span><i class="far fa-calendar-check"></i><span class='pl-1'>{{ hb['@inicio'] }} - {{ hb['@fin'] }}</span></span>
+                </div>
+                <div class="p-1 text-left">
+                    <span><i class="fas fa-user-friends"></i><span class='pl-1'>{{ hb['adults'] }} Adultos, {{ hb['minors'] }} Menores {{ hb['minors'] > 0 ? '(' + hb['m1'] + (hb['minors'] > 1 ? ','+hb['m2'] : '') + (hb['minors'] > 2 ? ','+hb['m3'] : '') + ')' : '' }}</span></span>
+                </div>
+                <!-- <div class="p-1 text-left" *ngIf="paymentSelect">
+                    <mat-radio-group aria-label="Forma de Pago" [(ngModel)]="hb['fdp']" (change)="calcTotal()">
+                        <mat-radio-button value="0">Pre-pago</mat-radio-button>
+                        <mat-radio-button value="1" [disabled]="hb['isNR']=='1' || hb['gpotfaOK']=='ccenter_pkgSB2020'">Hotel</mat-radio-button>
+                    </mat-radio-group>
+                </div> -->
+                <div class="p-1 text-left" *ngIf="paymentSelect">
+                    <mat-radio-group aria-label="Tipo de Cama" [(ngModel)]="hb['bedPreference']" (change)="calcTotal()">
+                        <mat-radio-button value="2">Dos Camas</mat-radio-button>
+                        <mat-radio-button value="1">King</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class="d-flex justify-content-around">
+                    <ng-container *ngIf="hb['isOk'] == 0 || (moneda && hb['MXN'] == 0) || (!moneda && hb['USD'] == 0)">
+                        <div class="text-black-50 font-italic">
+                            {{ moneda && hb['MXN'] == 0 ? 'Sin tarifas cargadas' : !moneda && hb['USD'] == 0 ? 'Sin tarifas cargadas' : hb['r5'] ? hb['r5'] : hb['r1'] ? hb['r1'] : hb['r2'] ? hb['r2'] : hb['r3'] ? hb['r3'] : hb['r4'] }}
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="hb['isOk'] != 0 && !(moneda && hb['MXN'] == 0) && !(!moneda && hb['USD'] == 0)">
+                        <div *ngIf="!paymentSelect">
+                            <div class="d-flex justify-content-between">
+                                <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">
+                                    <p>{{ (moneda ? hb['MXN'] : hb['USD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</p>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>
+                                    <p>{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }}</p>
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip>
+                                            <span [style.width.px]="120">{{ (moneda ? hb['l1MXN_total'] : hb['l1USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    {{ (1-((level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total'])/hb['l1USD_total'])) | percent:'.0-0' }}
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip [color]="level == '1' ? '' : level == '3' ? 'l3' : level == '4' ? 'l4' : 'primary'" selected>
+                                            <span [style.width.px]="120">{{ (moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
                             </div>
-                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>
-                                <p>{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }}</p>
-                            </div>
-                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
-                                <mat-chip-list aria-label="Fish selection">
-                                    <mat-chip>
-                                        <span [style.width.px]="120">{{ (moneda ? hb['l1MXN_total'] : hb['l1USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
-                                    </mat-chip>
-                                </mat-chip-list>
-                            </div>
-                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                                {{ (1-((level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total'])/hb['l1USD_total'])) | percent:'.0-0' }}
-                            </div>
-                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                                <mat-chip-list aria-label="Fish selection">
-                                    <mat-chip [color]="level == '1' ? '' : level == '3' ? 'l3' : level == '4' ? 'l4' : 'primary'" selected>
-                                        <span [style.width.px]="120">{{ (moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
-                                    </mat-chip>
-                                </mat-chip-list>
+                            <div class="d-flex justify-content-between">
+                                <div [style.width.px]="110" class='text-right text-secondary pl-3' style="text-decoration:line-through">
+                                    <p><small><span class='pl-1'>({{ ((moneda ? hb['MXN'] : hb['USD']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-secondary font-weight-bold'>
+                                </div>
+                                <div [style.width.px]="110" class="text-right text-secondary font-weight-bold">
+                                    <p><small><span class='pl-1'>({{ ((moneda ? hb['l1MXN_total'] : hb['l1USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-secondary font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                </div>
+                                <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <p><small><span class='pl-1'>({{ ((moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <div [style.width.px]="110" class='text-right text-secondary pl-3' style="text-decoration:line-through">
-                                <p><small><span class='pl-1'>({{ ((moneda ? hb['MXN'] : hb['USD']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                        <div *ngIf="paymentSelect">
+                            <div class="alert alert-warning" role="alert" *ngIf="!hb['bedPreference']">
+                                Selecciona un tipo de cama <span class="text-danger"><b>Sujeta a Dispo</b></span>
                             </div>
-                            <div [style.width.px]="45" class='text-right pl-3 text-secondary font-weight-bold'>
+                            <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right pl-3 text-success font-weight-bold'>
+                                    <span *ngIf="hb['fdp'] && hb['fdp'] == 1">{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }}</span>
+                                    <span *ngIf="hb['fdp'] && hb['fdp'] == 0">{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }} + {{ (1-(hb['USD_total']/hb['l1USD_total'])) | percent:'.0-0' }}</span>
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip color='primary' selected>
+                                            <span [style.width.px]="120" *ngIf="hb['fdp'] && hb['fdp'] == 1">{{ (moneda ? hb['l1MXN_total'] : hb['l1USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                            <span [style.width.px]="120" *ngIf="hb['fdp'] && hb['fdp'] == 0">{{ (moneda ? hb['MXN_total'] : hb['USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                            </div> -->
+                            <div class="d-flex justify-content-between" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">
+                                    <p>{{ (moneda ? hb['MXN'] : hb['USD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</p>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    {{ (1-((hb['USD_total'])/hb['USD'])) | percent:'.0-0' }}<span *ngIf="level != '2'"> + {{ (1-((level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total'])/hb['l1USD_total'])) | percent:'.0-0' }}</span>
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip [color]="level == '1' ? '' : level == '3' ? 'l3' : level == '4' ? 'l4' : 'primary'" selected>
+                                            <span [style.width.px]="120">{{ (moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
                             </div>
-                            <div [style.width.px]="110" class="text-right text-secondary font-weight-bold">
-                                <p><small><span class='pl-1'>({{ ((moneda ? hb['l1MXN_total'] : hb['l1USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
-                            </div>
-                            <div [style.width.px]="45" class='text-right pl-3 text-secondary font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                            </div>
-                            <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                                <p><small><span class='pl-1'>({{ ((moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="paymentSelect">
-                        <div class="alert alert-warning" role="alert" *ngIf="!hb['bedPreference']">
-                            Selecciona un tipo de cama <span class="text-danger"><b>Sujeta a Dispo</b></span>
-                        </div>
-                        <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
-                            <div [style.width.px]="110" class='text-right pl-3 text-success font-weight-bold'>
-                                <span *ngIf="hb['fdp'] && hb['fdp'] == 1">{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }}</span>
-                                <span *ngIf="hb['fdp'] && hb['fdp'] == 0">{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }} + {{ (1-(hb['USD_total']/hb['l1USD_total'])) | percent:'.0-0' }}</span>
-                            </div>
-                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
-                                <mat-chip-list aria-label="Fish selection">
-                                    <mat-chip color='primary' selected>
-                                        <span [style.width.px]="120" *ngIf="hb['fdp'] && hb['fdp'] == 1">{{ (moneda ? hb['l1MXN_total'] : hb['l1USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
-                                        <span [style.width.px]="120" *ngIf="hb['fdp'] && hb['fdp'] == 0">{{ (moneda ? hb['MXN_total'] : hb['USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
-                                    </mat-chip>
-                                </mat-chip-list>
-                            </div>
-                        </div> -->
-                        <div class="d-flex justify-content-between" *ngIf="hb['fdp']">
-                            <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">
-                                <p>{{ (moneda ? hb['MXN'] : hb['USD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</p>
-                            </div>
-                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                                {{ (1-((hb['USD_total'])/hb['USD'])) | percent:'.0-0' }}<span *ngIf="level != '2'"> + {{ (1-((level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total'])/hb['l1USD_total'])) | percent:'.0-0' }}</span>
-                            </div>
-                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                                <mat-chip-list aria-label="Fish selection">
-                                    <mat-chip [color]="level == '1' ? '' : level == '3' ? 'l3' : level == '4' ? 'l4' : 'primary'" selected>
-                                        <span [style.width.px]="120">{{ (moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
-                                    </mat-chip>
-                                </mat-chip-list>
-                            </div>
-                        </div>
-                        <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
-                            <div [style.width.px]="110" class='text-right pl-3 text-secondary font-weight-bold'>
-                            </div>
-                            <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold">
-                                <p><small><span class='pl-1' *ngIf="hb['fdp'] && hb['fdp'] == 1">({{ ((moneda ? hb['l1MXN_total'] : hb['l1USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
-                                <p><small><span class='pl-1' *ngIf="hb['fdp'] && hb['fdp'] == 0">({{ ((moneda ? hb['MXN_total'] : hb['USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
-                            </div>
-                        </div> -->
-                        <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
-                            <div [style.width.px]="110" class='text-right text-secondary pl-3' style="text-decoration:line-through">
-                                <p><small><span class='pl-1'>({{ ((moneda ? hb['MXN'] : hb['USD']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
-                            </div>
-                            <div [style.width.px]="45" class='text-right pl-3 text-secondary font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                            </div>
-                            <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
-                                <p><small><span class='pl-1'>({{ ((moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                            <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right pl-3 text-secondary font-weight-bold'>
+                                </div>
+                                <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold">
+                                    <p><small><span class='pl-1' *ngIf="hb['fdp'] && hb['fdp'] == 1">({{ ((moneda ? hb['l1MXN_total'] : hb['l1USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                    <p><small><span class='pl-1' *ngIf="hb['fdp'] && hb['fdp'] == 0">({{ ((moneda ? hb['MXN_total'] : hb['USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                            </div> -->
+                            <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right text-secondary pl-3' style="text-decoration:line-through">
+                                    <p><small><span class='pl-1'>({{ ((moneda ? hb['MXN'] : hb['USD']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-secondary font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                </div>
+                                <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <p><small><span class='pl-1'>({{ ((moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </ng-container>
-            </div>
-        </div>
-        <div class="form d-flex justify-content-center pr-3" *ngIf="paymentSelect">
-            <div class="form-group p-1">
-                <div class="input-group">
-                    <textarea rows="5" cols="120" [(ngModel)]="hb['notasHotel']" placeholder="Notas Reserva" id="notas"></textarea>
+                    </ng-container>
                 </div>
             </div>
+            <div class="form d-flex justify-content-center pr-3" *ngIf="paymentSelect">
+                <div class="form-group p-1">
+                    <div class="input-group">
+                        <textarea rows="5" cols="120" [(ngModel)]="hb['notasHotel']" placeholder="Notas Reserva" id="notas"></textarea>
+                    </div>
+                </div>
+    
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </mat-list>
+</div>
 
-        </div>
-        <mat-divider></mat-divider>
-    </ng-container>
-</mat-list>
+<!-- MOBILE -->
+<div class="detailMobile">
+    <mat-list>
+        <ng-container *ngFor="let hb of habs; index as i">
+    
+            <div class="container-fluid">
+
+                <div class="ml-auto mr-auto d-flex justify-content-center container-fluid align-content-center bg-light align-items-center">
+                    <!-- # HABITACION -->
+                    <div class="p-1 text-left">
+                        <h3><i class="fas fa-bed p-1"></i> {{ i + 1 }}</h3>
+                    </div>
+
+                    <!-- FECHAS (PRE-RSV) -->
+                    <div class="p-1 text-left" *ngIf="paymentSelect">
+                        <span><i class="far fa-calendar-check"></i><span class='pl-1'>{{ hb['@inicio'] }} - {{ hb['@fin'] }}</span></span>
+                    </div>
+
+                    <!-- OCUPACION -->
+                    <div class="p-1 pl-2 text-center">
+                        <h5 style="margin-bottom: -5px!important;"><i class="fas fa-user-friends p-1"></i>{{ hb['adults'] }}.{{ hb['minors'] }}</h5>
+                        <span style="font-size: xx-small;">{{ hb['minors'] > 0 ? '(' + hb['m1'] + (hb['minors'] > 1 ? ','+hb['m2'] : '') + (hb['minors'] > 2 ? ','+hb['m3'] : '') + ')' : '' }}</span>
+                    </div>
+                </div>
+
+                <!-- SELECCION DE CAMAS (PRE-RSV) -->
+                <div class="p-1 text-left" *ngIf="paymentSelect">
+                    <mat-radio-group aria-label="Tipo de Cama" [(ngModel)]="hb['bedPreference']" (change)="calcTotal()">
+                        <mat-radio-button value="2">Dos Camas</mat-radio-button>
+                        <mat-radio-button value="1">King</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <!-- TARIFA -->
+                <div class="d-flex justify-content-end">
+                    
+                    <!-- ERROR EN TARIFA -->
+                    <ng-container *ngIf="hb['isOk'] == 0 || (moneda && hb['MXN'] == 0) || (!moneda && hb['USD'] == 0)">
+                        <div class="text-black-50 font-italic">
+                            {{ moneda && hb['MXN'] == 0 ? 'Sin tarifas cargadas' : !moneda && hb['USD'] == 0 ? 'Sin tarifas cargadas' : hb['r5'] ? hb['r5'] : hb['r1'] ? hb['r1'] : hb['r2'] ? hb['r2'] : hb['r3'] ? hb['r3'] : hb['r4'] }}
+                        </div>
+                    </ng-container>
+                    
+                    <!-- TARIFAS -->
+                    <ng-container *ngIf="hb['isOk'] != 0 && !(moneda && hb['MXN'] == 0) && !(!moneda && hb['USD'] == 0)">
+
+                        <!-- DETALLE COTIZADOR -->
+                        <div class="container-fluid" *ngIf="!paymentSelect">
+
+                            <!-- NIVEL 1 -->
+                            <div class="d-flex justify-content-end">
+                                <div [style.width.px]="113" class='text-right pl-3 text-success font-weight-bold'>
+                                    <p>{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }}</p>
+                                    <p><small><span class='pl-1'>({{ ((moneda ? hb['l1MXN_total'] : hb['l1USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip>
+                                            <span [style.width.px]="120">{{ (moneda ? hb['l1MXN_total'] : hb['l1USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                            </div>
+
+                            <!-- NIVEL SELECCIONADO -->
+                            <div class="d-flex justify-content-end" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                <div [style.width.px]="113" class='text-right pl-3 text-success font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <p>{{ (1-((level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total'])/hb['l1USD_total'])) | percent:'.0-0' }}</p>
+                                    <p><small><span class='pl-1'>({{ ((moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip [color]="level == '1' ? '' : level == '3' ? 'l3' : level == '4' ? 'l4' : 'primary'" selected>
+                                            <span [style.width.px]="120">{{ (moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <div *ngIf="paymentSelect">
+                            <div class="alert alert-warning" role="alert" *ngIf="!hb['bedPreference']">
+                                Selecciona un tipo de cama <span class="text-danger"><b>Sujeta a Dispo</b></span>
+                            </div>
+                            <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right pl-3 text-success font-weight-bold'>
+                                    <span *ngIf="hb['fdp'] && hb['fdp'] == 1">{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }}</span>
+                                    <span *ngIf="hb['fdp'] && hb['fdp'] == 0">{{ (1-(hb['l1USD_total']/hb['USD'])) | percent:'.0-0' }} + {{ (1-(hb['USD_total']/hb['l1USD_total'])) | percent:'.0-0' }}</span>
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip color='primary' selected>
+                                            <span [style.width.px]="120" *ngIf="hb['fdp'] && hb['fdp'] == 1">{{ (moneda ? hb['l1MXN_total'] : hb['l1USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                            <span [style.width.px]="120" *ngIf="hb['fdp'] && hb['fdp'] == 0">{{ (moneda ? hb['MXN_total'] : hb['USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                            </div> -->
+                            <div class="d-flex justify-content-between" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">
+                                    <p>{{ (moneda ? hb['MXN'] : hb['USD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</p>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    {{ (1-((hb['USD_total'])/hb['USD'])) | percent:'.0-0' }}<span *ngIf="level != '2'"> + {{ (1-((level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total'])/hb['l1USD_total'])) | percent:'.0-0' }}</span>
+                                </div>
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip [color]="level == '1' ? '' : level == '3' ? 'l3' : level == '4' ? 'l4' : 'primary'" selected>
+                                            <span [style.width.px]="120">{{ (moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                            </div>
+                            <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right pl-3 text-secondary font-weight-bold'>
+                                </div>
+                                <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold">
+                                    <p><small><span class='pl-1' *ngIf="hb['fdp'] && hb['fdp'] == 1">({{ ((moneda ? hb['l1MXN_total'] : hb['l1USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                    <p><small><span class='pl-1' *ngIf="hb['fdp'] && hb['fdp'] == 0">({{ ((moneda ? hb['MXN_total'] : hb['USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                            </div> -->
+                            <div class="d-flex justify-content-end" *ngIf="hb['fdp']">
+                                <div [style.width.px]="110" class='text-right text-secondary pl-3' style="text-decoration:line-through">
+                                    <p><small><span class='pl-1'>({{ ((moneda ? hb['MXN'] : hb['USD']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                                <div [style.width.px]="45" class='text-right pl-3 text-secondary font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                </div>
+                                <div [style.width.px]="130" class="text-center text-secondary pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                    <p><small><span class='pl-1'>({{ ((moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) / hb['noches']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }} p/n)</span></small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="form d-flex justify-content-center pr-3" *ngIf="paymentSelect">
+                <div class="form-group p-1">
+                    <div class="input-group">
+                        <textarea rows="5" cols="120" [(ngModel)]="hb['notasHotel']" placeholder="Notas Reserva" id="notas"></textarea>
+                    </div>
+                </div>
+    
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </mat-list>
+</div>

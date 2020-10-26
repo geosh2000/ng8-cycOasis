@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div class="col d-flex justify-content-center flex-wrap pt-4" style="max-height: 550px" *ngIf="data.length > 0">
+    <div class="mobileHide col d-flex justify-content-center flex-wrap pt-4" style="max-height: 550px" *ngIf="data.length > 0">
         <div class="mr-3">Ordenar por:</div>
         <mat-radio-group (change)="orderBy($event)" aria-label="Ordenar Resultados por">
             <mat-radio-button value="name">Nombre</mat-radio-button>
@@ -31,16 +31,16 @@
             <mat-list-item>
                 <span [style.width.px]="200" class="text-info text-truncate text-sm" matTooltipPosition="above" [matTooltip]="item['name']">{{ item['name'] }}</span>
                 <span [style.width.px]="10"></span>
-                <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-phone"></i></span>
-                <span [style.width.px]="150" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['phone']">{{ item['phone'] }}</span>
-                <span [style.width.px]="10"></span>
-                <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fab fa-whatsapp"></i></span>
-                <span [style.width.px]="150" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['user_fields']['whatsapp']">{{ item['user_fields']['whatsapp'] }}</span>
-                <span [style.width.px]="10"></span>
+                <span class="mobileHide text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-phone"></i></span>
+                <span [style.width.px]="150" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['phone']">{{ item['phone'] }}</span>
+                <span [style.width.px]="10" class="mobileHide"></span>
+                <span class="mobileHide text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fab fa-whatsapp"></i></span>
+                <span [style.width.px]="150" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['user_fields']['whatsapp']">{{ item['user_fields']['whatsapp'] }}</span>
+                <span [style.width.px]="10" class="mobileHide"></span>
                 <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-envelope"></i></span>
                 <span [style.width.px]="250" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['email'] }}</span>
-                <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-globe-americas"></i></span>
-                <span [style.width.px]="85" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['user_fields']['idioma_cliente'] }}</span>
+                <span class="mobileHide text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-globe-americas"></i></span>
+                <span [style.width.px]="85" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['user_fields']['idioma_cliente'] }}</span>
                 <ng-container *ngIf="!noEditable">
                     <button mat-icon-button color="warn" (click)="edit(item)" [disabled]="loading['select']"><mat-icon>edit</mat-icon></button>
                     <button mat-icon-button color="primary" (click)="select(item)" [disabled]="loading['select'] || item['email'] == null"><mat-icon>done</mat-icon></button>

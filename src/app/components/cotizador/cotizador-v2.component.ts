@@ -47,70 +47,7 @@ export class NgbDateNativeAdapter extends NgbDateAdapter<any> {
   selector: 'app-cotizador-v2',
   templateUrl: './cotizador-v2.component.html',
   providers: [NgbDatepickerConfig],
-  styles: [`
-    .exp-height {
-      height: auto !important;
-      padding: 6px !important;
-    }
-    .custom-day {
-      text-align: center;
-      padding: 0.185rem 0.25rem;
-      display: inline-block;
-      height: 2rem;
-      width: 2rem;
-    }
-    .custom-day.focused {
-      background-color: #e6e6e6;
-    }
-    .custom-day.range, .custom-day:hover {
-      background-color: rgb(2, 117, 216);
-      color: white;
-    }
-    .custom-day.faded {
-      background-color: rgba(2, 117, 216, 0.5);
-    }
-    .acc-headers .mat-expansion-panel-header-title,
-    .acc-headers .mat-expansion-panel-header-description {
-      flex-basis: 0;
-    }
-
-    mat-accordion{
-      width: 100% !important;
-      max-width: 780px
-    }
-
-    .mat-radio-button ~ .mat-radio-button {
-      margin-left: 16px;
-    }
-
-    .acc-headers .mat-expansion-panel-header-description {
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .mat-l3 {
-      background-color: #bb9e11;
-      color: white;
-    }
-    .mat-l4 {
-      background-color: #b360bd;
-      color: white;
-    }
-
-    mat-form-field {
-      margin-right: 12px;
-    }
-    .lineNd {
-      border-bottom: 1px solid red;
-      -webkit-transform:
-          translateY(20px)
-          translateX(5px)
-          rotate(-26deg);
-      position: absolute;
-      top: -33px;
-      left: -13px;
-  }
-  `]
+  styleUrls: ['./cotizador-v2.component.css']
 })
 export class CotizadorV2Component implements OnInit, OnDestroy {
 

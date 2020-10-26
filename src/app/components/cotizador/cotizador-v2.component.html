@@ -7,7 +7,7 @@
 
         <div class='container'>
             <div class="container-fluid d-flex flex-wrap justify-content-start align-items-baseline">
-                <div class="form d-flex justify-content-start pr-3">
+                <div class="form d-flex flex-wrap justify-content-start pr-3">
                     <div class="form-group p-1">
                         <label for="habs">No. Habs</label>
                         <select [(ngModel)]="habs" name="habs" id="adults" class="form-control" [style.width.px]="60">
@@ -81,105 +81,211 @@
     </div>
     <div class="container" *ngIf="resultCot['habs']">
         <mat-card>
-            <div class="d-flex justify-content-between">
-                <span><h3><i class="fas fa-moon p-1"></i> {{ resultCot['gen']['noches'] }} Noches</h3></span>
-                <span><h3><i class="far fa-calendar-alt p-1"></i> ({{ formatDate(resultCot['gen']['inicio'],'DD MMM \'YY') }}) a ({{ formatDate(resultCot['gen']['fin'],'DD MMM \'YY') }}) </h3></span>
-                <span><h3><i class="fas fa-bed p-1"></i> {{ resultCot['gen']['nh'] }} Habs</h3></span>
+            <div class="d-flex flex-wrap justify-content-between">
+                <span class="text-center"><h3><i class="fas fa-moon p-1"></i> {{ resultCot['gen']['noches'] }} Noches</h3></span>
+                <span class="text-center"><h3><i class="far fa-calendar-alt p-1"></i> ({{ formatDate(resultCot['gen']['inicio'],'DD MMM \'YY') }}) a ({{ formatDate(resultCot['gen']['fin'],'DD MMM \'YY') }}) </h3></span>
+                <span class="text-center"><h3><i class="fas fa-bed p-1"></i> {{ resultCot['gen']['nh'] }} Habs</h3></span>
             </div>
         </mat-card>
-        <mat-accordion class="acc-headers">
-            <ng-container *ngFor="let h of resultCot['habs']">
-                <mat-expansion-panel hideToggle>
-                    <mat-expansion-panel-header class='exp-height'>
+        
+        <!-- DESKTOP -->
+        <div class="detailDesktop">
+            <mat-accordion class="acc-headers">
+                <ng-container *ngFor="let h of resultCot['habs']">
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header class='exp-height'>
 
-                        <div class="d-flex justify-content-between container">
-                            <div class="d-flex justify-content-start">
-                                <div style="background-size: cover; background-position: center; width: 100px; height: 35px; border-radius: 30px" [style.background-image]="h['hotelUrl']"></div>
-                                <div class="pl-3" [style.width.px]="80">{{ h['hotelCode'] }}</div>
-                                <div>
-                                    <span><span class='pl-3 font-weight-bold'>{{ h['habitacion'] }}</span><span class="text-info">({{ h['habCat']}})</span></span><br>
-                                    <span class="text-danger" *ngIf="h['promoAplicada']">{{ h['promoAplicada']['promo_es'] }}</span>
+                            <div class="d-flex justify-content-between container ">
+                                <div class="d-flex justify-content-start">
+                                    <div style="background-size: cover; background-position: center; width: 100px; height: 35px; border-radius: 30px" [style.background-image]="h['hotelUrl']"></div>
+                                    <div class="pl-3" [style.width.px]="80">{{ h['hotelCode'] }}</div>
+                                    <div>
+                                        <span><span class='pl-3 font-weight-bold'>{{ h['habitacion'] }}</span><span class="text-info">({{ h['habCat']}})</span></span><br>
+                                        <span class="text-danger" *ngIf="h['promoAplicada']">{{ h['promoAplicada']['promo_es'] }}</span>
+                                    </div>
+    
+    
                                 </div>
-
-
+                                <ng-container *ngIf="!h['isOk'] || (moneda && h['mxn_total'] == 0) || (!moneda && h['usd_total'] == 0)">
+                                    <div class="text-black-50 font-italic pl-3">
+                                        {{ h['no_disp'] ? h['no_disp'] : h['no_occ'] ? h['no_occ'] : h['no_adl'] ? h['no_adl'] : h['no_min'] ? h['no_min'] : h['no_comb'] ? h['no_comb'] : moneda && h['mxn_total'] == 0 ? 'Sin tarifas cargadas' : !moneda && h['usd_total'] == 0 ? 'Sin tarifas cargadas'
+                                        : 'No Disp'}}
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="h['isOk'] && !(moneda && h['mxn_total'] == 0) && !(!moneda && h['usd_total'] == 0)">
+                                    <div>
+                                        <div class="d-flex justify-content-between">
+                                            <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">{{ (moneda ? h['mxn_total'] : h['usd_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</div>
+                                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l1usd_totalDisc']/h['usd_total'])) | percent:'.0-0' }}</div>
+                                            <!-- <div [style.width.px]="110" class="text-right text-primary font-weight-bold">
+                                                <h6>{{ (moneda ? h['l1mxn_totalDisc'] : h['l1usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h6>
+                                            </div> -->
+                                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                <mat-chip-list aria-label="Fish selection">
+                                                    <mat-chip><span [style.width.px]="120">{{ (moneda ? h['l1mxn_totalDisc'] : h['l1usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                </mat-chip-list>
+                                                <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                            </div>
+                                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
+                                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                <mat-chip-list aria-label="Fish selection">
+                                                    <mat-chip color='primary' selected><span [style.width.px]="120">{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                </mat-chip-list>
+                                                <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end pt-2">
+                                            <ng-container *ngIf="h['spl3'] == 1 && h['l3usd_totalDisc'] != h['l2usd_totalDisc']">
+                                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l3usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
+                                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip [matTooltip]="h['spl3Desc']" matTooltipClass="mat-l3" color='l3' selected><span [style.width.px]="120">{{ (moneda ? h['l3mxn_totalDisc'] : h['l3usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                    <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngIf="h['spl4'] == 1 && h['l4usd_totalDisc'] != h['l3usd_totalDisc']">
+                                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l4usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
+                                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip [matTooltip]="h['spl4Desc']" matTooltipClass="mat-l4" color='l4' selected><span [style.width.px]="120">{{ (moneda ? h['l4mxn_totalDisc'] : h['l4usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                    <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </ng-container>
+    
                             </div>
-                            <ng-container *ngIf="!h['isOk'] || (moneda && h['mxn_total'] == 0) || (!moneda && h['usd_total'] == 0)">
-                                <div class="text-black-50 font-italic pl-3">
-                                    {{ h['no_disp'] ? h['no_disp'] : h['no_occ'] ? h['no_occ'] : h['no_adl'] ? h['no_adl'] : h['no_min'] ? h['no_min'] : h['no_comb'] ? h['no_comb'] : moneda && h['mxn_total'] == 0 ? 'Sin tarifas cargadas' : !moneda && h['usd_total'] == 0 ? 'Sin tarifas cargadas'
-                                    : 'No Disp'}}
+
+                        </mat-expansion-panel-header>
+
+                        <app-cot-hab-detail [habs]="h['habs']" [level]="h['lSelected']" [moneda]="moneda"></app-cot-hab-detail>
+                        <div class="ml-auto mr-auto d-flex justify-content-center flex-wrap pt-2">
+                            <div [style.width.px]="55" [style.height.px]="30" class="pt-1 pr-2">Dispo:</div>
+                            <mat-chip-list aria-label="Fish selection">
+                                <mat-chip [color]="d['blackout'] == '1' ? 'warn' : 'primary'" selected *ngFor="let d of h['bo']">{{ formatDate(d['fecha'],'DD MMM') }}</mat-chip>
+
+                            </mat-chip-list>
+                        </div>
+                        <mat-action-row *ngIf="h['isOk']">
+                            <div class="d-flex justify-content-around flex-wrap p-2">
+                                <mat-radio-group aria-label="Select an option" [(ngModel)]="h['lSelected']" class="m-1">
+                                    <mat-radio-button value="1">L1</mat-radio-button>
+                                    <mat-radio-button value="2" [disabled]="h['l2usd_totalDisc'] == h['l1usd_totalDisc']">L2</mat-radio-button>
+                                    <mat-radio-button value="3" [disabled]="h['spl3']!='1' || h['l3usd_totalDisc'] == h['l2usd_totalDisc']">L3</mat-radio-button>
+                                    <mat-radio-button value="4" [disabled]="h['spl4']!='1' || h['l4usd_totalDisc'] == h['l3usd_totalDisc']">L4</mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="m-1" color="accent" (click)="sendCotizacion(h)" *ngIf="_init.checkSingleCredential('app_cotizador_budget')">Enviar Cotización</button>
+                                <button mat-raised-button class="m-1" color="primary" (click)="popReserve(h)" *ngIf="_init.checkSingleCredential('app_cotizador_rsv')">Reservar</button>
+                            </div>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+                </ng-container>
+            </mat-accordion>
+        </div>
+
+        <!-- Mobile -->
+        <div class="detailMobile">
+            <mat-accordion class="acc-headers">
+                <ng-container *ngFor="let h of resultCot['habs']">
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header class='exp-height'>
+
+                            <div class="d-flex flex-wrap justify-content-between container-fluid">
+                                <div class="container">
+                                    <div class="mr-auto ml-auto" style="background-size: cover; background-position: center; width: 100px; height: 35px; border-radius: 30px" [style.background-image]="h['hotelUrl']"></div>
+                                    <div class="mr-auto ml-auto text-center p-1">
+                                        <span class='font-weight-bold'>{{ h['habitacion'] }}</span><span class="text-info">({{ h['habCat']}})</span>
+                                    </div>
+                                    <div class="mr-auto ml-auto p-2 text-center">
+                                        <span class="text-danger text-center" *ngIf="h['promoAplicada']">{{ h['promoAplicada']['promo_es'] }}</span>
+                                    </div>
+    
+    
                                 </div>
-                            </ng-container>
-                            <ng-container *ngIf="h['isOk'] && !(moneda && h['mxn_total'] == 0) && !(!moneda && h['usd_total'] == 0)">
-                                <div>
-                                    <div class="d-flex justify-content-between">
-                                        <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">{{ (moneda ? h['mxn_total'] : h['usd_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</div>
-                                        <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l1usd_totalDisc']/h['usd_total'])) | percent:'.0-0' }}</div>
-                                        <!-- <div [style.width.px]="110" class="text-right text-primary font-weight-bold">
-                                            <h6>{{ (moneda ? h['l1mxn_totalDisc'] : h['l1usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h6>
-                                        </div> -->
-                                        <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
-                                            <mat-chip-list aria-label="Fish selection">
-                                                <mat-chip><span [style.width.px]="120">{{ (moneda ? h['l1mxn_totalDisc'] : h['l1usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
-                                            </mat-chip-list>
-                                            <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
-                                        </div>
-                                        <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
-                                        <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
-                                            <mat-chip-list aria-label="Fish selection">
-                                                <mat-chip color='primary' selected><span [style.width.px]="120">{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
-                                            </mat-chip-list>
-                                            <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                <ng-container *ngIf="!h['isOk'] || (moneda && h['mxn_total'] == 0) || (!moneda && h['usd_total'] == 0)">
+                                    <div class="text-black-50 text-center font-italic p-1">
+                                        {{ h['no_disp'] ? h['no_disp'] : h['no_occ'] ? h['no_occ'] : h['no_adl'] ? h['no_adl'] : h['no_min'] ? h['no_min'] : h['no_comb'] ? h['no_comb'] : moneda && h['mxn_total'] == 0 ? 'Sin tarifas cargadas' : !moneda && h['usd_total'] == 0 ? 'Sin tarifas cargadas'
+                                        : 'No Disp'}}
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="h['isOk'] && !(moneda && h['mxn_total'] == 0) && !(!moneda && h['usd_total'] == 0)">
+                                    <div>
+                                        <div class="container-fluid">
+                                            
+                                            <!-- NIVEL 1 -->
+                                            <div class="p-1 ml-auto mr-auto d-flex justify-content-between">
+                                                <div [style.width.px]="110" class='text-right pl-3' style="text-decoration:line-through">{{ (moneda ? h['mxn_total'] : h['usd_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</div>
+                                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l1usd_totalDisc']/h['usd_total'])) | percent:'.0-0' }}</div>
+                                                <!-- <div [style.width.px]="110" class="text-right text-primary font-weight-bold">
+                                                    <h6>{{ (moneda ? h['l1mxn_totalDisc'] : h['l1usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h6>
+                                                </div> -->
+                                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip><span [style.width.px]="120">{{ (moneda ? h['l1mxn_totalDisc'] : h['l1usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                    <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- NIVEL 2 -->
+                                            <div class="p-1 ml-auto mr-auto d-flex justify-content-end">
+                                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
+                                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip color='primary' selected><span [style.width.px]="120">{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- NIVEL 3 -->
+                                            <div class="p-1 ml-auto mr-auto d-flex justify-content-end" *ngIf="h['spl3'] == 1 && h['l3usd_totalDisc'] != h['l2usd_totalDisc']">
+                                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l3usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
+                                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip [matTooltip]="h['spl3Desc']" matTooltipClass="mat-l3" color='l3' selected><span [style.width.px]="120">{{ (moneda ? h['l3mxn_totalDisc'] : h['l3usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- NIVEL 4 -->
+                                            <div class="p-1 ml-auto mr-auto d-flex justify-content-end" *ngIf="h['spl4'] == 1 && h['l4usd_totalDisc'] != h['l3usd_totalDisc']">
+                                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l4usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
+                                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip [matTooltip]="h['spl4Desc']" matTooltipClass="mat-l4" color='l4' selected><span [style.width.px]="120">{{ (moneda ? h['l4mxn_totalDisc'] : h['l4usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-end pt-2">
-                                        <ng-container *ngIf="h['spl3'] == 1 && h['l3usd_totalDisc'] != h['l2usd_totalDisc']">
-                                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l3usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
-                                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
-                                                <mat-chip-list aria-label="Fish selection">
-                                                    <mat-chip [matTooltip]="h['spl3Desc']" matTooltipClass="mat-l3" color='l3' selected><span [style.width.px]="120">{{ (moneda ? h['l3mxn_totalDisc'] : h['l3usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
-                                                </mat-chip-list>
-                                                <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
-                                            </div>
-                                        </ng-container>
-                                        <ng-container *ngIf="h['spl4'] == 1 && h['l4usd_totalDisc'] != h['l3usd_totalDisc']">
-                                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l4usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
-                                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
-                                                <mat-chip-list aria-label="Fish selection">
-                                                    <mat-chip [matTooltip]="h['spl4Desc']" matTooltipClass="mat-l4" color='l4' selected><span [style.width.px]="120">{{ (moneda ? h['l4mxn_totalDisc'] : h['l4usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
-                                                </mat-chip-list>
-                                                <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
-                                            </div>
-                                        </ng-container>
-                                    </div>
-                                </div>
-                            </ng-container>
+                                </ng-container>
+    
+                            </div>
+                   
+                        </mat-expansion-panel-header>
 
-                        </div>
-                    </mat-expansion-panel-header>
+                        <app-cot-hab-detail [habs]="h['habs']" [level]="h['lSelected']" [moneda]="moneda"></app-cot-hab-detail>
 
-                    <app-cot-hab-detail [habs]="h['habs']" [level]="h['lSelected']" [moneda]="moneda"></app-cot-hab-detail>
-                    <div class="ml-auto mr-auto d-flex justify-content-center flex-wrap pt-2">
-                        <div [style.width.px]="55" [style.height.px]="30" class="pt-1 pr-2">Dispo:</div>
-                        <mat-chip-list aria-label="Fish selection">
-                            <mat-chip [color]="d['blackout'] == '1' ? 'warn' : 'primary'" selected *ngFor="let d of h['bo']">{{ formatDate(d['fecha'],'DD MMM') }}</mat-chip>
-
-                        </mat-chip-list>
-                    </div>
-                    <mat-action-row *ngIf="h['isOk']">
-                        <div class="d-flex justify-content-around flex-wrap p-2">
-                            <mat-radio-group aria-label="Select an option" [(ngModel)]="h['lSelected']" class="m-1">
-                                <mat-radio-button value="1">L1</mat-radio-button>
-                                <mat-radio-button value="2" [disabled]="h['l2usd_totalDisc'] == h['l1usd_totalDisc']">L2</mat-radio-button>
-                                <mat-radio-button value="3" [disabled]="h['spl3']!='1' || h['l3usd_totalDisc'] == h['l2usd_totalDisc']">L3</mat-radio-button>
-                                <mat-radio-button value="4" [disabled]="h['spl4']!='1' || h['l4usd_totalDisc'] == h['l3usd_totalDisc']">L4</mat-radio-button>
-                            </mat-radio-group>
-                            <button mat-raised-button class="m-1" color="accent" (click)="sendCotizacion(h)" *ngIf="_init.checkSingleCredential('app_cotizador_budget')">Enviar Cotización</button>
-                            <button mat-raised-button class="m-1" color="primary" (click)="popReserve(h)" *ngIf="_init.checkSingleCredential('app_cotizador_rsv')">Reservar</button>
-                        </div>
-                    </mat-action-row>
-                </mat-expansion-panel>
-            </ng-container>
-        </mat-accordion>
+                        <mat-action-row *ngIf="h['isOk']">
+                            <div class="d-flex justify-content-around flex-wrap p-2">
+                                <mat-radio-group aria-label="Select an option" [(ngModel)]="h['lSelected']" class="m-1">
+                                    <mat-radio-button value="1">L1</mat-radio-button>
+                                    <mat-radio-button value="2" [disabled]="h['l2usd_totalDisc'] == h['l1usd_totalDisc']">L2</mat-radio-button>
+                                    <mat-radio-button value="3" [disabled]="h['spl3']!='1' || h['l3usd_totalDisc'] == h['l2usd_totalDisc']">L3</mat-radio-button>
+                                    <mat-radio-button value="4" [disabled]="h['spl4']!='1' || h['l4usd_totalDisc'] == h['l3usd_totalDisc']">L4</mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="m-1" color="accent" (click)="sendCotizacion(h)" *ngIf="_init.checkSingleCredential('app_cotizador_budget')">Enviar Cotización</button>
+                                <button mat-raised-button class="m-1" color="primary" (click)="popReserve(h)" *ngIf="_init.checkSingleCredential('app_cotizador_rsv')">Reservar</button>
+                            </div>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+                </ng-container>
+            </mat-accordion>
+        </div>
 
     </div>
 </div>

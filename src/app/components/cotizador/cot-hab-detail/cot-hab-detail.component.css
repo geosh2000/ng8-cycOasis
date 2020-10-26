@@ -1,0 +1,33 @@
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+.mat-l3 {
+  background-color: #bb9e11;
+  color: white;
+}
+.mat-l4 {
+  background-color: #b360bd;
+  color: white;
+}
+
+.detailMobile {
+    display: none!important;
+}
+.detailDesktop {
+    display: block!important;
+}
+
+
+@media screen and (max-width: 768px) {
+    .detailMobile {
+        display: block!important;
+        background: aliceblue;
+    }
+    .detailDesktop {
+        display: none!important;
+    }
+    .container-fluid {
+        padding-right: 0px!important;
+        padding-left: 0px!important;
+    }
+}

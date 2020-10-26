@@ -18,6 +18,7 @@ export class CsvComponent implements OnInit {
   @Input() name:any
   @Input() dir:any
   @Input() btnClass:any = 'btn-success'
+  @Input() modalMode:boolean = true
 
   loading:Object = {}
 

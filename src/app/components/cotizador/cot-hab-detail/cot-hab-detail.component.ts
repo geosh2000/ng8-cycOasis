@@ -3,18 +3,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 @Component({
   selector: 'app-cot-hab-detail',
   templateUrl: './cot-hab-detail.component.html',
-  styles: [`
-  .mat-radio-button ~ .mat-radio-button {
-    margin-left: 16px;
-  }
-  .mat-l3 {
-    background-color: #bb9e11;
-    color: white;
-  }
-  .mat-l4 {
-    background-color: #b360bd;
-    color: white;
-  }`],
+  styleUrls: ['./cot-hab-detail.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CotHabDetailComponent implements OnInit {

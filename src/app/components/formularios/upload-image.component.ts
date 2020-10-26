@@ -16,6 +16,7 @@ export class UploadImageComponent implements OnChanges {
   @Input() name:any
   @Input() dir:any
   @Output() loadResult = new EventEmitter<any>()
+  @Input() modalMode:boolean = true
 
   type = 'img'
 

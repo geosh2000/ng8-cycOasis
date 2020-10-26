@@ -2,7 +2,7 @@
 <div class="container" *ngIf="!loading['cotizar'] && flag">
     <mat-card style="z-index: -1;">
         <div class="d-flex justify-content-between">
-            <span><h3><i class="far fa-calendar-alt p-1"></i> {{ formatDate(occup['inicio'],'DD MMM \'YY') }}</h3></span>
+            <span><h3><i class="far fa-calendar-alt p-1"></i> {{ formatDate(occup['fecha'],'DD MMM \'YY') }}</h3></span>
             <span><h3><i class="fas fa-user p-1"></i>{{ occup['adultos'] }} adultos,  {{ occup['menores'] }} menores y {{ occup['infantes'] }} infantes</h3></span>
         </div>
     </mat-card>
