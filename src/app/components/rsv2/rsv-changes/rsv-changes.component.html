@@ -1,0 +1,154 @@
+<div class="modal fade" id="changeItem" tabindex="-1" role="dialog" aria-labelledby="changeItemLabel" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="openDatesLabel">Modificacion de Item {{ item }} (id: {{ itemId }})</h5>
+            </div>
+            <div class="modal-body">
+                <div class='row'>
+                    <div class="col-1"></div>
+                    <div class="col-2 d-flex align-items-center">
+                        <h3>Fechas de Viaje</h3>
+                    </div>
+                    <div class='col-8'>
+                        <div class='container d-flex justify-content-center flex-wrap'>
+                            <div class="form-group p-1 ml-2">
+                                <label for="fechas">Fecha Inicio</label>
+                                <div class="input-group">
+                                    <input class="form-control" [minDate]="minDate" [placeholder]="i['llegada']" [autoClose]="false" (click)="d.toggle()" id="minDateChg" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event, d,'d')" autocomplete="off" [style.width.px]="150">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-calendar fa-fw"></i></div>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['llegada'] != original ['llegada']}">
+                                    Original <span class="text-primary">{{ original['llegada'] }}</span>
+                                </div>
+                            </div>
+                            <div class="form-group p-1 ml-2">
+                                <label for="fechas">Fecha Fin</label>
+                                <div class="input-group">
+                                    <input class="form-control" [(ngModel)]="i['salida']" [readonly]="true" autocomplete="off" [style.width.px]="150">
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['salida'] != original ['salida']}">
+                                    Original <span class="text-primary">{{ original['salida'] }}</span>
+                                </div>
+                            </div>
+                            <div class="form-group p-1 ml-2">
+                                <label for="fechas">Noches</label>
+                                <div class="input-group">
+                                    <input type="number" min="1" class="form-control" [(ngModel)]="i['htlNoches']" [readonly]="true" autocomplete="off" [style.width.px]="75">
+                                    <button mat-icon-button color="primary" (click)="addNights(false)"><mat-icon>remove_circle</mat-icon></button>
+                                    <button mat-icon-button color="primary" (click)="addNights(true)"><mat-icon>add_circle</mat-icon></button>
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['htlNoches'] != original ['htlNoches']}">
+                                    Original <span class="text-primary">{{ original['htlNoches'] }}</span>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+
+                <div class='row'>
+                    <div class="col-1"></div>
+                    <div class="col-2 d-flex align-items-center">
+                        <h3>Huéspedes</h3>
+                    </div>
+                    <div class='col-8'>
+                        <div class='container d-flex justify-content-center flex-wrap'>
+                            <div class="form-group p-1 ml-2">
+                                <label for="fechas">Adultos</label>
+                                <div class="input-group">
+                                    <input type="number" min="1" class="form-control" [(ngModel)]="i['adultos']" [readonly]="true" autocomplete="off" [style.width.px]="75">
+                                    <button mat-icon-button color="primary" (click)="addPax('adultos',false)"><mat-icon>remove_circle</mat-icon></button>
+                                    <button mat-icon-button color="primary" (click)="addPax('adultos',true)"><mat-icon>add_circle</mat-icon></button>
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['adultos'] != original['adultos']}">
+                                    Original <span class="text-primary">{{ original['adultos'] }}</span>
+                                </div>
+                            </div>
+                            <div class="form-group p-1 ml-2">
+                                <label for="fechas">Juniors</label>
+                                <div class="input-group">
+                                    <input type="number" min="1" class="form-control" [(ngModel)]="i['juniors']" [readonly]="true" autocomplete="off" [style.width.px]="75">
+                                    <button mat-icon-button color="primary" (click)="addPax('juniors',false)"><mat-icon>remove_circle</mat-icon></button>
+                                    <button mat-icon-button color="primary" (click)="addPax('juniors',true)"><mat-icon>add_circle</mat-icon></button>
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['juniors'] != original['juniors']}">
+                                    Original <span class="text-primary">{{ original['juniors'] }}</span>
+                                </div>
+                            </div>
+                            <div class="form-group p-1 ml-2">
+                                <label for="fechas">Menores</label>
+                                <div class="input-group">
+                                    <input type="number" min="1" class="form-control" [(ngModel)]="i['menores']" [readonly]="true" autocomplete="off" [style.width.px]="75">
+                                    <button mat-icon-button color="primary" (click)="addPax('menores',false)"><mat-icon>remove_circle</mat-icon></button>
+                                    <button mat-icon-button color="primary" (click)="addPax('menores',true)"><mat-icon>add_circle</mat-icon></button>
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['menores'] != original['menores']}">
+                                    Original <span class="text-primary">{{ original['menores'] }}</span>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+
+                <div class='row'>
+                    <div class="col-1"></div>
+                    <div class="col-2 d-flex align-items-center">
+                        <h3>Hotel</h3>
+                    </div>
+                    <div class='col-8'>
+                        <div class='container d-flex justify-content-center flex-wrap'>
+                            <div class="form-group p-1 ml-2">
+                                <div class="input-group mb-3" style="width: 200px">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect01">Hotel</label>
+                                    </div>
+                                    <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="i['hotel']" (change)="i['categoria'] = null">
+                                    
+                                    <option [value]="o" [selected]="o == i['hotel']" *ngFor="let o of hotelList | keys">{{ o }}</option>
+                                    </select>
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['hotel'] != original['hotel']}">
+                                        Original <span class="text-primary">{{ original['hotel'] }}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group p-1 ml-2">
+                                <div class="input-group mb-3" style="width: 200px">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect02">Categoria</label>
+                                    </div>
+                                    <select class="custom-select" id="inputGroupSelect02" [(ngModel)]="i['categoria']">
+                                    
+                                    <option>Selecciona...</option>
+                                    <option [value]="c['habCode']" [selected]="c['habCode'] == i['categoria']" *ngFor="let c of hotelList[i['hotel']]">{{ c['habCode'] }}</option>
+                                    </select>
+                                </div>
+                                <div class="text-sm text-center" [ngClass]="{'bg-warning': i['categoria'] != original['categoria']}">
+                                        Original <span class="text-primary">{{ original['categoria'] }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <ng-container *ngIf="!loading">
+                    <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+                    <button type="button" class="btn btn-success" (click)="saveChanges()" [disabled]="!i['categoria']">Confirmar</button>
+                </ng-container>
+                <ng-container *ngIf="loading">
+                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

@@ -202,6 +202,7 @@ import { DashAgentsComponent } from './components/dashboard-v2/dash-agents/dash-
 import { ConexionesWhatsComponent } from './components/monitores/conexiones-whats/conexiones-whats.component';
 import { SearchCertComponent } from './components/rsv2/search-cert/search-cert.component';
 import { ValidateCertificateComponent } from './components/rsv2/validate-certificate/validate-certificate.component';
+import { RsvChangesComponent } from './components/rsv2/rsv-changes/rsv-changes.component';
 
 
 @NgModule({
@@ -338,7 +339,8 @@ import { ValidateCertificateComponent } from './components/rsv2/validate-certifi
     DashAgentsComponent,
     ConexionesWhatsComponent,
     SearchCertComponent,
-    ValidateCertificateComponent
+    ValidateCertificateComponent,
+    RsvChangesComponent
 
   ],
   imports: [

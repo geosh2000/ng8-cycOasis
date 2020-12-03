@@ -23,6 +23,7 @@ import { RsvUpdateContactComponent } from '../rsv-update-contact/rsv-update-cont
 import { PaymentLinkGenComponent } from '../payment-link-gen/payment-link-gen.component';
 import { RsvCancelItemComponent } from '../rsv-cancel-item/rsv-cancel-item.component';
 import { ValidateCertificateComponent } from '../validate-certificate/validate-certificate.component';
+import { RsvChangesComponent } from '../rsv-changes/rsv-changes.component';
 
 @Component({
   selector: 'app-rsv2-manage',
@@ -36,6 +37,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   @ViewChild(RsvLinkPaymentDirectComponent,{static:false}) _linkP:RsvLinkPaymentDirectComponent;
   @ViewChild(RsvPaymentRegistryComponent,{static:false}) _regP:RsvPaymentRegistryComponent;
   @ViewChild(RsvOpenDatesComponent,{static:false}) _od:RsvOpenDatesComponent;
+  @ViewChild(RsvChangesComponent,{static:false}) _cg:RsvChangesComponent;
   @ViewChild(RsvOpenDatesSetComponent,{static:false}) _ods:RsvOpenDatesSetComponent;
   @ViewChild(RsvUpdateContactComponent,{static:false}) _updU:RsvUpdateContactComponent;
   @ViewChild(PaymentLinkGenComponent,{static:false}) _genL:PaymentLinkGenComponent;
@@ -56,6 +58,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   mlTicket:any
   zdClientId:any
   rsvHistory = []
+  zdUsers = []
 
   maxPenalidad = 0
   xldPenalidad
@@ -612,6 +615,10 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
     this._od.open( i, this.mlTicket )
   }
 
+  changeItem( i ){
+    this._cg.open( i, this.mlTicket )
+  }
+
   openODSet( i ){
     this._ods.open( i, this.mlTicket, this.data['master']['idioma'] )
   }
@@ -733,5 +740,54 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                   console.error(err.statusText, error.msg);
 
                 });
+  }
+
+  changeCreator(){
+
+    this.getZdAgents()
+    jQuery('#changeCreator').modal('show')
+
+  }
+
+  getZdAgents(){
+    this.loading['zdAgents'] = true
+
+    this._api.restfulGet( '', 'Lists/zdUserList' )
+                .subscribe( res => {
+
+                  this.loading['zdAgents'] = false;
+                  this.zdUsers = res['data']
+
+                }, err => {
+                  this.loading['zdAgents'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  selectedAg( e ){
+    this.loading['chgAgent'] = true
+
+    this._api.restfulPut( {ml: this.data['master']['masterlocatorid'], mlTicket: this.mlTicket, newUser: e.value['id'], newName:  e.value['Nombre'], oldName: this.data['master']['creador']}, 'Rsv/chgAgent' )
+                .subscribe( res => {
+
+                  this.loading['chgAgent'] = false;
+                  this.data['master']['creador'] = e.value['Nombre']
+                  jQuery('#changeCreator').modal('hide')
+                  this.toastr.success( 'Creador Modificado', 'Nuevo creador establecido como ' + e.value['Nombre'] );
+                  this.getHistory( this.data['master']['mlTicket'])
+
+                }, err => {
+                  this.loading['chgAgent'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+    
   }
 }

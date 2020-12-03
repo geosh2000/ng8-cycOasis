@@ -26,7 +26,7 @@
                 <div>
                     <h2 class="text-truncate"><b>{{ data['master']['nombreCliente'] }}</b></h2>
                 </div>
-                <p>Creada el <b>{{ formatDate(data['master']['dtCreated'], 'DD MMM YYYY HH:mm') }} hrs.</b> por <b>{{ data['master']['creador'] }}</b></p>
+                <p>Creada el <b>{{ formatDate(data['master']['dtCreated'], 'DD MMM YYYY HH:mm') }} hrs.</b> por <b>{{ data['master']['creador'] }} <span *ngIf="_init.checkSingleCredential('rsv_changeCreator')"><button style="font-size: x-small;" mat-button color="primary" (click)="changeCreator()">cambiar</button></span></b></p>
             </div>
             <div class="col-2 d-flex justify-content-end text-center">
                 <mat-chip-list aria-label="Fish selection">
@@ -146,11 +146,12 @@
                             <div class="container d-flex justify-content-end" *ngIf="i['itemType'] == 1">
                                 <div class="mr-auto"><span class="productConceptXL" [style.width.px]="390">Notas Cielo: </span><span class="clientInfo">{{ i['cieloNotas'] }}</span></div>
                             </div>
-                            <div class="container d-flex justify-content-end">
+                            <div class="container d-flex flex-wrap justify-content-end">
                                 <div class="mr-auto"><span class="productConceptXL" [style.width.px]="390">Notas: </span><span class="clientInfo">{{ i['notas'] }}</span></div>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openOD(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isQuote'] == 0 && i['isCancel'] == 0"><mat-icon>meeting_room</mat-icon> Fechas Abiertas</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openODSet(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isOpen'] == 1 && i['isCancel'] == 0 && i['isQuote'] == 0"><mat-icon>beach_access</mat-icon> Establecer Fechas</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)" *ngIf="_init.checkSingleCredential('app_cotizador')"><mat-icon>remove_circle</mat-icon> Cancelar</button>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="changeItem(i)" *ngIf="_init.checkSingleCredential('rsv_changes') && i['isOpen'] == 0  && i['isCancel'] == 0 && i['isQuote'] == 0"><mat-icon>swap_horizontal_circle</mat-icon> Modificar</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="success" (click)="validateCert(i)" *ngIf="_init.checkSingleCredential('app_cotizador') && i['grupo']=='CORT' && i['isQuote']==1"><mat-icon>done_outline</mat-icon> Validar Certificado</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="reactivate(i)" *ngIf="_init.checkSingleCredential('rsv_reactivate') && !isVigente(i['vigencia']) && i['isQuote'] == 1 && i['isCancel'] == 0"><ng-container *ngIf="loading['reactivate']"><span><i class="fas fa-spinner fa-pulse"></i></span></ng-container><ng-container *ngIf="!loading['reactivate']"><mat-icon>alarm_add</mat-icon> Reactivar</ng-container></button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="confirmItem(i)" *ngIf="i['isQuote'] == 0 && i['confirmOK'] == null"><mat-icon>done_outline</mat-icon> Confirmar</button>
@@ -431,6 +432,10 @@
 <app-rsv-open-dates (saveOpen)="this.getLoc(viewLoc)"></app-rsv-open-dates>
 <!-- ====================== FIN MODAL DE OPEN DATES ====================== -->
 
+<!-- ====================== MODAL DE CHANGES ====================== -->
+<app-rsv-changes (saveOpen)="this.getLoc(viewLoc)"></app-rsv-changes>
+<!-- ====================== FIN MODAL DE CHANGES ====================== -->
+
 <!-- ====================== MODAL DE SET DATES FOR OPEN DATES ====================== -->
 <app-rsv-open-dates-set (saveOpen)="this.getLoc(viewLoc)"></app-rsv-open-dates-set>
 <!-- ====================== FIN MODAL DE SET DATES FOR OPEN DATES ====================== -->
@@ -480,3 +485,40 @@
     </div>
 </div>
 <!-- ====================== FIN MODAL DE REG PAYMENT ====================== -->
+
+<!-- ====================== MODAL CHANGE CREATOR ====================== -->
+<div class="modal fade" id="changeCreator" tabindex="-1" role="dialog" aria-labelledby="changeCreatorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeCreatorLabel">Cambiar Creador {{ data['master']['masterlocator'] }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <ng-container *ngIf="loading['zdAgents']">
+                    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                </ng-container>
+                <ng-container *ngIf="!loading['zdAgents']">
+                    <h6>Selecciona un Agente</h6>
+                    <mat-progress-bar *ngIf="loading['chgAgent']" mode="indeterminate"></mat-progress-bar>
+                    <mat-form-field *ngIf="!loading['chgAgent']">
+                        <mat-label>Agentes Zendesk</mat-label>
+                        <mat-select (selectionChange)="selectedAg($event)">
+                            <ng-container *ngFor="let ag of zdUsers">
+                                <mat-option [value]="ag">
+                                    {{ ag.nCorto }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="loading['chgAgent']">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====================== FIN MODAL CHANGE CREATOR ====================== -->
