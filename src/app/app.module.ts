@@ -203,6 +203,7 @@ import { ConexionesWhatsComponent } from './components/monitores/conexiones-what
 import { SearchCertComponent } from './components/rsv2/search-cert/search-cert.component';
 import { ValidateCertificateComponent } from './components/rsv2/validate-certificate/validate-certificate.component';
 import { RsvChangesComponent } from './components/rsv2/rsv-changes/rsv-changes.component';
+import { RobinQueuesComponent } from './config/robin-queues/robin-queues.component';
 
 
 @NgModule({
@@ -340,7 +341,8 @@ import { RsvChangesComponent } from './components/rsv2/rsv-changes/rsv-changes.c
     ConexionesWhatsComponent,
     SearchCertComponent,
     ValidateCertificateComponent,
-    RsvChangesComponent
+    RsvChangesComponent,
+    RobinQueuesComponent
 
   ],
   imports: [

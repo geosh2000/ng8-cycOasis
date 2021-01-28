@@ -15,7 +15,7 @@ export class SearchCertComponent implements OnInit {
 
   currentUser: any;
   showContents = false;
-  mainCredential = 'rsv_manage';
+  mainCredential = 'rsv_validateCert';
 
   loading:Object = {}
 

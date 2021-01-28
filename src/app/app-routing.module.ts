@@ -31,6 +31,7 @@ import { WhatsappTemplatesComponent } from './config/whatsapp-templates/whatsapp
 import { DashboardV2Component } from './components/dashboard-v2/dashboard-v2.component';
 import { ConexionesWhatsComponent } from './components/monitores/conexiones-whats/conexiones-whats.component';
 import { SearchCertComponent } from './components/rsv2/search-cert/search-cert.component';
+import { RobinQueuesComponent } from './config/robin-queues/robin-queues.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -46,6 +47,7 @@ const routes: Routes = [
   { path: 'asistencia/editarHorarios', component: CargaHorariosComponent },
 
   { path: 'config/addExternal', component: AddExternalUserComponent },
+  { path: 'config/robinQueues', component: RobinQueuesComponent },
 
   { path: 'cotizador', component: MainCotizadorComponent },
   // { path: 'cotizadorV2', component: CotizadorV2Component },

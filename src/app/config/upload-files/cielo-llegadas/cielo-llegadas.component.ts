@@ -20,6 +20,7 @@ export class CieloLlegadasComponent implements OnInit {
     OLITE: 'CANCUN',
     GOC: 'CANCUN',
     PYR: 'CANCUN',
+    OHOC: 'CANCUN',
     OT: 'TULUM',
     SENS: 'SENS',
     SKGS: 'SENS',
@@ -36,6 +37,7 @@ export class CieloLlegadasComponent implements OnInit {
     OLITE: { c:0,n:0,R:0,B:0,S:0,O:0 },
     GOC: { c:0,n:0,R:0,B:0,S:0,O:0 },
     PYR: { c:0,n:0,R:0,B:0,S:0,O:0 },
+    OHOC: { c:0,n:0,R:0,B:0,S:0,O:0 },
     OT: { c:0,n:0,R:0,B:0,S:0,O:0 },
     SENS: { c:0,n:0,R:0,B:0,S:0,O:0 },
     SKGS: { c:0,n:0,R:0,B:0,S:0,O:0 },
@@ -68,6 +70,7 @@ export class CieloLlegadasComponent implements OnInit {
       OLITE: { c:0,n:0,R:0,B:0,S:0,O:0 },
       GOC: { c:0,n:0,R:0,B:0,S:0,O:0 },
       PYR: { c:0,n:0,R:0,B:0,S:0,O:0 },
+      OHOC: { c:0,n:0,R:0,B:0,S:0,O:0 },
       OT: { c:0,n:0,R:0,B:0,S:0,O:0 },
       SENS: { c:0,n:0,R:0,B:0,S:0,O:0 },
       SKGS: { c:0,n:0,R:0,B:0,S:0,O:0 },
@@ -163,6 +166,7 @@ export class CieloLlegadasComponent implements OnInit {
       cielo[index].push(rsv)
       i++
 
+      console.log(i, r['SIGLA'])
       this.summary[r['SIGLA']][rsv['e']]++
       this.summary['total'][rsv['e']]++
       this.allRegs++

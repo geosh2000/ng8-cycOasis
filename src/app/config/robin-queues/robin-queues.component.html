@@ -1,0 +1,51 @@
+<div *ngIf="showContents">
+    <div class="container">
+
+        <!-- TITLE -->
+        <div class="jumbotron jumbotron-fluid text-white blueBkg animated fadeIn">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span><h1 class="display-3">Round Robin Queues</h1></span>
+                        <p class="lead">Determina los tickets a asignar a cada agente</p>
+                        
+                    </div>
+
+                </div>
+                <div class="d-flex justify-content-end">
+                    <div><button mat-mini-fab color="primary" aria-label="Refresh" (click)="getQueues()">
+                        <mat-icon>cached</mat-icon>
+                    </button></div>
+                </div>
+            </div>
+        </div>
+
+        <mat-progress-bar mode="indeterminate" *ngIf="loading['queues']"></mat-progress-bar>
+
+        <div *ngIf="!loading['queues']">
+
+            <ul class="list-group">
+                <div class="list-group-item d-flex justify-content-around flex-wrap" *ngFor="let ag of qConfigStatus | orderBy: 'Agente'">
+                    <div class='col-4'>
+                        {{ ag['Agente'] }}
+                    </div>
+                    
+                    <div class='col-8 d-flex flex-wrap justify-content-center'>
+                        <mat-progress-bar mode="indeterminate" *ngIf="ag['loading']"></mat-progress-bar>
+                        <ng-container *ngIf="!ag['loading']">
+                            <div style="text-align: center" class="p-2"  *ngFor="let q of queues">
+                                <ui-switch (change)="qConv(ag,q['id'],$event)" color="green" size="small" name='exist' [(ngModel)]="ag['qArr'][q['id']]"></ui-switch>
+                                <p>
+                                    <small>{{ q['name'] }}</small>
+                                </p>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </ul>
+
+
+        </div>
+    </div>
+
+</div>
