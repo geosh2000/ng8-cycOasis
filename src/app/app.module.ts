@@ -204,6 +204,9 @@ import { SearchCertComponent } from './components/rsv2/search-cert/search-cert.c
 import { ValidateCertificateComponent } from './components/rsv2/validate-certificate/validate-certificate.component';
 import { RsvChangesComponent } from './components/rsv2/rsv-changes/rsv-changes.component';
 import { RobinQueuesComponent } from './config/robin-queues/robin-queues.component';
+import { PollenListComponent } from './components/rsv/pollen-list/pollen-list.component';
+import { CieloChangesComponent } from './components/cielo/cielo-changes/cielo-changes.component';
+import { RbLoyaltyComponent } from './config/upload-files/rb-loyalty/rb-loyalty.component';
 
 
 @NgModule({
@@ -342,7 +345,10 @@ import { RobinQueuesComponent } from './config/robin-queues/robin-queues.compone
     SearchCertComponent,
     ValidateCertificateComponent,
     RsvChangesComponent,
-    RobinQueuesComponent
+    RobinQueuesComponent,
+    PollenListComponent,
+    CieloChangesComponent,
+    RbLoyaltyComponent
 
   ],
   imports: [

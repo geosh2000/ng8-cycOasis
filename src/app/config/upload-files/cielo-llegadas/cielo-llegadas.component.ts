@@ -52,6 +52,7 @@ export class CieloLlegadasComponent implements OnInit {
   allRegs = 0
   maxRegs = 5000
   progress = []
+  uploadArr = []
 
   constructor(public _api: ApiService,
               public _init:InitService,
@@ -162,6 +163,7 @@ export class CieloLlegadasComponent implements OnInit {
         guest4_nombre: this.validateText(r['NOMBRE4'], false, null),
         bedType: this.validateText(r['C'], false, null),
         cieloMail: this.validateText(r['EMAIL'], true, null),
+        rp_char02: r['RT_EVENTO'] ? r['RT_EVENTO'] : '',
       }
       cielo[index].push(rsv)
       i++
@@ -190,6 +192,7 @@ export class CieloLlegadasComponent implements OnInit {
       this.progress.push({s:0,l:0})
     }
 
+    this.uploadArr = arr
     this.submit(arr, 0)
 
   }

@@ -32,6 +32,8 @@ import { DashboardV2Component } from './components/dashboard-v2/dashboard-v2.com
 import { ConexionesWhatsComponent } from './components/monitores/conexiones-whats/conexiones-whats.component';
 import { SearchCertComponent } from './components/rsv2/search-cert/search-cert.component';
 import { RobinQueuesComponent } from './config/robin-queues/robin-queues.component';
+import { PagosAdminComponent } from './components/pagos/pagos-admin/pagos-admin.component';
+import { PollenListComponent } from './components/rsv/pollen-list/pollen-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -74,6 +76,7 @@ const routes: Routes = [
   { path: 'rsv', component: RsvManageComponent },
   { path: 'rsv/:loc', component: RsvManageComponent },
   { path: 'rsvList', component: RsvListComponent },
+  { path: 'pollenList', component: PollenListComponent },
   { path: 'rsvPaymentList', component: RsvPaymentListComponent },
   { path: 'dayPassList', component: RsvDayPassListComponent },
   { path: 'certificados', component: SearchCertComponent },
@@ -93,6 +96,8 @@ const routes: Routes = [
   { path: 'templates', component: WhatsappTemplatesComponent },
 
   { path: 'conn-whats', component: ConexionesWhatsComponent },
+  
+  { path: 'pagos', component: PagosAdminComponent },
 ];
 
 @NgModule({

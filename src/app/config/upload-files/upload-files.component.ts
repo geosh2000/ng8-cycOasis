@@ -12,6 +12,7 @@ import * as Globals from '../../globals';
 import * as moment from 'moment-timezone';
 import { CidProdComponent } from './cid-prod/cid-prod.component';
 import { CieloLlegadasComponent } from './cielo-llegadas/cielo-llegadas.component';
+import { RbLoyaltyComponent } from './rb-loyalty/rb-loyalty.component';
 
 @Component({
   selector: 'app-upload-files',
@@ -22,6 +23,7 @@ export class UploadFilesComponent implements OnInit {
 
   @ViewChild( CidProdComponent,{static:false} ) private cid: CidProdComponent
   @ViewChild( CieloLlegadasComponent,{static:false} ) private clL: CieloLlegadasComponent
+  @ViewChild( RbLoyaltyComponent,{static:false} ) private rbl: RbLoyaltyComponent
 
   currentUser: any
   showContents = false
@@ -201,8 +203,12 @@ export class UploadFilesComponent implements OnInit {
               // console.log(arr)
               workbook = readXlsx(bstr, {type:'string'});
               break
+            default:
+              workbook = readXlsx(data, {type:'array'});
+              break
           }
 
+          // console.log(workbook)
           let sheetName = workbook.SheetNames[0]
           let jsonFile = utils.sheet_to_json( workbook.Sheets[sheetName], {raw: true, defval:null} )
           this.xlsJson = jsonFile
@@ -218,6 +224,11 @@ export class UploadFilesComponent implements OnInit {
             case 'cieloLlegadas':
               console.log('cieloLlegadas called')
               this.clL.buildVouchers(jsonFile)
+              this.loading['building'] = false
+              break;
+            case 'loyaltyRB':
+              console.log('Loyalty RB called')
+              this.rbl.buildVouchers(jsonFile)
               this.loading['building'] = false
               break;
             default:

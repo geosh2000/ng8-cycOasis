@@ -21,6 +21,7 @@ export class RsvPaymentRegistryComponent implements OnInit, OnChanges {
   // tslint:disable-next-line: no-output-native
   @Output() close = new EventEmitter<any>()
   @Input() num:any
+  @Input() isModal:boolean = true
   @Input() name:any
   @Input() dir:any
   @Output() loadResult = new EventEmitter<any>()
@@ -73,7 +74,8 @@ export class RsvPaymentRegistryComponent implements OnInit, OnChanges {
       ['tipo']:        new FormControl('', [ Validators.required ]),
       ['afiliacion']:  new FormControl('', [ Validators.required ]),
       ['tarjeta']:     new FormControl('Virtual', [ Validators.required ]),
-      ['tipoTarjeta']: new FormControl('VIRTUAL', [ Validators.required ])
+      ['tipoTarjeta']: new FormControl('VIRTUAL', [ Validators.required ]),
+      ['paymentNotes']: new FormControl('_')
     })
 
     this.imageForm = new FormGroup({
@@ -95,12 +97,18 @@ export class RsvPaymentRegistryComponent implements OnInit, OnChanges {
   closeModal( reload = false ){
     this.close.emit( reload )
     jQuery('#rsvRegPayment').modal('hide')
+    this.newPayment.reset()
+    this.newPayment.controls['tarjeta'].setValue('Virtual')
+    this.newPayment.controls['tipoTarjeta'].setValue('VIRTUAL')
+    this.newPayment.controls['paymentNotes'].setValue('_')
+    this._stp.reset();
   }
 
   openModal(){
     this.newPayment.reset()
     this.newPayment.controls['tarjeta'].setValue('Virtual')
     this.newPayment.controls['tipoTarjeta'].setValue('VIRTUAL')
+    this.newPayment.controls['paymentNotes'].setValue('_')
 
     jQuery('#rsvRegPayment').modal('show')
   }

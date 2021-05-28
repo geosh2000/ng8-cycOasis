@@ -108,9 +108,12 @@
                                 </div>
                                 <ng-container *ngIf="!h['isOk'] || (moneda && h['mxn_total'] == 0) || (!moneda && h['usd_total'] == 0)">
                                     <div class="text-black-50 font-italic pl-3">
+                                        {{ h['isOk'] ? (moneda && h['mxn_total'] == 0 ? 'Sin tarifas cargadas' : (!moneda && h['usd_total'] == 0 ? 'Sin tarifas cargadas' : 'Error al cargar tarifas')) : h['reasonNot'] }}
+                                    </div>
+                                    <!-- <div class="text-black-50 font-italic pl-3">
                                         {{ h['no_disp'] ? h['no_disp'] : h['no_occ'] ? h['no_occ'] : h['no_adl'] ? h['no_adl'] : h['no_min'] ? h['no_min'] : h['no_comb'] ? h['no_comb'] : moneda && h['mxn_total'] == 0 ? 'Sin tarifas cargadas' : !moneda && h['usd_total'] == 0 ? 'Sin tarifas cargadas'
                                         : 'No Disp'}}
-                                    </div>
+                                    </div> -->
                                 </ng-container>
                                 <ng-container *ngIf="h['isOk'] && !(moneda && h['mxn_total'] == 0) && !(!moneda && h['usd_total'] == 0)">
                                     <div>

@@ -103,7 +103,7 @@ export class CotizaTourComponent implements OnInit {
     this.loading['grupos'] = true;
 
 
-    this._api.restfulGet( '', 'Lists/gruposTarifaXfer' )
+    this._api.restfulGet( '', 'Lists/gruposTarifaTours' )
                 .subscribe( res => {
 
                   this.loading['grupos'] = false;

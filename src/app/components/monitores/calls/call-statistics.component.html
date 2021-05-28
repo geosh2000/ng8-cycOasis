@@ -125,13 +125,13 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-8">
-            <!-- CONTENIDO -->
+    <div class="container-fluid">
+            <!-- GRAFICA -->
             <app-graph-call-stats [data]="data" [date]="date" [h]="dataH" [multi]="multi"></app-graph-call-stats>
-        </div>
-        <div class="col-2" *ngIf="dataLive['data']">
-            <mat-card class="m-2">
+    </div>
+    <div class="container-fluid  d-flex flex-wrap justify-content-center" *ngIf="dataLive['data']">
+            <!-- LIVE DATA 1 -->
+            <mat-card style="width: 200px" class="m-2">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>Online</h3>
@@ -139,7 +139,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2" [ngClass]="{'mat-pause': dataLive['data']['current_queue_activity']['calls_waiting'] > 0}">
+            <mat-card style="width: 200px" class="m-2" [ngClass]="{'mat-pause': dataLive['data']['current_queue_activity']['calls_waiting'] > 0}">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>Espera</h3>
@@ -147,7 +147,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2">
+            <mat-card style="width: 200px" class="m-2">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>AWT</h3>
@@ -155,7 +155,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2">
+            <mat-card style="width: 200px" class="m-2">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>Longest Wait</h3>
@@ -163,7 +163,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2">
+            <mat-card style="width: 200px" class="m-2">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>Wait. CallBacks</h3>
@@ -171,18 +171,11 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <!-- <mat-card class="m-2">
-                <mat-card-content>
-                    <div class="d-flex justify-content-between">
-                        <h3>CallBacks en espera (widget)</h3>
-                        <h1>{{ dataLive['data']['current_queue_activity']['embeddable_callbacks_waiting'] }}</h1>
-                    </div>
-                </mat-card-content>
-            </mat-card> -->
-            <!-- <pre>{{ dataLive | json }}</pre> -->
-        </div>
-        <div class="col-2">
-            <mat-card class="m-2">
+    </div>
+    <div class="container-fluid d-flex flex-wrap justify-content-center" *ngIf="dataLive['data']">
+            <!-- LIVE DATA 2 -->
+            
+            <mat-card style="width: 200px" class="m-2">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>Avail</h3>
@@ -190,7 +183,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2" [ngClass]="{'mat-pause': dataSum['call'] > 2}">
+            <mat-card style="width: 200px" class="m-2" [ngClass]="{'mat-pause': dataSum['call'] > 2}">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>Away</h3>
@@ -198,7 +191,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2">
+            <mat-card style="width: 200px" class="m-2">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>Wrap</h3>
@@ -206,7 +199,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2" [ngClass]="{'mat-pause': dataSum['call'] > 4}">
+            <mat-card style="width: 200px" class="m-2" [ngClass]="{'mat-pause': dataSum['call'] > 4}">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>En llamada</h3>
@@ -214,7 +207,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <mat-card class="m-2">
+            <mat-card style="width: 200px" class="m-2">
                 <mat-card-content>
                     <div class="d-flex justify-content-between">
                         <h3>AHT</h3>
@@ -222,17 +215,10 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <!-- <mat-card class="m-2">
-                <mat-card-content>
-                    <div class="d-flex justify-content-between">
-                        <h3>CallBacks en espera (widget)</h3>
-                        <h1>{{ dataLive['data']['current_queue_activity']['embeddable_callbacks_waiting'] }}</h1>
-                    </div>
-                </mat-card-content>
-            </mat-card> -->
-            <!-- <pre>{{ dataLive | json }}</pre> -->
-        </div>
+              
     </div>
+
+    
 
 
 </div>

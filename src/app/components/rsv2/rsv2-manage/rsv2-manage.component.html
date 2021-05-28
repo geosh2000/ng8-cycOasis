@@ -231,6 +231,17 @@
                     <div class="clientInfo">{{ data['master']['idioma'] }}</div>
                 </div>
                 <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>OR Id:</b></div>
+                    <div class="clientInfo" *ngIf="data['master']['orId']">{{ data['master']['orId'] }}</div>
+                    <mat-progress-bar mode="buffer" *ngIf="loading['orUpdate']"></mat-progress-bar>
+                    <div class="clientInfo" *ngIf="!data['master']['orId'] && !loading['orUpdate']"><button style="zoom: 0.8" mat-button color="primary" (click)="updateOr()"><mat-icon>refresh</mat-icon> Actualizar ORewards</button></div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="clientConcept"><b>OR Level:</b></div>
+                    <mat-progress-bar mode="buffer" *ngIf="loading['orUpdate']"></mat-progress-bar>
+                    <div class="clientInfo">{{ data['master']['orLevel'] }}</div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>Zendesk:</b></div>
                     <div class="clientInfo"><a target="_blank" [href]=" data['master']['zdUserId'] | domseguro:'https://oasishoteles.zendesk.com/agent/users/' ">{{ data['master']['zdUserId'] }}</a></div>
                 </div>

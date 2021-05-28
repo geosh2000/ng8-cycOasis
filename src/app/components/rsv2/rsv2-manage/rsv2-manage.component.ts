@@ -628,6 +628,27 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
     // this._updU.updateUser( this.data['master']['masterlocatorid'] )
   }
 
+  updateOr(){
+    this.loading['orUpdate'] = true
+
+    this._api.restfulPut( {masterlocatorid: this.viewLoc}, 'Rsv/updateORewardsUser' )
+                .subscribe( res => {
+
+                  this.loading['orUpdate'] = false;
+                  this.data['master']['orId'] = res['data']['orId']
+                  this.data['master']['orLevel'] = res['data']['orLevel']
+                  this.toastr.success( res['msg'], 'Actualizado' );
+
+                }, err => {
+                  this.loading['orUpdate'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
   editCCMail( m ){
 
     if( jQuery(m)[0].validity.patternMismatch ){
@@ -752,7 +773,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   getZdAgents(){
     this.loading['zdAgents'] = true
 
-    this._api.restfulGet( '', 'Lists/zdUserList' )
+    this._api.restfulGet( '', 'Lists/assignUserList' )
                 .subscribe( res => {
 
                   this.loading['zdAgents'] = false;

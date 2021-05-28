@@ -347,6 +347,7 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
                     arr['usd_totalDisc'] = arr['usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD_total'])
                     if( parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['isOk']) == 0 ){
                       arr['isOk'] = false
+                      arr['reasonNot'] = data['habs'][h['code']]['cot'][cat][hab][0]['reasonNot']
                       if( data['habs'][h['code']]['cot'][cat][hab][0]['r5'] ){
                         arr['no_disp'] = data['habs'][h['code']]['cot'][cat][hab][0]['r5']
                       }
