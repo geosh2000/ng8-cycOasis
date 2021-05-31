@@ -15,6 +15,7 @@ export class CieloChangesComponent implements OnInit {
 
   @Output() saveOpen = new EventEmitter()
   @Input() params = {}
+  @Input() item = {}
 
   i:Object = {}
   original:Object = {}

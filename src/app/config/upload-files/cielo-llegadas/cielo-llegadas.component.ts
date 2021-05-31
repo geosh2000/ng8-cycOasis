@@ -50,7 +50,7 @@ export class CieloLlegadasComponent implements OnInit {
     GOTSK: { c:0,n:0,R:0,B:0,S:0,O:0 }
   }
   allRegs = 0
-  maxRegs = 5000
+  maxRegs = 3000
   progress = []
   uploadArr = []
 
@@ -164,6 +164,8 @@ export class CieloLlegadasComponent implements OnInit {
         bedType: this.validateText(r['C'], false, null),
         cieloMail: this.validateText(r['EMAIL'], true, null),
         rp_char02: r['RT_EVENTO'] ? r['RT_EVENTO'] : '',
+        cieloOrId: r['RT_ID'] ? r['RT_ID'] : '',
+        cieloOrLevel: r['RT_ORW'] ? r['RT_ORW'] : ''
       }
       cielo[index].push(rsv)
       i++

@@ -649,6 +649,26 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                 });
   }
 
+  updateRelatedTicket(){
+    this.loading['rlTicket'] = true
+
+    this._api.restfulPut( {loc: this.viewLoc}, 'Calls/getZdItemRelated' )
+                .subscribe( res => {
+
+                  this.loading['rlTicket'] = false;
+                  this.toastr.success( res['msg'], 'Actualizado' );
+                  this.getLoc( this.viewLoc )
+
+                }, err => {
+                  this.loading['rlTicket'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
   editCCMail( m ){
 
     if( jQuery(m)[0].validity.patternMismatch ){

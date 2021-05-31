@@ -283,9 +283,11 @@
                 </div>
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>Tickets:</b></div>
-                    <div class="clientInfo">
+                    <div class="clientInfo" *ngIf="data['master']['tickets'].length > 0">
                         <p *ngFor="let t of data['master']['tickets']"><a target="_blank" [href]=" t | domseguro:'https://oasishoteles.zendesk.com/tickets/' ">{{ t }}</a></p>
                     </div>
+                    <mat-progress-bar mode="buffer" *ngIf="loading['rlTicket']"></mat-progress-bar>
+                    <div class="clientInfo" *ngIf="data['master']['tickets'].length == 0 && !loading['rlTicket']"><button style="zoom: 0.8" mat-button color="primary" (click)="updateRelatedTicket()"><mat-icon>refresh</mat-icon>Obtener Tickets</button></div>
                 </div>
                 <hr>
                 <ng-container *ngIf="rsvHistory.length > 1">

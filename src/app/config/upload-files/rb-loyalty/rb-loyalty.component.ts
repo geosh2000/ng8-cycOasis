@@ -156,7 +156,13 @@ export class RbLoyaltyComponent implements OnInit {
     this.loading['uploading'] = true
     this.progress[i]['s'] = 1
 
-    this._api.restfulPut( d[i], 'Uploads/saveRbLoyalty')
+    let isLast = false
+
+    if( i+1 == d.length ){
+      isLast = true;
+    }
+
+    this._api.restfulPut( { arr: d[i], isLast }, 'Uploads/saveRbLoyalty')
             .subscribe( res => {
 
               this.toastr.success('Done!', res['msg'])
