@@ -3,6 +3,7 @@ import { InitService, ApiService } from 'src/app/services/service.index';
 import { ToastrService } from 'ngx-toastr';
 
 import * as moment from 'moment-timezone';
+declare var jQuery: any;
 
 @Component({
   selector: 'app-edit-prepay',
@@ -18,6 +19,9 @@ export class EditPrepayComponent implements OnInit {
   editFlag = false
   editTotalFlag = false
   sfFlag = false
+  selectedRefound = true
+  advancedTotal = false
+  bufferedParams = {}
 
   constructor(public _api: ApiService,
               public _init: InitService,
@@ -49,20 +53,40 @@ export class EditPrepayComponent implements OnInit {
     this.saveMontos( params )
   }
 
-  editTotalMonto( m, c ){
+  editTotalMonto( m, c, adv = false ){
 
-    if( parseFloat(m.value) < parseFloat(this.i['montoPagado']) ){
-      this.toastr.error('El monto pagado es mayor al monto total indicado. Esta operación no es válida', 'Error!')
-      return false
-    }
+    console.log(m)
+    console.log(c)
 
-    this.loading['editTotalMonto'] = true
+    // return false
 
     let params = {
       original: this.i,
-      newMonto: m.value,
-      comment: c.value
+      newMonto: m,
+      comment: c
     }
+
+    if( parseFloat(params['newMonto']) < parseFloat(this.i['montoPagado']) ){
+      
+      // Ajuste permitido solo a administrador
+      if( this._init.checkSingleCredential('allmighty')){
+        
+        this.advancedTotal = true
+        
+        if( !adv ){
+          this.bufferedParams = params
+          return false
+        }else{
+          params['isR'] =  !this.selectedRefound
+        }
+
+      }else{
+              this.toastr.error('El monto pagado es mayor al monto total indicado. Esta operación no es válida', 'Error!')
+              return false
+      }
+    }
+
+    this.loading['editTotalMonto'] = true
 
     this._api.restfulPut( params, 'Rsv/editMontoTotal' )
                 .subscribe( res => {
@@ -71,11 +95,15 @@ export class EditPrepayComponent implements OnInit {
                   this.i['montoOriginal'] = this.i['monto']
                   this.i['montoParcialOriginal'] = this.i['montoParcial']
                   this.i['monto'] = params['newMonto']
-                  this.saveMonto.emit( {itemId: this.i['itemId'], isMontoTotal: true, newMonto: params['newMonto'], montoParcial: res['data']['montoParcial']} )
                   this.editTotalFlag = false
+                  this.advancedTotal = false
+                  this.bufferedParams = {}
+                  this.saveMonto.emit( {itemId: this.i['itemId'], isMontoTotal: true, newMonto: params['newMonto'], montoParcial: res['data']['montoParcial'], montoPagado: res['data']['montoPagado']} )
 
                 }, err => {
                   this.loading['editTotalMonto'] = false;
+                  this.advancedTotal = false
+                  this.bufferedParams = {}
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );

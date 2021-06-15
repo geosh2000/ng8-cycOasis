@@ -41,7 +41,7 @@
 
     <div class='container' *ngIf="progress.length > 0">
         <div *ngFor="let p of progress; index as i">
-            <p [ngClass]="{'text-alert': p['s'] == 0, 'text-danger': p['s'] == 3, 'text-primary': p['s'] == 1, 'text-success': p['s'] == 2}">Arreglo {{ i + 1 }} de {{ progress.length }}: {{ p['s'] == 0 ? 'Queued' : p['s'] == 1 ? 'Uploading...' : p['s'] == 2 ? 'Done!' : 'Error!!' }}
+            <p [ngClass]="{'text-alert': p['s'] == 0, 'text-danger': p['s'] == 3, 'text-primary': p['s'] == 1, 'text-success': p['s'] == 2}">Arreglo {{ i + 1 }} de {{ progress.length }}: {{ p['s'] == 0 ? 'Queued' : p['s'] == 1 ? 'Uploading...' : p['s'] == 2 ? 'Done!' : 'Error!!' }} {{  p['s'] == 0 || p['s'] == 1 ? '' : '(' + p['r'] + ')' }}
                 <button mat-raised-button color='primary' (click)="submit(uploadArr,i)" *ngIf=" p['s'] == 3 && !loading['uploading']"><span><i class="fas fa-spinner fa-pulse"></i></span><span *ngIf="!loading['uploading']">Subir</span></button>
             </p>
             <mat-progress-bar mode="indeterminate" *ngIf="p['s'] == 1"></mat-progress-bar>

@@ -24,6 +24,18 @@ export class EditMontoParcialComponent implements OnInit {
   loading:Object = {}
   hrIndex = Globals.HREF
   editNameFlag = false
+  name = {
+    name_1: '',
+    lname_1: '',
+    name_2: '',
+    lname_2: '',
+    name_3: '',
+    lname_3: '',
+    name_4: '',
+    lname_4: '',
+    name_5: '',
+    lname_5: ''
+  }
 
   constructor(public _api: ApiService,
               public _init: InitService,
@@ -69,6 +81,119 @@ export class EditMontoParcialComponent implements OnInit {
                   console.error(err.statusText, error.msg);
 
                 });
+  }
+  
+  editNameV2(n, i){
+
+    this.loading['editName'] = true
+
+    if( n['name_1'] == '' || n['lname_1'].value == '' ){
+      this.toastr.error('El nombre no puede estar vacío', 'Error!')
+      return false
+    }
+
+    let x=1;
+    let map = {
+      1: 'htl_nombre_1',
+      2: 'htl_apellido_1',
+      3: 'htl_nombre_2',
+      4: 'htl_apellido_2',
+      5: 'htl_nombre_3',
+      6: 'htl_apellido_3',
+      7: 'htl_nombre_4',
+      8: 'htl_apellido_4',
+      9: 'htl_nombre_5',
+      10: 'htl_apellido_5'
+    }
+    let names = {
+      htl_nombre_1: n['name_1'] == '' ? null : n['name_1'],
+      htl_apellido_1: n['lname_1'] == '' ? null : n['lname_1'],
+      htl_nombre_2: n['name_2'] == '' ? null : n['name_2'],
+      htl_apellido_2: n['lname_2'] == '' ? null : n['lname_2'],
+      htl_nombre_3: n['name_3'] == '' ? null : n['name_3'],
+      htl_apellido_3: n['lname_3'] == '' ? null : n['lname_3'],
+      htl_nombre_4: n['name_4'] == '' ? null : n['name_4'],
+      htl_apellido_4: n['lname_4'] == '' ? null : n['lname_4'],
+      htl_nombre_5: n['name_5'] == '' ? null : n['name_5'],
+      htl_apellido_5: n['lname_5'] == '' ? null : n['lname_5'],
+    }
+
+
+    
+    let params = {
+      names: names,
+      item: i
+    }
+
+    this._api.restfulPut( params, 'Rsv/editNameV2' )
+                .subscribe( res => {
+
+                  this.loading['editName'] = false;
+                  this.i['nombreCliente'] = params['names']['htl_nombre_1']+' '+params['names']['htl_apellido_1']
+                  this.i['huesped1'] = params['names']['htl_nombre_1']+' '+params['names']['htl_apellido_1']
+                  this.i['huesped2'] = params['names']['htl_nombre_2'] == null ? null : params['names']['htl_nombre_2']+' '+params['names']['htl_apellido_2']
+                  this.i['huesped3'] = params['names']['htl_nombre_3'] == null ? null : params['names']['htl_nombre_3']+' '+params['names']['htl_apellido_3']
+                  this.i['huesped4'] = params['names']['htl_nombre_4'] == null ? null : params['names']['htl_nombre_4']+' '+params['names']['htl_apellido_4']
+                  this.i['huesped5'] = params['names']['htl_nombre_5'] == null ? null : params['names']['htl_nombre_5']+' '+params['names']['htl_apellido_5']
+                  this.i['htl_nombre_1'] = params['names']['htl_nombre_1']
+                  this.i['htl_apellido_1'] = params['names']['htl_apellido_1']
+                  this.i['htl_nombre_2'] = params['names']['htl_nombre_2']
+                  this.i['htl_apellido_2'] = params['names']['htl_apellido_2']
+                  this.i['htl_nombre_3'] = params['names']['htl_nombre_3']
+                  this.i['htl_apellido_3'] = params['names']['htl_apellido_3']
+                  this.i['htl_nombre_4'] = params['names']['htl_nombre_4']
+                  this.i['htl_apellido_4'] = params['names']['htl_apellido_4']
+                  this.i['htl_nombre_5'] = params['names']['htl_nombre_5']
+                  this.i['htl_apellido_5'] = params['names']['htl_apellido_5']
+                  this.saveName.emit( {itemId: this.i['itemId'], nombre: params['names']['htl_nombre_1']+' '+params['names']['htl_apellido_1']} )
+                  this.editNameFlag = false
+
+                }, err => {
+                  this.loading['editName'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+  }
+
+  calcPax( a, b, c ){
+
+      return parseInt(a) + parseInt(b) + parseInt(c)
+
+  }
+
+  editNameOpen( i ){
+    this.editNameFlag = true
+    this.name = {
+      name_1: i['htl_nombre_1'],
+      lname_1: i['htl_apellido_1'],
+      name_2: i['htl_nombre_2'],
+      lname_2: i['htl_apellido_2'],
+      name_3: i['htl_nombre_3'],
+      lname_3: i['htl_apellido_3'],
+      name_4: i['htl_nombre_4'],
+      lname_4: i['htl_apellido_4'],
+      name_5: i['htl_nombre_5'],
+      lname_5: i['htl_apellido_5']
+    }
+  }
+
+  editNameClose(){
+    this.editNameFlag = false
+    this.name = {
+      name_1: '',
+      lname_1: '',
+      name_2: '',
+      lname_2: '',
+      name_3: '',
+      lname_3: '',
+      name_4: '',
+      lname_4: '',
+      name_5: '',
+      lname_5: '',
+    }
   }
 
   sendConf( l ){

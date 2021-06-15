@@ -306,10 +306,14 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   }
 
   saveMonto( e ){
-
+    this.toastr.success('Monto Actuaizado','Success')
     for( let i of this.data['items'] ){
 
       if( e['itemId'] == i['itemId'] ){
+
+        if( e['montoPagado'] < i['montoPagado'] ){
+          this.getLoc( this.viewLoc )
+        }
 
         if( e['isMontoTotal'] ){
 
@@ -326,6 +330,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
           i['montoParcial'] = e['montoParcial']
           i['montoSaldoPrepago'] = e['montoParcial'] - i['montoPagado']
           i['montoSaldoHotel'] = i['monto'] - e['montoParcial']
+          i['montoPagado'] = e['montoPagado']
 
           this.data['master']['totalMonto' + mon] = parseFloat(this.data['master']['totalMonto' + mon]) + dif
           this.data['master']['totalMontoHotel' + mon] = parseFloat(this.data['master']['totalMontoHotel' + mon]) + dif

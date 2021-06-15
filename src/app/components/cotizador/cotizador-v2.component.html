@@ -129,16 +129,18 @@
                                                 </mat-chip-list>
                                                 <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
                                             </div>
-                                            <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
-                                            <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
-                                                <mat-chip-list aria-label="Fish selection">
-                                                    <mat-chip color='primary' selected><span [style.width.px]="120">{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
-                                                </mat-chip-list>
-                                                <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
-                                            </div>
+                                            <ng-container *ngIf="levels['l2']['activo']">
+                                                <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
+                                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip color='primary' selected><span [style.width.px]="120">{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span></mat-chip>
+                                                    </mat-chip-list>
+                                                    <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
+                                                </div>
+                                            </ng-container>
                                         </div>
                                         <div class="d-flex justify-content-end pt-2">
-                                            <ng-container *ngIf="h['spl3'] == 1 && h['l3usd_totalDisc'] != h['l2usd_totalDisc']">
+                                            <ng-container *ngIf="levels['l3']['activo']">
                                                 <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l3usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
                                                 <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
                                                     <mat-chip-list aria-label="Fish selection">
@@ -147,7 +149,7 @@
                                                     <!-- <h4>{{ (moneda ? h['mxn_totalDisc'] : h['usd_totalDisc']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</h4> -->
                                                 </div>
                                             </ng-container>
-                                            <ng-container *ngIf="h['spl4'] == 1 && h['l4usd_totalDisc'] != h['l3usd_totalDisc']">
+                                            <ng-container *ngIf="levels['l4']['activo']">
                                                 <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold'>{{ (1-(h['l4usd_totalDisc']/h['l1usd_totalDisc'])) | percent:'.0-0' }}</div>
                                                 <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
                                                     <mat-chip-list aria-label="Fish selection">
@@ -175,10 +177,10 @@
                         <mat-action-row *ngIf="h['isOk']">
                             <div class="d-flex justify-content-around flex-wrap p-2">
                                 <mat-radio-group aria-label="Select an option" [(ngModel)]="h['lSelected']" class="m-1">
-                                    <mat-radio-button value="1">L1</mat-radio-button>
-                                    <mat-radio-button value="2" [disabled]="h['l2usd_totalDisc'] == h['l1usd_totalDisc']">L2</mat-radio-button>
-                                    <mat-radio-button value="3" [disabled]="h['spl3']!='1' || h['l3usd_totalDisc'] == h['l2usd_totalDisc']">L3</mat-radio-button>
-                                    <mat-radio-button value="4" [disabled]="h['spl4']!='1' || h['l4usd_totalDisc'] == h['l3usd_totalDisc']">L4</mat-radio-button>
+                                    <mat-radio-button value="1">{{ levels['l1']['name'] }}</mat-radio-button>
+                                    <mat-radio-button value="2" [disabled]="!(_init.checkSingleCredential('rsv_enableAllLevels') || levels['l2']['allEnabled'])" *ngIf="levels['l2']['activo']">{{ levels['l2']['name'] }}</mat-radio-button>
+                                    <mat-radio-button value="3" [disabled]="!(_init.checkSingleCredential('rsv_enableAllLevels') || levels['l3']['allEnabled'])" *ngIf="levels['l3']['activo']">{{ levels['l3']['name'] }}</mat-radio-button>
+                                    <mat-radio-button value="4" [disabled]="!(_init.checkSingleCredential('rsv_enableAllLevels') || levels['l4']['allEnabled'])" *ngIf="levels['l4']['activo']">{{ levels['l4']['name'] }}</mat-radio-button>
                                 </mat-radio-group>
                                 <button mat-raised-button class="m-1" color="accent" (click)="sendCotizacion(h)" *ngIf="_init.checkSingleCredential('app_cotizador_budget')">Enviar Cotización</button>
                                 <button mat-raised-button class="m-1" color="primary" (click)="popReserve(h)" *ngIf="_init.checkSingleCredential('app_cotizador_rsv')">Reservar</button>

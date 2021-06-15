@@ -6,17 +6,69 @@
     <ng-container *ngIf="i['itemType'] == 1">
         <div class="container d-flex justify-content-start p-1" *ngIf="!editNameFlag">
             <div class="d-flex justify-content-start align-items-center">
-                <div class="productConcept"><b>Nombre:</b></div>
-                <div style="font-weight: bolder">{{ i['nombreCliente'] }} <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editNameFlag = true"><mat-icon>edit</mat-icon></button></div>
+                <div class="productConcept"><b>Titular:</b></div>
+                <div style="font-weight: bolder">{{ i['nombreCliente'] }} <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editNameOpen(i)"><mat-icon>edit</mat-icon></button></div>
             </div>
         </div>
-        <div class="d-flex justify-content-start align-items-center" *ngIf="editNameFlag">
-            <mat-form-field class="example-full-width">
-                <input style="font-size: 11px" matInput placeholder="Nombre" [value]="i['nombreCliente']" #clientName>
-            </mat-form-field>
-            <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editNameFlag = false" [disabled]="loading['editName']"><mat-icon *ngIf="!loading['editName']">cancel</mat-icon><span *ngIf="loading['editName']"><i class="fa fa-spinner fa-pulse"></i></span></button>
-            <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editName(clientName, i)" [disabled]="loading['editName']"><mat-icon *ngIf="!loading['editName']">done</mat-icon><span *ngIf="loading['editName']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+        <div class="container d-flex justify-content-start p-1" *ngIf="!editNameFlag">
+            <div class="d-flex justify-content-start align-items-center">
+                <div class="productConcept"><b>Acompañantes:</b></div>
+                <div>
+                    <span class="text-sm" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 2">{{ i['huesped2'] ? i['huesped2'] : 'TBA' }}</span>
+                    <span class="text-sm" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 3">, {{ i['huesped3'] ? i['huesped3'] : 'TBA' }}</span>
+                    <span class="text-sm" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 4">, {{ i['huesped4'] ? i['huesped4'] : 'TBA' }}</span>
+                    <span class="text-sm" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 5">, {{ i['huesped5'] ? i['huesped5'] : 'TBA' }}</span>
+                </div>
+            </div>
         </div>
+        <ng-container *ngIf="editNameFlag">
+            
+            <div class="d-flex justify-content-start align-items-center">
+                <mat-form-field class="example-full-width">
+                    <input style="font-size: 11px" matInput id="Huesped1" placeholder="Huesped 1 Nombre" [(ngModel)]="name['name_1']" #Huesped1>
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input style="font-size: 11px" matInput id="Apellido1" placeholder="Apellido" [(ngModel)]="name['lname_1']" #Apellido1>
+                </mat-form-field>
+            </div>
+            <div class="d-flex justify-content-start align-items-center" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 2">
+                <mat-form-field class="example-full-width" >
+                    <input style="font-size: 11px" matInput id="Huesped2" placeholder="Huesped 2 Nombre" [(ngModel)]="name['name_2']" #Huesped2>
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input style="font-size: 11px" matInput id="Apellido2" placeholder="Apellido" [(ngModel)]="name['lname_2']" #Apellido2>
+                </mat-form-field>
+            </div>
+            <div class="d-flex justify-content-start align-items-center" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 3">
+                <mat-form-field class="example-full-width" >
+                    <input style="font-size: 11px" matInput id="Huesped3" placeholder="Huesped 3 Nombre" [(ngModel)]="name['name_3']" #Huesped3>
+                </mat-form-field>
+                <mat-form-field class="example-full-width" >
+                    <input style="font-size: 11px" matInput id="Apellido3" placeholder="Apellido" [(ngModel)]="name['lname_3']" #Apellido3>
+                </mat-form-field>
+            </div>
+            <div class="d-flex justify-content-start align-items-center" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 4">
+                <mat-form-field class="example-full-width" >
+                    <input style="font-size: 11px" matInput id="Huesped4" placeholder="Huesped 4 Nombre" [(ngModel)]="name['name_4']" #Huesped4>
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input style="font-size: 11px" matInput id="Apellido4" placeholder="Apellido" [(ngModel)]="name['lname_4']" #Apellido4>
+                </mat-form-field>
+            </div>
+            <div class="d-flex justify-content-start align-items-center" *ngIf="calcPax(i['adultos'],i['juniors'],i['menores']) >= 5">
+                <mat-form-field class="example-full-width" >
+                    <input style="font-size: 11px" matInput id="Huesped5" placeholder="Huesped 5 Nombre" [(ngModel)]="name['name_5']" #Huesped5>
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input style="font-size: 11px" matInput id="Apellido5" placeholder="Apellido" [(ngModel)]="name['lname_5']" #Apellido5>
+                </mat-form-field>
+            </div>
+            <div class="d-flex justify-content-start align-items-center">
+                <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editNameClose()" [disabled]="loading['editName']"><mat-icon *ngIf="!loading['editName']">cancel</mat-icon><span *ngIf="loading['editName']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editNameV2(name, i)" [disabled]="loading['editName']"><mat-icon *ngIf="!loading['editName']">done</mat-icon><span *ngIf="loading['editName']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+            </div>
+
+        </ng-container>
         <div class="container row p-2">
             <div class="col-4">
                 <div class="d-flex justify-content-start align-items-center">

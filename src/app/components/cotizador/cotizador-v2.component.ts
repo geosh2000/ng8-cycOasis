@@ -97,6 +97,7 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
   flagSearchTicket = false
   updateTicket:Object = {ticket: ''}
   lTicket = ''
+  levels = {}
 
   constructor(public _api: ApiService,
               private nbConfig: NgbDatepickerConfig,
@@ -251,6 +252,7 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
                   this.loading['cotizador'] = false;
                   this.resultCot = res['data']
                   this.filterExp = false;
+                  this.levels = res['data']['gen']['levels']
 
                    // let date1 = new Date(moment(res['data']['gen']['inicio']).format('YYYY'),moment(res['data']['gen']['inicio']).format('MM'),moment(res['data']['gen']['inicio']).format('DD'));
                   // let date2 = new Date(moment(res['data']['gen']['fin']).format('YYYY'),moment(res['data']['gen']['fin']).format('MM'),moment(res['data']['gen']['fin']).format('DD'));
@@ -261,7 +263,9 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
                   let b = moment(res['data']['gen']['fin'])
                   this.resultCot['gen']['noches'] = b.diff(a, 'days');
 
-                  this.resultCot['habs'] = this.buildData(res['data'])
+                  let defaultLevel = res['data']['gen']['levels']['l2']['l2_activo'] && res['data']['gen']['levels']['l2']['l2_allEnabled'] ? '2' : '1'
+
+                  this.resultCot['habs'] = this.buildData(res['data'], defaultLevel)
                   this.resTours = res['tours']
 
                   console.log( this.resultCot)
@@ -284,7 +288,7 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
     }
   }
 
-  buildData( data ){
+  buildData( data, dfLevel = '2' ){
 
     let result = []
     let inicio = data['gen']['inicio']
@@ -324,7 +328,7 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
                   habs: [],
                   adults: 0,
                   minors: 0,
-                  lSelected: '2',
+                  lSelected: dfLevel,
                   bo: data['habs'][h['code']]['disp']
                 }
                 for(let hab in data['habs'][h['code']]['cot'][cat] ){

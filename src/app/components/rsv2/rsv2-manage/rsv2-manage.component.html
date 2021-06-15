@@ -238,8 +238,8 @@
                 </div>
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>OR Level:</b></div>
+                    <div class="clientInfo" *ngIf="data['master']['orLevel']">{{ data['master']['orLevel'] }}</div>
                     <mat-progress-bar mode="buffer" *ngIf="loading['orUpdate']"></mat-progress-bar>
-                    <div class="clientInfo">{{ data['master']['orLevel'] }}</div>
                 </div>
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>Zendesk:</b></div>
@@ -321,7 +321,7 @@
                 </ng-container>
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>Comision:</b></div>
-                    <div class="clientInfo">{{ data['master']['comision'] | currency:'MXN':'symbol-narrow':'.2-2' }} MXN</div>
+                    <div class="clientInfo">{{ data['master']['comision'] }} MXN</div>
                 </div>
             </div>
             <!-- ====================== FIN LATERAL CLIENTE ====================== -->

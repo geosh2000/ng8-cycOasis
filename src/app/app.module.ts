@@ -26,6 +26,7 @@ import {MatAutocompleteModule,
   MatDialogModule,
   MatDividerModule,
   MatExpansionModule,
+  MatFormFieldModule,
   MatGridListModule,
   MatIconModule,
   MatInputModule,
@@ -427,6 +428,7 @@ import { RbLoyaltyComponent } from './config/upload-files/rb-loyalty/rb-loyalty.
     NgxMaterialTimepickerModule.setLocale('es-MX'),
     NgxAudioPlayerModule,
     SocketIoModule.forRoot(config),
+    MatFormFieldModule
   ],
   providers: [
     NavbarService,

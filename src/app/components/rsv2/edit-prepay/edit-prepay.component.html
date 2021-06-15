@@ -41,8 +41,20 @@
                 <input style="font-size: 11px" matInput placeholder="Comentarios" #commentsT>
             </mat-form-field>
         </div>
-        <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editTotalFlag = false" [disabled]="loading['editTotalMonto']"><mat-icon *ngIf="!loading['editTotalMonto']">cancel</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
-        <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editTotalMonto(montoT, commentsT)" [disabled]="loading['editTotalMonto']"><mat-icon *ngIf="!loading['editTotalMonto']">done</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+        <ng-container *ngIf="!advancedTotal">
+            <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editTotalFlag = false" [disabled]="loading['editTotalMonto']"><mat-icon *ngIf="!loading['editTotalMonto']">cancel</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+            <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editTotalMonto(montoT.value, commentsT.value)" [disabled]="loading['editTotalMonto']"><mat-icon *ngIf="!loading['editTotalMonto']">done</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+        </ng-container>
+    </div>
+    <div class="d-flex justify-content-start align-items-center" *ngIf="editTotalFlag && advancedTotal">
+            <div class="d-flex justify-content-around">
+                <mat-radio-group style="font-size: 11px; display: flex; flex-direction: column; margin: 15px 0;" aria-label="Select an option" [(ngModel)]="selectedRefound">
+                    <mat-radio-button style="font-size: 11px" [value]="true">Traspaso</mat-radio-button>
+                    <mat-radio-button style="font-size: 11px" [value]="false">Reembolso</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <button style="zoom: 0.8" mat-icon-button color='warn' [disabled]="loading['editTotalMonto']" (click)="advancedTotal = false"><mat-icon *ngIf="!loading['editTotalMonto']">cancel</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+            <button style="zoom: 0.8" mat-icon-button color='primary' [disabled]="loading['editTotalMonto']" (click)="editTotalMonto(bufferedParams.newMonto, bufferedParams.comment, true)"><mat-icon *ngIf="!loading['editTotalMonto']">done</mat-icon><span *ngIf="loading['editTotalMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
     </div>
 </ng-container>
 <div class="d-flex justify-content-start align-items-center">

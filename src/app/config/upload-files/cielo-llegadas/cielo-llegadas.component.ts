@@ -211,6 +211,7 @@ export class CieloLlegadasComponent implements OnInit {
 
               this.progress[i]['s'] = 2
               this.progress[i]['l'] = res['data'].length
+              this.progress[i]['r'] = res['result']
               i++
               if( i < d.length ){
                 this.submit( d, i )
@@ -221,6 +222,7 @@ export class CieloLlegadasComponent implements OnInit {
               const error = err.error;
               this.toastr.error( err, 'Error' )
               this.progress[i]['s'] = 3
+              this.progress[i]['r'] = err
 
               for(let x = i;i<d.length;i++){
                 this.progress[i]['s'] = 3
