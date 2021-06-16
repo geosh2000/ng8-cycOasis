@@ -7,6 +7,7 @@ import { NgbDateAdapter, NgbDateStruct, NgbDatepickerConfig } from '@ng-bootstra
 
 declare var jQuery: any;
 import * as moment from 'moment-timezone';
+import { CotHabDetailComponent } from '../cot-hab-detail/cot-hab-detail.component';
 
 @Component({
   selector: 'app-create-rsv',
@@ -38,6 +39,7 @@ import * as moment from 'moment-timezone';
 export class CreateRsvComponent implements OnInit {
 
   @ViewChild( SearchZdUserComponent ,{static:false}) private _zdu: SearchZdUserComponent
+  @ViewChild( CotHabDetailComponent ,{static:false}) public _chd: CotHabDetailComponent
   // tslint:disable-next-line: no-output-native
   @Output() error = new EventEmitter<any>()
   @Output() save = new EventEmitter<any>()
@@ -83,7 +85,9 @@ export class CreateRsvComponent implements OnInit {
       ['telCliente']:   new FormControl('', []),
       ['zdUserId']:   new FormControl('', [ Validators.required, Validators.pattern('^\\d+$')]),
       ['languaje']:   new FormControl('', [ Validators.required ]),
-      ['userCreated']:   new FormControl(this._init.currentUser['hcInfo']['id'], [ Validators.required, Validators.pattern('^\\d+$')])
+      ['userCreated']:   new FormControl(this._init.currentUser['hcInfo']['id'], [ Validators.required, Validators.pattern('^\\d+$')]),
+      ['orLevel']:   new FormControl('', []),
+      ['orId']:   new FormControl('', []),
     })
 
     this.clientForm =  new FormGroup({
@@ -108,6 +112,7 @@ export class CreateRsvComponent implements OnInit {
     this.masterLoc = null
     this.newRsvForm.controls['userCreated'].setValue(this._init.currentUser['hcInfo']['id'])
 
+    let oruser = {}
 
     if( !this.isNew ){
       this.masterLoc = e['masterlocatorid']
@@ -120,14 +125,41 @@ export class CreateRsvComponent implements OnInit {
       this.clientForm.controls['id'].setValue(e['zdUserId'])
       this.clientForm.controls['lang'].setValue(e['languaje'])
 
+      oruser['email'] = e['correoCliente']
+      oruser['nombre'] = e['nombreCliente']
+
     }else{
       this.newRsvForm.controls['nombreCliente'].setValue(e['name'])
       this.newRsvForm.controls['correoCliente'].setValue(e['email'])
       this.newRsvForm.controls['telCliente'].setValue(e['phone'])
       this.newRsvForm.controls['zdUserId'].setValue(e['id'])
       this.newRsvForm.controls['languaje'].setValue(e['user_fields']['idioma_cliente'])
+
+      oruser['email'] = e['email']
+      oruser['nombre'] = e['name']
     }
-    this.searchUserFlag = false
+
+    this.loading['orw'] = true
+
+
+    this._api.restfulPut( oruser, 'Loyalty/createUserFromZd' )
+                .subscribe( res => {
+
+                  this.loading['orw'] = false;
+                  this.newRsvForm.controls['orLevel'].setValue(res['data']['level']['code'] == 'basic' ? 'Silver' : (res['data']['level']['code'] == 'gold' ? 'Gold' : 'Platinum') )
+                  this.newRsvForm.controls['orId'].setValue(res['data']['id'])
+                  this.searchUserFlag = false
+                  
+                }, err => {
+                  this.loading['orw'] = false;
+                  
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+                  this.searchUserFlag = false
+
+                });
+
 
   }
 

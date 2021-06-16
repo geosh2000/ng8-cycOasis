@@ -106,16 +106,16 @@ export class EditMontoParcialComponent implements OnInit {
       10: 'htl_apellido_5'
     }
     let names = {
-      htl_nombre_1: n['name_1'] == '' ? null : n['name_1'],
-      htl_apellido_1: n['lname_1'] == '' ? null : n['lname_1'],
-      htl_nombre_2: n['name_2'] == '' ? null : n['name_2'],
-      htl_apellido_2: n['lname_2'] == '' ? null : n['lname_2'],
-      htl_nombre_3: n['name_3'] == '' ? null : n['name_3'],
-      htl_apellido_3: n['lname_3'] == '' ? null : n['lname_3'],
-      htl_nombre_4: n['name_4'] == '' ? null : n['name_4'],
-      htl_apellido_4: n['lname_4'] == '' ? null : n['lname_4'],
-      htl_nombre_5: n['name_5'] == '' ? null : n['name_5'],
-      htl_apellido_5: n['lname_5'] == '' ? null : n['lname_5'],
+      htl_nombre_1:   n['name_1']   != null ? (n['name_1'].trim()  ==  '' ? null : n['name_1'].trim())  : null,
+      htl_apellido_1: n['lname_1']  != null ? (n['lname_1'].trim() ==  '' ? null : n['lname_1'].trim()) : null,
+      htl_nombre_2:   n['name_2']   != null ? (n['name_2'].trim()  ==  '' ? null : n['name_2'].trim())  : null,
+      htl_apellido_2: n['lname_2']  != null ? (n['lname_2'].trim() ==  '' ? null : n['lname_2'].trim()) : null,
+      htl_nombre_3:   n['name_3']   != null ? (n['name_3'].trim()  ==  '' ? null : n['name_3'].trim())  : null,
+      htl_apellido_3: n['lname_3']  != null ? (n['lname_3'].trim() ==  '' ? null : n['lname_3'].trim()) : null,
+      htl_nombre_4:   n['name_4']   != null ? (n['name_4'].trim()  ==  '' ? null : n['name_4'].trim())  : null,
+      htl_apellido_4: n['lname_4']  != null ? (n['lname_4'].trim() ==  '' ? null : n['lname_4'].trim()) : null,
+      htl_nombre_5:   n['name_5']   != null ? (n['name_5'].trim()  ==  '' ? null : n['name_5'].trim())  : null,
+      htl_apellido_5: n['lname_5']  != null ? (n['lname_5'].trim() ==  '' ? null : n['lname_5'].trim()) : null,
     }
 
 

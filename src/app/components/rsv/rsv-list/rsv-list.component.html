@@ -111,6 +111,11 @@
                             <span style="font-size: smaller" *ngSwitchCase="'default'">
                             {{ row[item['key']] }}
                             </span>
+                            <span style="font-size: smaller" *ngSwitchCase="'tickets'">
+                                <span *ngIf="row['tickets'] == '' || row['tickets'] == null"><button style="zoom: 0.8" mat-button color="primary" (click)="updateRelatedTicket(row['masterlocatorid'], row)"><mat-icon>refresh</mat-icon>Obtener Tickets</button></span>
+                                <span *ngIf="row['tickets'] != '' && row['tickets'] != null">{{ row[item['key']] }}</span>  
+                                <mat-progress-bar mode="buffer" *ngIf="row['loading']"></mat-progress-bar>                    
+                            </span>
                         <span style="font-size: smaller" *ngSwitchCase="'npropio'">
                             <!-- {{ row[item['key']] | capitalizado }} -->
                             {{ row[item['key']] }}

@@ -99,12 +99,13 @@
                                 <div [style.width.px]="45" class='text-right pl-3 text-success font-weight-bold' *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
                                     {{ (1-((hb['USD_total'])/hb['USD'])) | percent:'.0-0' }}<span *ngIf="level != '2'"> + {{ (1-((level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total'])/hb['l1USD_total'])) | percent:'.0-0' }}</span>
                                 </div>
-                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']">
+                                <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold">
+                                <!-- <div [style.width.px]="130" class="text-right text-success pl-3 font-weight-bold" *ngIf="hb['l'+level+'USD_total'] != hb['l1USD_total']"> -->
                                     <mat-chip-list aria-label="Fish selection">
                                         <mat-chip [color]="level == '1' ? '' : level == '3' ? 'l3' : level == '4' ? 'l4' : 'primary'" selected>
                                             <span [style.width.px]="120">{{ (moneda ? (level == '2' ? hb['MXN_total'] : hb['l'+level+'MXN_total']) : level == '2' ? hb['USD_total'] : hb['l'+level+'USD_total']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
                                         </mat-chip>
-                                    </mat-chip-list>
+                                    </mat-chip-list>    
                                 </div>
                             </div>
                             <!-- <div class="d-flex justify-content-end" *ngIf="hb['fdp']">

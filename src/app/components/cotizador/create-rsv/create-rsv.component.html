@@ -22,10 +22,11 @@
             <div class="modal-body">
 
                 <!-- BEGIN SEARCH APPS -->
-                <app-search-zd-user (selected)="selectedUser($event)" *ngIf="searchUserFlag && isNew"></app-search-zd-user>
-                <app-search-loc (selected)="selectedUser($event)" *ngIf="searchUserFlag && !isNew"></app-search-loc>
-
-                <form [formGroup]="newRsvForm" *ngIf="!searchUserFlag">
+                <app-search-zd-user (selected)="selectedUser($event)" *ngIf="searchUserFlag && isNew && !loading['orw']"></app-search-zd-user>
+                <app-search-loc (selected)="selectedUser($event)" *ngIf="searchUserFlag && !isNew && !loading['orw']"></app-search-loc>
+                <mat-progress-bar mode="buffer" *ngIf="loading['orw']"></mat-progress-bar>
+                
+                <form [formGroup]="newRsvForm" *ngIf="!searchUserFlag && !loading['orw']">
                     <div class='container d-flex justify-content-center'>
                         <table class="example-full-width" cellspacing="0" [style.width.px]="880">
                             <tr>
@@ -62,7 +63,7 @@
                         </div>
                     </div>
                 </form>
-                <form [formGroup]="clientForm" (ngSubmit)="saveLang()" *ngIf="!searchUserFlag && !isNew && newRsvForm.status=='INVALID'">
+                <form [formGroup]="clientForm" (ngSubmit)="saveLang()" *ngIf="!searchUserFlag && !isNew && newRsvForm.status=='INVALID' && !loading['orw']">
                     <div class="d-flex justify-content-center pt-3" [style.width.px]="1137">
                         <mat-form-field>
                             <mat-label>Idioma Usuario</mat-label>
@@ -94,6 +95,19 @@
                             <p><span class=''>Categoría: {{ data['habitacion'] }}</span><span class="text-info"> ({{ data['habCat']}})</span></p>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-center flex-wrap p-2" *ngIf="data['habs'][0]['isOr'] == '1'">
+
+                        <img style="width: 150px" src="assets/img/logos/O REWARDS-SILVER.PNG" *ngIf="newRsvForm.controls['orLevel'].value == 'Silver'">
+                        <img style="width: 150px" src="assets/img/logos/O REWARDS-GOLD.PNG" *ngIf="newRsvForm.controls['orLevel'].value == 'Gold'">
+                        <img style="width: 150px" src="assets/img/logos/O REWARDS-PLATINUM.PNG" *ngIf="newRsvForm.controls['orLevel'].value == 'Platinum'">
+                        <mat-radio-group (change)="_chd.calcTotal($event)" aria-label="Select an option" [(ngModel)]="data['lSelected']" class="m-1">
+                            <mat-radio-button value="1">{{ data['habs'][0]['l1_name'] }}</mat-radio-button>
+                            <mat-radio-button value="2" *ngIf="data['habs'][0]['l2_active'] == '1'">{{ data['habs'][0]['l2_name'] }}</mat-radio-button>
+                            <mat-radio-button value="3" [disabled]="!(_init.checkSingleCredential('rsv_enableAllLevels') || newRsvForm.controls['orLevel'].value == 'Gold' || newRsvForm.controls['orLevel'].value == 'Platinum')" *ngIf="data['habs'][0]['l3_active'] == '1'">{{ data['habs'][0]['l3_name'] }}</mat-radio-button>
+                            <mat-radio-button value="4" [disabled]="!(_init.checkSingleCredential('rsv_enableAllLevels') || newRsvForm.controls['orLevel'].value == 'Platinum')" *ngIf="data['habs'][0]['l4_active'] == '1'">{{ data['habs'][0]['l4_name'] }}</mat-radio-button>
+                        </mat-radio-group>
+
+                    </div>
                     <div class="d-flex justify-content-center container-fluid align-content-center bg-light p-2 alert" [ngClass]="{'alert-warning': !hasTransfer, 'alert-success': hasTransfer}" role="alert" *ngIf="isNew">
                         <div class="text-left mr-2">
                             Esta reservación incluye traslados en cortesía?
@@ -118,7 +132,7 @@
                             <label for="fechas">Notas (opcional)</label>
                             <div class="input-group">
                                 <textarea rows="5" cols="120" [(ngModel)]="data['notasHotel']" placeholder="Notas para el hotel" id="notas"></textarea>
-                            </div>
+                            </div>_init.checkSingleCredential('rsv_enableAllLevels') || 
                         </div>
 
                     </div> -->

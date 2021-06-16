@@ -152,7 +152,8 @@ export class RsvListComponent implements OnInit {
     { type: 'conf', key: 'sumConfirm', title: 'Conf' },
     { type: 'date', key: 'dtCreated', title: 'Creacion' },
     { type: 'default', key: 'agentName', title: 'Creador' },
-    { type: 'button', key: 'view', title: 'Ver' }
+    { type: 'button', key: 'view', title: 'Ver' },
+    { type: 'tickets', key: 'tickets', title: 'Tickets' }
   ]
 
   constructor(public _api: ApiService,
@@ -298,6 +299,30 @@ export class RsvListComponent implements OnInit {
     let m = moment.tz(e, this._tz.defaultZone).tz(this._tz.zone)
 
     return m > moment()
+  }
+
+  updateRelatedTicket( loc, i ){
+    i['loading'] = true
+
+    this._api.restfulPut( { loc: loc }, 'Calls/getZdItemRelated' )
+                .subscribe( res => {
+
+                  i['loading'] = false;
+                  this.toastr.success( res['msg'], 'Actualizado' );
+                  let tkts = ''
+                  for( let t of res['data'] ){
+                    tkts += t['id']+','
+                  }
+                  i['tickets'] = tkts
+
+                }, err => {
+                  i['loading'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
   }
 
 }
