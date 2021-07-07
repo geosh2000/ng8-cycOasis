@@ -208,6 +208,7 @@ import { RobinQueuesComponent } from './config/robin-queues/robin-queues.compone
 import { PollenListComponent } from './components/rsv/pollen-list/pollen-list.component';
 import { CieloChangesComponent } from './components/cielo/cielo-changes/cielo-changes.component';
 import { RbLoyaltyComponent } from './config/upload-files/rb-loyalty/rb-loyalty.component';
+import { CotizaPaxComponent } from './components/rsv2/cotiza-pax/cotiza-pax.component';
 
 
 @NgModule({
@@ -349,7 +350,8 @@ import { RbLoyaltyComponent } from './config/upload-files/rb-loyalty/rb-loyalty.
     RobinQueuesComponent,
     PollenListComponent,
     CieloChangesComponent,
-    RbLoyaltyComponent
+    RbLoyaltyComponent,
+    CotizaPaxComponent
 
   ],
   imports: [

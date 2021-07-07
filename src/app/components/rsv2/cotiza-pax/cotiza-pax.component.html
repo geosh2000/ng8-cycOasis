@@ -1,0 +1,103 @@
+<div class="modal fade" id="viewPrices" tabindex="-1" role="dialog" aria-labelledby="viewPricesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewPricesLabel">Precios de la Habitación <span *ngIf="loading['viewPrices']"><mat-progress-bar mode="buffer"></mat-progress-bar></span><span *ngIf="!loading['viewPrices']">{{ viewPricesData['categoria'] }} ({{ viewPricesData['hotel'] }})</span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body ">
+                <ng-container *ngIf="loading['viewPrices']">
+                    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                </ng-container>
+                <ng-container *ngIf="!loading['viewPrices']">
+                    <h6>Grupo Tarifario: {{ viewPricesData['grupoTfas'] }} || Ocupación Original: {{ viewPricesData['occOriginal'] }}</h6>
+                    
+                    <div class="modal-body d-flex justify-content-center">
+                        <table class="table table-sm table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Ocupación (es)</th>
+                                    <th>Monto Total</th>
+                                    <th>Diferencia ({{ viewPricesData['moneda'] }})</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.0.0', 'table-danger': viewPricesData['pax1'] == null}" *ngIf="viewPricesData['pax1'] != null && viewPricesData['maxAdults'] >= 1">
+                                    <td class="text-center">1.0</td>
+                                    <td class="text-center">{{ viewPricesData['pax1'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax1']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.0.1', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 1">
+                                    <td class="text-center">1.1</td>
+                                    <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.0.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 2">
+                                    <td class="text-center">1.2</td>
+                                    <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.1.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 3">
+                                    <td class="text-center">1.3</td>
+                                    <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.0', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2">
+                                    <td class="text-center">2.0</td>
+                                    <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.1', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 1">
+                                    <td class="text-center">2.1</td>
+                                    <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 2">
+                                    <td class="text-center">2.2</td>
+                                    <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.1.2', 'table-danger': viewPricesData['pax2_3'] == null}" *ngIf="viewPricesData['pax2_3'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 3">
+                                    <td class="text-center">2.3</td>
+                                    <td class="text-center">{{ viewPricesData['pax2_3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax2_3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.0', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3">
+                                    <td class="text-center">3.0</td>
+                                    <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.1', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3 && viewPricesData['maxChild'] >= 1">
+                                    <td class="text-center">3.1</td>
+                                    <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.2', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3 && viewPricesData['maxChild'] >= 2">
+                                    <td class="text-center">3.2</td>
+                                    <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '4.0.0', 'table-danger': viewPricesData['pax4'] == null}" *ngIf="viewPricesData['pax4'] != null && viewPricesData['maxAdults'] >= 4">
+                                    <td class="text-center">4.0</td>
+                                    <td class="text-center">{{ viewPricesData['pax4'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax4']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                                <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '4.0.1', 'table-danger': viewPricesData['pax4'] == null}" *ngIf="viewPricesData['pax4'] != null && viewPricesData['maxAdults'] >= 4 && viewPricesData['maxChild'] >= 1">
+                                    <td class="text-center">4.1</td>
+                                    <td class="text-center">{{ viewPricesData['pax4'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
+                                    <td class="text-center">{{ viewPricesData['difPax4']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </ng-container>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

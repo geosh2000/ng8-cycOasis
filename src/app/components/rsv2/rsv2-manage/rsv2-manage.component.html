@@ -151,6 +151,7 @@
                             </div>
                             <div class="container d-flex flex-wrap justify-content-end">
                                 <div class="mr-auto"><span class="productConceptXL" [style.width.px]="390">Notas: </span><span class="clientInfo">{{ i['notas'] }}</span></div>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="_cp.viewPricesLoad(i['itemId'])" *ngIf="i['itemType'] == 1 && i['isCancel'] == 0 && i['isOpen'] == 0"><mat-icon>request_quote</mat-icon> Ver Precios</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openOD(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isQuote'] == 0 && i['isCancel'] == 0"><mat-icon>meeting_room</mat-icon> Fechas Abiertas</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openODSet(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isOpen'] == 1 && i['isCancel'] == 0 && i['isQuote'] == 0"><mat-icon>beach_access</mat-icon> Establecer Fechas</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)" *ngIf="_init.checkSingleCredential('app_cotizador')"><mat-icon>remove_circle</mat-icon> Cancelar</button>
@@ -537,4 +538,8 @@
         </div>
     </div>
 </div>
+<!-- ====================== FIN MODAL CHANGE CREATOR ====================== -->
+
+<!-- ====================== MODAL VIEW PRICES ====================== -->
+<app-cotiza-pax></app-cotiza-pax>
 <!-- ====================== FIN MODAL CHANGE CREATOR ====================== -->

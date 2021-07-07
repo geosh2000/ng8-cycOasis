@@ -24,6 +24,7 @@ import { PaymentLinkGenComponent } from '../payment-link-gen/payment-link-gen.co
 import { RsvCancelItemComponent } from '../rsv-cancel-item/rsv-cancel-item.component';
 import { ValidateCertificateComponent } from '../validate-certificate/validate-certificate.component';
 import { RsvChangesComponent } from '../rsv-changes/rsv-changes.component';
+import { CotizaPaxComponent } from '../cotiza-pax/cotiza-pax.component';
 
 @Component({
   selector: 'app-rsv2-manage',
@@ -43,6 +44,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   @ViewChild(PaymentLinkGenComponent,{static:false}) _genL:PaymentLinkGenComponent;
   @ViewChild(RsvCancelItemComponent,{static:false}) _xld:RsvCancelItemComponent;
   @ViewChild(ValidateCertificateComponent,{static:false}) vc:ValidateCertificateComponent;
+  @ViewChild(CotizaPaxComponent,{static:false}) _cp:CotizaPaxComponent;
 
   penaltyXld:FormGroup
 
@@ -81,6 +83,11 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   ccFlag = false
 
   resConf = {}
+
+  viewPricesData = {
+    'categoria': '',
+    'hotel': '',
+  }
 
   constructor(public _api: ApiService,
               public _init: InitService,
@@ -383,6 +390,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
 
                 });
   }
+
 
   saveName( e ){
 
