@@ -71,13 +71,13 @@ export class DoPaymentComponent implements OnInit {
     for( let it of this.itms ){
       if( i == it['itemId'] ){
         if( e.checked ){
-          let toPay = (it['montoParcial'] - it['montoPagado']) > 0 ? (it['montoParcial'] - it['montoPagado']) : (it['monto'] - it['montoPagado'])
+          let toPay = (it['montoParcial'] - it['montoAllPaid']) > 0 ? (it['montoParcial'] - it['montoAllPaid']) : (it['monto'] - it['montoAllPaid'])
           if( this.remaining - toPay < 0 ){
             this.itms[x]['toPay'] = this.remaining
             this.toastr.error('El saldo no es suficiente para ingresar ese monto, se ha ajustado el monto para que el saldo quede en 0', 'Monto inválido')
             this.remaining -= this.itms[x]['toPay']
           }else{
-            this.itms[x]['toPay'] = (it['montoParcial'] - it['montoPagado']) > 0 ? (it['montoParcial'] - it['montoPagado']) : (it['monto'] - it['montoPagado'])
+            this.itms[x]['toPay'] = (it['montoParcial'] - it['montoAllPaid']) > 0 ? (it['montoParcial'] - it['montoAllPaid']) : (it['monto'] - it['montoAllPaid'])
             this.remaining -= this.itms[x]['toPay']
           }
         }else{
@@ -95,7 +95,21 @@ export class DoPaymentComponent implements OnInit {
     this._sp.search()
     jQuery('#doPayment').modal('show')
     this.itms = JSON.parse(JSON.stringify(items))
+    for( let i of this.itms ){
+      i['montoAllPaid'] = parseFloat(i['montoPagado']) + parseFloat(i['montoEnValidacion'])
+    }
+    
+    console.log(this.itms)
     // this.getAccount( u )
+  }
+
+  mathOp( arr, s ){
+    switch( s ){
+      case '+':
+        return parseFloat(arr[0]) + parseFloat(arr[1])
+      case '-':
+        return parseFloat(arr[0]) - parseFloat(arr[1])
+    }
   }
 
   getAccount( u ){
@@ -211,7 +225,7 @@ export class DoPaymentComponent implements OnInit {
     let itms = JSON.parse(JSON.stringify(this.itms))
     for( let i of itms ){
       if( i['toPay'] > 0 ){
-        let paid = parseFloat(i['montoPagado']) + parseFloat(i['toPay'])
+        let paid = parseFloat(i['montoPagado']) + parseFloat(i['montoEnValidacion']) + parseFloat(i['toPay'])
         if( paid < parseFloat(i['monto']) ){
           i['isParcial'] = 1
           i['isPagoHotel'] = 0
@@ -225,6 +239,7 @@ export class DoPaymentComponent implements OnInit {
         }
 
         i['montoPagado'] = parseFloat(i['montoPagado'])
+        i['montoEnValidacion'] = parseFloat(i['montoEnValidacion'])
         i['monto'] = parseFloat(i['monto'])
         i['toPay'] = parseFloat(i['toPay'])
         i['montoParcial'] = parseFloat(i['montoParcial'])
@@ -234,6 +249,7 @@ export class DoPaymentComponent implements OnInit {
     }
 
     this.builtCheckOut = totals
+    console.log(this.builtCheckOut)
     el.next()
   }
 

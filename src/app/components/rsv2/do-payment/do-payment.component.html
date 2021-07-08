@@ -33,18 +33,18 @@
                                         </div>
                                         <div class="col-2 mt-auto mb-auto text-right">{{ i['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</div>
                                         <div class="col-4 mt-auto mb-auto text-right row">
-                                            <div class="col-6 text-right" [ngClass]="{'text-danger': (i['montoParcial'] - i['montoPagado']) > 0, 'text-success': (i['montoParcial'] - i['montoPagado']) <= 0}">
+                                            <div class="col-6 text-right" [ngClass]="{'text-danger': (i['montoParcial'] - i['montoAllPaid']) > 0, 'text-success': (i['montoParcial'] - i['montoAllPaid']) <= 0}">
                                                 <p><small>{{ (i['toPay'] ? i['toPay'] : 0) | currency:'MXN':'symbol-narrow':'.2-2' }}</small></p>
-                                                <p><small [ngClass]="{'text-success': i['montoParcial'] - i['montoPagado'] - (i['toPay'] ? i['toPay'] : 0) <= 0}">saldo: ({{ ((i['montoParcial'] - i['montoPagado'] - (i['toPay'] ? i['toPay'] : 0)) < 0 ? 0 : (i['montoParcial'] - i['montoPagado'] - (i['toPay'] ? i['toPay'] : 0))) | currency:'MXN':'symbol-narrow':'.2-2' }})</small></p>
+                                                <p><small [ngClass]="{'text-success': i['montoParcial'] - i['montoAllPaid'] - (i['toPay'] ? i['toPay'] : 0) <= 0}">saldo: ({{ ((i['montoParcial'] - i['montoAllPaid'] - (i['toPay'] ? i['toPay'] : 0)) < 0 ? 0 : (i['montoParcial'] - (i['montoAllPaid']) - (i['toPay'] ? i['toPay'] : 0))) | currency:'MXN':'symbol-narrow':'.2-2' }})</small></p>
                                             </div>
-                                            <div class="col-6 text-right" [ngClass]="{'text-danger': (i['monto'] - i['montoPagado']) > 0, 'text-success': (i['monto'] - i['montoPagado']) <= 0}">
-                                                <b>{{ (i['monto'] - i['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b>
-                                                <p><small [ngClass]="{'text-success': i['monto'] - i['montoPagado'] - (i['toPay'] ? i['toPay'] : 0) <= 0}">saldo: ({{ (i['monto'] - i['montoPagado'] - (i['toPay'] ? i['toPay'] : 0)) | currency:'MXN':'symbol-narrow':'.2-2' }})</small></p>
+                                            <div class="col-6 text-right" [ngClass]="{'text-danger': (i['monto'] - i['montoAllPaid']) > 0, 'text-success': (i['monto'] - i['montoAllPaid']) <= 0}">
+                                                <b>{{ (i['montoSaldoTotal']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b>
+                                                <p><small [ngClass]="{'text-success': i['monto'] - i['montoAllPaid'] - (i['toPay'] ? i['toPay'] : 0) <= 0}">saldo: ({{ (i['montoSaldoTotal'] - (i['toPay'] ? i['toPay'] : 0)) | currency:'MXN':'symbol-narrow':'.2-2' }})</small></p>
                                             </div>
                                         </div>
                                         <div class="col-2 mt-auto mb-auto text-right">
                                             <mat-form-field class="example-full-width" [style.width.px]="130">
-                                                <input type="number" [max]="(i['monto'] - i['montoPagado'])" (change)="changeAmmount($event.target.value, i)" [(ngModel)]="i['toPay']" min="0" style="font-size: 11px" matInput placeholder="Monto a Pagar" [name]="i['itemId']" [readonly]="!i['selected']">
+                                                <input type="number" [max]="(i['monto'] - i['montoAllPaid'])" (change)="changeAmmount($event.target.value, i)" [(ngModel)]="i['toPay']" min="0" style="font-size: 11px" matInput placeholder="Monto a Pagar" [name]="i['itemId']" [readonly]="!i['selected']">
                                             </mat-form-field>
                                         </div>
                                         <div class="col-1">
@@ -93,7 +93,7 @@
                                     <div class="col-2 mt-auto mb-auto text-right">{{ i['monto'] | currency:'MXN':'symbol-narrow':'.2-2' }}</div>
                                     <div class="col-4 mt-auto mb-auto text-right row">
                                         <div class="col-6 text-right text-info">
-                                            <p>{{ (i['montoPagado'] ? i['montoPagado'] : 0) | currency:'MXN':'symbol-narrow':'.2-2' }}</p>
+                                            <p>{{ (i['montoAllPaid'] ? i['montoAllPaid'] : 0) | currency:'MXN':'symbol-narrow':'.2-2' }}</p>
 
                                         </div>
                                         <div class="col-6 text-right text-success">
@@ -101,8 +101,8 @@
 
                                         </div>
                                     </div>
-                                    <div class="col-3 mt-auto mb-auto text-right" [ngClass]="{'text-danger': (i['monto']-i['montoPagado']-i['toPay']) > 0,'text-success': (i['monto']-i['montoPagado']-i['toPay']) <= 0}">
-                                        <b>{{ (i['monto']-i['montoPagado']-i['toPay']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b>
+                                    <div class="col-3 mt-auto mb-auto text-right" [ngClass]="{'text-danger': (i['monto']-i['montoAllPaid']-i['toPay']) > 0,'text-success': (i['monto']-i['montoAllPaid']-i['toPay']) <= 0}">
+                                        <b>{{ (i['monto']-i['montoAllPaid']-i['toPay']) | currency:'MXN':'symbol-narrow':'.2-2' }}</b>
                                     </div>
                                 </div>
                                 <!-- </mat-list-item> -->

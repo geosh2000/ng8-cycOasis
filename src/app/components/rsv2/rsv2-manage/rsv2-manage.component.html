@@ -124,6 +124,7 @@
                                         <div class="col-4 mt-auto mb-auto text-right row">
                                             <div class="col-6 text-right p-0">
                                                 <p class="text-success"><small>{{ i['montoPagado'] | currency:'MXN':'symbol-narrow':'.2-2' }}</small></p>
+                                                <p style="font-size: 10px" [ngClass]="'text-warning'" *ngIf="i['montoEnValidacion'] > 0">(validando: {{ (i['montoEnValidacion']) | currency:'MXN':'symbol-narrow':'.2-2' }})</p>
                                                 <p style="font-size: 10px" [ngClass]="{'text-danger': i['montoSaldoPrepago'] > 0, 'text-success': i['montoSaldoPrepago'] <= 0}">(saldo: {{ (i['montoSaldoPrepago']) | currency:'MXN':'symbol-narrow':'.2-2' }})</p>
                                             </div>
                                             <div class="col-6 text-right" [ngClass]="{'text-primary': i['montoSaldoHotel'] > 0, 'text-success': i['montoSaldoHotel'] <= 0}"><b>{{ i['montoSaldoHotel'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
@@ -158,7 +159,7 @@
                                 <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="changeItem(i)" *ngIf="_init.checkSingleCredential('rsv_changes') && i['isOpen'] == 0  && i['isCancel'] == 0"><mat-icon>swap_horizontal_circle</mat-icon> Modificar</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="success" (click)="validateCert(i)" *ngIf="_init.checkSingleCredential('rsv_validateCert') && i['grupo']=='CORT' && i['isQuote']==1"><mat-icon>done_outline</mat-icon> Validar Certificado</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="reactivate(i)" *ngIf="_init.checkSingleCredential('rsv_reactivate') && !isVigente(i['vigencia']) && i['isQuote'] == 1 && i['isCancel'] == 0"><ng-container *ngIf="loading['reactivate']"><span><i class="fas fa-spinner fa-pulse"></i></span></ng-container><ng-container *ngIf="!loading['reactivate']"><mat-icon>alarm_add</mat-icon> Reactivar</ng-container></button>
-                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="confirmItem(i)" *ngIf="i['isQuote'] == 0 && i['confirmOK'] == null"><mat-icon>done_outline</mat-icon> Confirmar</button>
+                                <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="confirmItem(i)" *ngIf="(i['isQuote'] == 0 || i['isConfirmable'] == 1) && i['confirmOK'] == null"><mat-icon>done_outline</mat-icon> Confirmar</button>
                                 <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="resetConfirm(false,i)" *ngIf="_init.checkSingleCredential('rsv_reset_confirm') && i['isQuote'] == 0 && i['confirmOK'] != null"><mat-icon>delete_forever</mat-icon> Reset Confirmación</button>
                             </div>
 
@@ -175,6 +176,7 @@
                         <div class="col-4 text-right row">
                             <div class="col-6 text-right p-0">
                                 <p class="text-success"><b><small>{{ data['master']['totalMontoPagadoMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }}</small></b></p>
+                                <p style="font-size: 10px" [ngClass]="'text-warning'" *ngIf="data['master']['totalMontoValidandoMXN'] > 0"><b>(validando: {{ data['master']['totalMontoValidandoMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }})</b></p>
                                 <p style="font-size: 10px" [ngClass]="{'text-danger': data['master']['totalMontoSaldoMXN'] > 0, 'text-success': data['master']['totalMontoSaldoMXN'] <= 0}"><b>(saldo: {{ data['master']['totalMontoSaldoMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }})</b></p>
                             </div>
                             <div class="col-6 text-right" [ngClass]="{'text-primary': data['master']['totalMontoHotelMXN'] > 0, 'text-success': data['master']['totalMontoHotelMXN'] <= 0}"><b>{{ data['master']['totalMontoHotelMXN'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
@@ -187,6 +189,7 @@
                         <div class="col-4 text-right row">
                             <div class="col-6 text-right p-0">
                                 <p class="text-success"><b><small>{{ data['master']['totalMontoPagadoUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }}</small></b></p>
+                                <p style="font-size: 10px" [ngClass]="'text-warning'" *ngIf="data['master']['totalMontoValidandoUSD'] > 0"><b>(validando: {{ data['master']['totalMontoValidandoUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }})</b></p>
                                 <p style="font-size: 10px" [ngClass]="{'text-danger': data['master']['totalMontoSaldoUSD'] > 0, 'text-success': data['master']['totalMontoSaldoUSD'] <= 0}"><b>(saldo: {{ data['master']['totalMontoSaldoUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }})</b></p>
                             </div>
                             <div class="col-6 text-right" [ngClass]="{'text-primary': data['master']['totalMontoHotelUSD'] > 0, 'text-success': data['master']['totalMontoHotelUSD'] <= 0}"><b>{{ data['master']['totalMontoHotelUSD'] | currency:'MXN':'symbol-narrow':'.2-2' }}</b></div>
