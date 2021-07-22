@@ -49,7 +49,7 @@ export class RsvCancelItemComponent implements OnInit {
   }
 
   confirmCancel(){
-    if( this.cancelItemData['isQuote'] == 1 ){
+    if( this.cancelItemData['isQuote'] == 1 && this.cancelItemData['isConfirmable'] == 0 ){
       this.sendCancellation( true )
     }else{
       if( this._init.currentUser.credentials['rsv_cancelAll'] != 1 ){
