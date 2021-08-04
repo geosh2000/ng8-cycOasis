@@ -1,6 +1,6 @@
 <!-- DESKTOP -->
 <div class="detailDesktop">
-    <mat-list>
+    <mat-list *ngIf="!showPaq">
         <ng-container *ngFor="let hb of habs; index as i">
     
             <div class="d-flex justify-content-between container-fluid align-content-center bg-light p-2">
@@ -139,6 +139,27 @@
     
             </div>
             <mat-divider></mat-divider>
+        </ng-container>
+    </mat-list>
+
+    <mat-list *ngIf="showPaq">
+        <div class="d-flex justify-content-start container-fluid align-items-center bg-light p-2">
+            <div class="p-1 text-left">
+                <h3><i class="fas fa-bed p-1"></i> {{ habs.length }}</h3>
+            </div>
+            <div class="p-1 text-left" *ngIf="level != null">
+                <span>habitaciones para {{ occ['adultos'] }} Adultos, {{ occ['menores'] }} Menores. Incluye tours: <span *ngFor="let t of paq['controlls']['paq'+level]['tours']">{{ t['nombre'] }}, </span> para {{ paq['adults'] }} adultos.</span>
+            </div>
+        </div>
+        <ng-container *ngIf="level != null">
+            <div class="row container-fluid align-content-center bg-light ng-star-inserted m-0" *ngFor="let t of paq['controlls']['paq'+level]['tours']">
+                <div class="p-1 text-left col-2">
+                    <h5><b>{{ t['titulo'] }}: </b></h5>
+                </div>
+                <div class="p-1 text-left col-10">
+                    <span>{{ t['descripcion'] }}. Costo normal por los {{ paq['adults'] }} adultos: {{ (moneda ? t['n_priceMXN'] : t['n_priceUSD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}. Precio para {{ t['ppersona'] == '1' ? 'persona' : 'pareja / persona' }} adicional: {{ (moneda ? t['adultMXNReal'] : t['normalUSD']) | currency:(moneda ? 'MXN' : 'USD'):'symbol-narrow':'.2-2' }}</span>
+                </div>
+            </div>
         </ng-container>
     </mat-list>
 </div>

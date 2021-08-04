@@ -6,9 +6,10 @@
             </div>
             <ng-container *ngIf="!loading">
                 <div class="modal-body">
-                    <div class="alert alert-warning" role="alert">
+                    <div class="alert alert-warning" role="alert"   *ngIf="!customMsgFlag">
                         Recuerda que este módulo es sólo para <b>corregir o agregar datos del cliente actual</b>. Si necesitas cambiarlo completamente, debes solicitarlo a gerencia o crear un nuevo localizador.
                     </div>
+                    <div class="alert alert-warning text-center" role="alert" *ngIf="customMsgFlag" [innerHtml]="customMsg"></div>
                     <app-search-zd-user (selected)="updateClient($event)"></app-search-zd-user>
                     <div class="alert alert-primary" role="alert" *ngIf="flagDif">
                         No existen diferencias para guardar

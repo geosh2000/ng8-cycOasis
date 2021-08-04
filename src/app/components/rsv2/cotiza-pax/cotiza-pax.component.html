@@ -8,19 +8,20 @@
         </button>
             </div>
             <div class="modal-body ">
-                <ng-container *ngIf="loading['viewPrices']">
+                <ng-container *ngIf="loading['viewPrices'] || loading['applying']">
                     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
                 </ng-container>
-                <ng-container *ngIf="!loading['viewPrices']">
+                <ng-container *ngIf="!loading['viewPrices'] && !loading['applying']">
                     <h6>Grupo Tarifario: {{ viewPricesData['grupoTfas'] }} || Ocupación Original: {{ viewPricesData['occOriginal'] }}</h6>
                     
                     <div class="modal-body d-flex justify-content-center">
                         <table class="table table-sm table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Ocupación (es)</th>
-                                    <th>Monto Total</th>
-                                    <th>Diferencia ({{ viewPricesData['moneda'] }})</th>
+                                    <th class="text-center">Ocupación (es)</th>
+                                    <th class="text-center">Monto Total</th>
+                                    <th class="text-center">Diferencia ({{ viewPricesData['moneda'] }})</th>
+                                    <th class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">Aplicar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -28,66 +29,105 @@
                                     <td class="text-center">1.0</td>
                                     <td class="text-center">{{ viewPricesData['pax1'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax1']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax1'],1,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax1'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.0.1', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">1.1</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.0.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 2">
                                     <td class="text-center">1.2</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.1.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 3">
                                     <td class="text-center">1.3</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,1,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.0', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2">
                                     <td class="text-center">2.0</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.1', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">2.1</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 2">
                                     <td class="text-center">2.2</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.1.2', 'table-danger': viewPricesData['pax2_3'] == null}" *ngIf="viewPricesData['pax2_3'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 3">
                                     <td class="text-center">2.3</td>
                                     <td class="text-center">{{ viewPricesData['pax2_3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2_3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2_3'],2,1,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2_3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.0', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3">
                                     <td class="text-center">3.0</td>
                                     <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.1', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">3.1</td>
                                     <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.2', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3 && viewPricesData['maxChild'] >= 2">
                                     <td class="text-center">3.2</td>
                                     <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '4.0.0', 'table-danger': viewPricesData['pax4'] == null}" *ngIf="viewPricesData['pax4'] != null && viewPricesData['maxAdults'] >= 4">
                                     <td class="text-center">4.0</td>
                                     <td class="text-center">{{ viewPricesData['pax4'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax4']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax4'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '4.0.1', 'table-danger': viewPricesData['pax4'] == null}" *ngIf="viewPricesData['pax4'] != null && viewPricesData['maxAdults'] >= 4 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">4.1</td>
                                     <td class="text-center">{{ viewPricesData['pax4'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax4']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax4'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -101,3 +141,5 @@
         </div>
     </div>
 </div>
+
+<app-edit-prepay (saveMonto)="montoDone($event)" (err)="showError()" [shown]="false"></app-edit-prepay>

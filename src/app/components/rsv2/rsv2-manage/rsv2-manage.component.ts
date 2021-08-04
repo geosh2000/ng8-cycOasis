@@ -25,6 +25,8 @@ import { RsvCancelItemComponent } from '../rsv-cancel-item/rsv-cancel-item.compo
 import { ValidateCertificateComponent } from '../validate-certificate/validate-certificate.component';
 import { RsvChangesComponent } from '../rsv-changes/rsv-changes.component';
 import { CotizaPaxComponent } from '../cotiza-pax/cotiza-pax.component';
+import { RsvInsurancesComponent } from '../rsv-insurances/rsv-insurances.component';
+import { EditPrepayComponent } from '../edit-prepay/edit-prepay.component';
 
 @Component({
   selector: 'app-rsv2-manage',
@@ -45,6 +47,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   @ViewChild(RsvCancelItemComponent,{static:false}) _xld:RsvCancelItemComponent;
   @ViewChild(ValidateCertificateComponent,{static:false}) vc:ValidateCertificateComponent;
   @ViewChild(CotizaPaxComponent,{static:false}) _cp:CotizaPaxComponent;
+  @ViewChild(RsvInsurancesComponent,{static:false}) _ins:RsvInsurancesComponent;
 
   penaltyXld:FormGroup
 
@@ -61,6 +64,8 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
   zdClientId:any
   rsvHistory = []
   zdUsers = []
+  hideInsXld = true
+  showMore = false
 
   maxPenalidad = 0
   xldPenalidad
@@ -201,7 +206,9 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                 });
   }
 
-  getLoc( l, s = ''){
+  getLoc( l, s = '', f = ()=>void {}){
+    this.showMore = false
+    console.log('getting loc')
     this.loading['loc'] = true
     this.rsvHistory = []
 
@@ -281,6 +288,8 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                     }
                   }
 
+                  f()
+
 
 
 
@@ -291,7 +300,11 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                   this.toastr.error( error.msg, err.status );
                   console.error(err.statusText, error.msg);
 
+                  return false
+
                 });
+
+        return false;
   }
 
   rsvTypeCheck(){
@@ -636,8 +649,8 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
     this._ods.open( i, this.mlTicket, this.data['master']['idioma'] )
   }
 
-  updateContact(){
-    this._updU.open( this.data['master'] )
+  updateContact( customFlag = false, customMsg = ''){
+    this._updU.open( this.data['master'], customFlag, customMsg )
     // this._updU.updateUser( this.data['master']['masterlocatorid'] )
   }
 
@@ -844,4 +857,50 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                 });
     
   }
+
+  delay(ms: number) {
+      return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
+  saveFromCotizaPax(e){
+    if( e ){
+      this.getLoc( this.viewLoc )
+    }else{
+      (async () => { 
+
+        await this.delay(2000);
+
+        this.getLoc( this.viewLoc )
+    })();
+    }
+  }
+
+  manageIns(){
+    if( this.data['master']['esNacional'] == null ){
+      this.toastr.error('Por favor edita la nacionalidad del cliente para continuar.', 'Nacionalidad no identificada')
+      this.updateContact( true, "Selecciona el lápiz para editar al cliente e ingresar su nacionalidad. <br> Si ya està ingresada la nacionalidad, sólo da click en <b>'la palomita'</b>. Cuando vuelva a cargar la reserva intenta nuevamente dar clic en 'Gestionar Seguros'")
+    }else{
+      this._ins.open(this.data)
+    }
+
+    return true;
+  }
+
+  openInsurance(){
+    console.log('calling insurance')
+    this._ins.open(this.data)
+  }
+
+  reloadMl(){
+
+    console.log('called reload ticket')
+
+    this._ins.loading['cotizando'] = true
+
+    console.log('calling with callback')
+    this.getLoc( this.viewLoc, '', () => this._ins.open(this.data) )
+
+  }
+
+
 }

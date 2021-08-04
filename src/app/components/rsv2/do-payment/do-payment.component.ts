@@ -31,6 +31,7 @@ export class DoPaymentComponent implements OnInit {
   accMon:any
   accSaldo:any = 0
   builtCheckOut:Object = {}
+  paymentType = ''
 
   constructor(private _formBuilder: FormBuilder,
               public _api: ApiService,
@@ -99,7 +100,7 @@ export class DoPaymentComponent implements OnInit {
       i['montoAllPaid'] = parseFloat(i['montoPagado']) + parseFloat(i['montoEnValidacion'])
     }
     
-    console.log(this.itms)
+    // console.log(this.itms)
     // this.getAccount( u )
   }
 
@@ -133,11 +134,15 @@ export class DoPaymentComponent implements OnInit {
   }
 
   selAccount( e, stp ){
-    this.selectAccount.controls['selectedAccount'].setValue(e[0]['operacion'])
-    this.remaining = parseFloat(e[0]['montoSaldo'])
-    this.accMon = e[0]['moneda'] == 'MEX' ? 'MXN' : e[0]['moneda']
-    this.accSaldo = parseFloat(e[0]['montoSaldo'])
-    stp.next()
+
+    if( e[0] ){
+      this.selectAccount.controls['selectedAccount'].setValue(e[0]['operacion'])
+      this.remaining = parseFloat(e[0]['montoSaldo'])
+      this.accMon = e[0]['moneda'] == 'MEX' ? 'MXN' : e[0]['moneda']
+      this.accSaldo = parseFloat(e[0]['montoSaldo'])
+      this.paymentType = e[0]['tipo'].toLowerCase()
+      stp.next()
+    }
   }
   selAccountTest( e, stp ){
     console.log(e)
@@ -297,6 +302,10 @@ export class DoPaymentComponent implements OnInit {
   showItem( i ){
 
     if( i['moneda'] != this.accMon ){
+      return false
+    }
+
+    if( this.paymentType == 'deposito' && i['itemType'] == '10'){
       return false
     }
 

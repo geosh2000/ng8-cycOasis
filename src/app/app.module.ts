@@ -209,6 +209,7 @@ import { PollenListComponent } from './components/rsv/pollen-list/pollen-list.co
 import { CieloChangesComponent } from './components/cielo/cielo-changes/cielo-changes.component';
 import { RbLoyaltyComponent } from './config/upload-files/rb-loyalty/rb-loyalty.component';
 import { CotizaPaxComponent } from './components/rsv2/cotiza-pax/cotiza-pax.component';
+import { RsvInsurancesComponent } from './components/rsv2/rsv-insurances/rsv-insurances.component';
 
 
 @NgModule({
@@ -351,7 +352,8 @@ import { CotizaPaxComponent } from './components/rsv2/cotiza-pax/cotiza-pax.comp
     PollenListComponent,
     CieloChangesComponent,
     RbLoyaltyComponent,
-    CotizaPaxComponent
+    CotizaPaxComponent,
+    RsvInsurancesComponent
 
   ],
   imports: [

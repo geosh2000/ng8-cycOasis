@@ -45,6 +45,7 @@ export class SearchZdUserComponent implements OnInit {
                     ['phone']:   new FormControl('', [ Validators.pattern('^(\\+){1}[1-9]\\d{10,14}$')]),
                     ['wa']:   new FormControl('', [ ]),
                     ['lang']:   new FormControl('', [ Validators.required ]),
+                    ['en']:   new FormControl(null, [ Validators.required ]),
                   })
                 }
 
@@ -53,6 +54,10 @@ export class SearchZdUserComponent implements OnInit {
 
   selectedLang(e){
     this.newClientForm.controls['lang'].setValue(e.value)
+  }
+
+  selectedNat(e){
+    this.newClientForm.controls['en'].setValue(e.value)
   }
 
   search(){
@@ -162,6 +167,7 @@ export class SearchZdUserComponent implements OnInit {
     this.newClientForm.controls['email'].setValue(i['email'])
     this.newClientForm.controls['wa'].setValue(i['user_fields']['whatsapp'])
     this.newClientForm.controls['lang'].setValue(i['user_fields']['idioma_cliente'])
+    this.newClientForm.controls['en'].setValue(i['user_fields']['nacionalidad'])
     this.newClientForm.markAllAsTouched()
   }
 
@@ -184,6 +190,7 @@ export class SearchZdUserComponent implements OnInit {
 
     params['user_fields']['idioma_cliente'] = this.newClientForm.controls['lang'].value
     params['user_fields']['whatsapp'] = this.newClientForm.controls['wa'].value
+    params['user_fields']['nacionalidad'] = this.newClientForm.controls['en'].value
 
     this._api.restfulPut( params, 'Calls/createUpdateUser' )
                 .subscribe( res => {

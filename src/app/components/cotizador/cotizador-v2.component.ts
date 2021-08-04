@@ -71,7 +71,10 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
   hotelList: Object = {};
   groupsTfa: any = [];
   resultCot: Object = {};
+  segurosCot: Object = {};
   selectedCode: any = 'ccenter';
+  selectedHasPaq = '0'
+  selectedHasIns = '0'
 
   moneda = true
   searchUserFlag = true
@@ -98,6 +101,11 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
   updateTicket:Object = {ticket: ''}
   lTicket = ''
   levels = {}
+
+  activePaqs = false
+  showPaqs = false
+  
+  noRestrictions = false
 
   constructor(public _api: ApiService,
               private nbConfig: NgbDatepickerConfig,
@@ -218,15 +226,55 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
     console.log(e)
   }
 
+  getAssistcard( pax, inicio, fin ){
+
+    this.loading['seguros'] = true;
+
+    let params = {
+      pax, inicio, fin
+    }
+
+    this._api.restfulPut( params, 'Assistcard/cotiza' )
+                .subscribe( res => {
+
+                  this.loading['seguros'] = false;
+                  this.segurosCot = res['data']
+                  console.log(this.segurosCot)
+
+                }, err => {
+                  this.loading['seguros'] = false;
+
+                  const error = err.error;
+                  this.toastr.error( error.msg, err.status );
+                  console.error(err.statusText, error.msg);
+
+                });
+
+      return true;
+  }
+
+  selectedGroup(e){
+    let resultado = this.groupsTfa.find( gpo => gpo.grupo === e.target.value );
+    this.selectedHasPaq = resultado['hasPaq']
+    this.selectedHasIns = resultado['hasInsurance']
+    return true
+  }
+
   getCotizacion() {
 
     this.loading['cotizador'] = true;
+    this.segurosCot = {}
+
+    this.activePaqs = false
+    this.showPaqs = false
 
     let params = {
         inicio: this.inicio,
         fin: this.fin,
         habs: [],
-        grupo: this.selectedCode
+        grupo: this.selectedCode,
+        noRestrictions: this.noRestrictions,
+        hasPaq: this.selectedHasPaq
       };
 
     this._filters.forEach(reg => {
@@ -267,8 +315,11 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
 
                   this.resultCot['habs'] = this.buildData(res['data'], defaultLevel)
                   this.resTours = res['tours']
+                  if( this.selectedHasIns == '1' ){
+                    this.getAssistcard(this.resultCot['gen']['totalPax'], this.resultCot['gen']['inicio'], this.resultCot['gen']['fin'])
+                  }
 
-                  console.log( this.resultCot)
+                  // console.log( this.resultCot)
 
                 }, err => {
                   this.loading['cotizador'] = false;
@@ -288,12 +339,48 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
     }
   }
 
+  setHSelected(h){
+
+    console.log(h)
+
+    if( this.showPaqs ){
+      let i = 1;
+      for( let p in h['paq']['controlls'] ){
+        if( h['paq']['controlls'][p]['tours'].length > 0 ){
+          h['lSelected'] = i
+          return
+        }
+        i++;
+      }
+      h['lSelected'] = null
+    }else{
+      h['lSelected'] = 1
+    }
+  }
+
   buildData( data, dfLevel = '2' ){
 
+    this.activePaqs = false;
+
     let result = []
-    let inicio = data['gen']['inicio']
-    let fin = data['gen']['fin']
-    let noches = data['gen']['noches']
+    // let inicio = data['gen']['inicio']
+    // let fin = data['gen']['fin']
+    // let noches = data['gen']['noches']
+    let paq = data['paq']
+    let tours = {
+      l1: [],
+      l2: [],
+      l3: [],
+      l4: []
+    }
+
+    for( let t of paq ){
+      if( t['activo'] == '1' ){
+        tours['l'+t['pqLv']].push(t)
+      }
+    }
+
+    tours = this.orderPipe.transform(tours, 'pqOrder')
 
     for( let c in this.hotelList ){
       if( this.hotelList.hasOwnProperty(c) ){
@@ -328,11 +415,53 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
                   habs: [],
                   adults: 0,
                   minors: 0,
-                  lSelected: dfLevel,
-                  bo: data['habs'][h['code']]['disp']
+                  lSelected: null,
+                  bo: data['habs'][h['code']]['disp'],
+                  paq: {
+                    active: false,
+                    adults: 0,
+                    minPriceMXN: 0,
+                    minPriceUSD: 0,
+                    controlls: {
+                      paq1: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
+                      paq2: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
+                      paq3: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
+                      paq4: {name: '', difUSD: 0, difMXN: 0, levelRef: 4}
+                    }
+                  }
                 }
                 for(let hab in data['habs'][h['code']]['cot'][cat] ){
                   if( data['habs'][h['code']]['cot'][cat].hasOwnProperty(hab) ){
+
+                    // PAQS CONFIG
+
+                    if( data['habs'][h['code']]['cot'][cat][hab][0]['p1Name'] != null && this.selectedHasPaq == '1' ){
+                      arr['paq']['active'] = true;
+                      arr['paq']['adults'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['adults']);                      
+                      arr['paq']['minPriceMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l'+data['habs'][h['code']]['cot'][cat][hab][0]['paqLevelRef']+'MXN_total']);                      
+                      arr['paq']['minPriceUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l'+data['habs'][h['code']]['cot'][cat][hab][0]['paqLevelRef']+'USD_total']);                      
+                      arr['paq']['controlls']['paq1']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p1Name'];                      
+                      arr['paq']['controlls']['paq1']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif1']);
+                      arr['paq']['controlls']['paq1']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif1_MXN']);
+                      arr['paq']['controlls']['paq1']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+                      arr['paq']['controlls']['paq2']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p2Name'];                      
+                      arr['paq']['controlls']['paq2']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif2']);
+                      arr['paq']['controlls']['paq2']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif2_MXN']);
+                      arr['paq']['controlls']['paq2']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+                      arr['paq']['controlls']['paq3']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p3Name'];                      
+                      arr['paq']['controlls']['paq3']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif3']);
+                      arr['paq']['controlls']['paq3']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif3_MXN']);
+                      arr['paq']['controlls']['paq3']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+                      arr['paq']['controlls']['paq4']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p4Name'];                      
+                      arr['paq']['controlls']['paq4']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif4']);
+                      arr['paq']['controlls']['paq4']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif4_MXN']);
+                      arr['paq']['controlls']['paq4']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+                    }
+                    
+                    if( data['habs'][h['code']]['cot'][cat][hab][0]['isOk'] == '0' ){
+                      arr['paq']['active'] = false;
+                    }
+
                     arr['adults'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['adults'])
                     arr['minors'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['minors'])
                     arr['isNR'] = data['habs'][h['code']]['cot'][cat][hab][0]['isNR']
@@ -396,6 +525,21 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
                     }
                   }
                 }
+
+                if( arr['paq']['active'] == true && this.selectedHasPaq == '1' ){
+                  this.activePaqs = true;
+                  let tmpPaq = this.buildPackage(tours, arr['paq']['controlls'])
+  
+                  for(let pqi in arr['paq']['controlls'] ){
+                    arr['paq']['controlls'][pqi]['tours'] = tmpPaq[pqi]['tours']
+                    arr['paq']['controlls'][pqi]['totalUSD'] = tmpPaq[pqi]['totalUSD']
+                    arr['paq']['controlls'][pqi]['totalMXN'] = tmpPaq[pqi]['totalMXN']
+                    arr['paq']['controlls'][pqi]['paqTotalPriceMXN'] = tmpPaq[pqi]['totalMXN'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'mxn_totalDisc'] < arr['paq']['minPriceMXN'] ? arr['paq']['minPriceMXN'] : tmpPaq[pqi]['totalMXN'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'mxn_totalDisc']
+                    arr['paq']['controlls'][pqi]['paqTotalPriceUSD'] = tmpPaq[pqi]['totalUSD'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'usd_totalDisc'] < arr['paq']['minPriceUSD'] ? arr['paq']['minPriceUSD'] : tmpPaq[pqi]['totalUSD'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'usd_totalDisc']
+                  }
+                }
+
+
                 result.push(arr)
               }
             }
@@ -407,7 +551,102 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
     result = this.orderPipe.transform(result, 'totalOpaque')
     result = this.orderPipe.transform(result, 'hotelOrder')
 
+    // console.log(result);
+    // console.log(tours);
     return result
+
+  }
+
+  buildPackage( parr, p ){
+
+    let amnt = 0
+    let arr = {
+      paq1: { totalMXN: 0, totalUSD: 0, tours: [] },
+      paq2: { totalMXN: 0, totalUSD: 0, tours: [] },
+      paq3: { totalMXN: 0, totalUSD: 0, tours: [] },
+      paq4: { totalMXN: 0, totalUSD: 0, tours: [] },
+    }
+
+    // Level 1
+    for( let t of parr['l1'] ){
+      if( arr['paq1']['totalUSD'] + parseFloat(t['priceUSD']) <= parseFloat(p['paq1']['difUSD']) ){
+        arr['paq1']['tours'].push(t)
+        arr['paq1']['totalUSD'] += parseFloat(t['priceUSD'])
+        arr['paq1']['totalMXN'] += parseFloat(t['priceMXN'])
+      }
+    }
+    // Extra tours
+    if( arr['paq1']['totalUSD'] + parseFloat(parr['l2'][0]['priceUSD']) <= parseFloat(p['paq1']['difUSD']) ){
+      arr['paq1']['tours'].push(parr['l2'][0])
+      arr['paq1']['totalUSD'] += parseFloat(parr['l2'][0]['priceUSD'])
+      arr['paq1']['totalMXN'] += parseFloat(parr['l2'][0]['priceMXN'])
+    }
+
+    // Level 2
+    for( let t of parr['l2'] ){
+      if( arr['paq2']['totalUSD'] + parseFloat(t['priceUSD']) <= parseFloat(p['paq2']['difUSD']) ){
+        arr['paq2']['tours'].push(t)
+        arr['paq2']['totalUSD'] += parseFloat(t['priceUSD'])
+        arr['paq2']['totalMXN'] += parseFloat(t['priceMXN'])
+      }
+    }
+    // Add basic l1
+    if( arr['paq2']['totalUSD'] + parseFloat(parr['l1'][0]['priceUSD']) <= parseFloat(p['paq2']['difUSD']) ){
+      arr['paq2']['tours'].push(parr['l1'][0])
+      arr['paq2']['totalUSD'] += parseFloat(parr['l1'][0]['priceUSD'])
+      arr['paq2']['totalMXN'] += parseFloat(parr['l1'][0]['priceMXN'])
+    }
+
+    // Level 3
+    for( let t of parr['l3'] ){
+      if( arr['paq3']['totalUSD'] + parseFloat(t['priceUSD']) <= parseFloat(p['paq3']['difUSD']) ){
+        arr['paq3']['tours'].push(t)
+        arr['paq3']['totalUSD'] += parseFloat(t['priceUSD'])
+        arr['paq3']['totalMXN'] += parseFloat(t['priceMXN'])
+      }
+    }
+    // Add basic l2
+    if( arr['paq3']['tours'].length == 0 && arr['paq3']['totalUSD'] + parseFloat(parr['l2'][0]['priceUSD']) <= parseFloat(p['paq2']['difUSD']) ){
+      arr['paq3']['tours'].push(parr['l2'][0])
+      arr['paq3']['totalUSD'] += parseFloat(parr['l2'][0]['priceUSD'])
+      arr['paq3']['totalMXN'] += parseFloat(parr['l2'][0]['priceMXN'])
+    }
+    // Add basic l1
+    if( arr['paq3']['totalUSD'] + parseFloat(parr['l1'][0]['priceUSD']) <= parseFloat(p['paq2']['difUSD']) ){
+      arr['paq3']['tours'].push(parr['l1'][0])
+      arr['paq3']['totalUSD'] += parseFloat(parr['l1'][0]['priceUSD'])
+      arr['paq3']['totalMXN'] += parseFloat(parr['l1'][0]['priceMXN'])
+    }
+
+    // Level 4
+    for( let t of parr['l4'] ){
+      if( arr['paq4']['totalUSD'] + parseFloat(t['priceUSD']) <= parseFloat(p['paq4']['difUSD']) ){
+        arr['paq4']['tours'].push(t)
+        arr['paq4']['totalUSD'] += parseFloat(t['priceUSD'])
+        arr['paq4']['totalMXN'] += parseFloat(t['priceMXN'])
+      }
+    }
+    // Add basic l3
+    if( arr['paq4']['tours'].length == 0 && arr['paq4']['totalUSD'] + parseFloat(parr['l3'][0]['priceUSD']) <= parseFloat(p['paq3']['difUSD']) ){
+      arr['paq4']['tours'].push(parr['l3'][0])
+      arr['paq4']['totalUSD'] += parseFloat(parr['l3'][0]['priceUSD'])
+      arr['paq4']['totalMXN'] += parseFloat(parr['l3'][0]['priceMXN'])
+    }
+    // Extra tours l2
+    if( arr['paq4']['totalUSD'] + parseFloat(parr['l2'][0]['priceUSD']) <= parseFloat(p['paq4']['difUSD']) ){
+      arr['paq4']['tours'].push(parr['l2'][0])
+      arr['paq4']['totalUSD'] += parseFloat(parr['l2'][0]['priceUSD'])
+      arr['paq4']['totalMXN'] += parseFloat(parr['l2'][0]['priceMXN'])
+    }
+    // Add basic l1
+    if( arr['paq4']['totalUSD'] + parseFloat(parr['l1'][0]['priceUSD']) <= parseFloat(p['paq2']['difUSD']) ){
+      arr['paq4']['tours'].push(parr['l1'][0])
+      arr['paq4']['totalUSD'] += parseFloat(parr['l1'][0]['priceUSD'])
+      arr['paq4']['totalMXN'] += parseFloat(parr['l1'][0]['priceMXN'])
+    }
+
+    return arr
+
   }
 
   popReserve( h: any ){

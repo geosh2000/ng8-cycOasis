@@ -14,6 +14,9 @@ export class CotHabDetailComponent implements OnInit {
   @Input() paymentSelect = false
   @Input() level = '2'
   @Input() gpo = ''
+  @Input() paq = {}
+  @Input() showPaq = false
+  @Input() occ = {}
 
   constructor() {
     this.total.emit(0)

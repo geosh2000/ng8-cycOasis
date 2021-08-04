@@ -32,15 +32,20 @@
                 <span [style.width.px]="200" class="text-info text-truncate text-sm" matTooltipPosition="above" [matTooltip]="item['name']">{{ item['name'] }}</span>
                 <span [style.width.px]="10"></span>
                 <span class="mobileHide text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-phone"></i></span>
-                <span [style.width.px]="150" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['phone']">{{ item['phone'] }}</span>
+                <span [style.width.px]="110" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['phone']">{{ item['phone'] }}</span>
                 <span [style.width.px]="10" class="mobileHide"></span>
                 <span class="mobileHide text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fab fa-whatsapp"></i></span>
-                <span [style.width.px]="150" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['user_fields']['whatsapp']">{{ item['user_fields']['whatsapp'] }}</span>
+                <span [style.width.px]="110" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['user_fields']['whatsapp']">{{ item['user_fields']['whatsapp'] }}</span>
                 <span [style.width.px]="10" class="mobileHide"></span>
                 <span class="text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-envelope"></i></span>
-                <span [style.width.px]="250" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['email'] }}</span>
+                <span [style.width.px]="225" class="ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['email'] }}</span>
                 <span class="mobileHide text-center bg-info text-light text-sm" [style.width.px]="40"><i class="fas fa-globe-americas"></i></span>
-                <span [style.width.px]="85" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['user_fields']['idioma_cliente'] }}</span>
+                <div [style.width.px]="125" style="text-align: center;">
+                    <span [style.width.px]="85" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['email']">{{ item['user_fields']['idioma_cliente'] }}</span>
+                    <br>
+                    <span [style.width.px]="85" [ngClass]="{'text-danger': item['user_fields']['nacionalidad'] == null}" class="mobileHide ml-2 text-sm text-truncate" matTooltipPosition="above" [matTooltip]="item['esNacional']">{{ item['user_fields']['nacionalidad'] == null ? 'unset' : (item['user_fields']['nacionalidad'] | capitalizado:true) }}</span>
+
+                </div>
                 <ng-container *ngIf="!noEditable">
                     <button mat-icon-button color="warn" (click)="edit(item)" [disabled]="loading['select']"><mat-icon>edit</mat-icon></button>
                     <button mat-icon-button color="primary" (click)="select(item)" [disabled]="loading['select'] || item['email'] == null"><mat-icon>done</mat-icon></button>
@@ -96,6 +101,22 @@
         </div>
         <div class="d-flex justify-content-center pt-3" [style.width.px]="1137" *ngIf="!loading['create']">
             <mat-form-field class="formInfo">
+                <mat-label>Nacionalidad</mat-label>
+                <mat-select (selectionChange)="selectedNat($event)" formControlName="en" #enSelect>
+                    
+                        <mat-option value="nacional">
+                            Nacional
+                        </mat-option>
+                        <mat-option value="internacional">
+                            Internacional
+                        </mat-option>
+
+                </mat-select>
+                <mat-error *ngIf="langSelect.errorState && newClientForm.controls['lang'].errors['required']">
+                    Debes elegir un idioma
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="formInfo ml-2">
                 <mat-label>Idioma Usuario</mat-label>
                 <mat-select (selectionChange)="selectedLang($event)" formControlName="lang" #langSelect>
                     <ng-container *ngFor="let lang of idiomas">

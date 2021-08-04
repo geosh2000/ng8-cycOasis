@@ -21,12 +21,19 @@ export class RsvUpdateContactComponent implements OnInit {
   flagDif = false
   newData:any
 
+  customMsgFlag = false
+  customMsg = ''
+
   constructor( private _api:ApiService, private toastr:ToastrService ) { }
 
   ngOnInit() {
   }
 
-  open( ml ){
+  open( ml, customMsg = false, msg='' ){
+
+    this.customMsgFlag = customMsg
+    this.customMsg = msg
+
     this._search.data = []
     this._search.showSearch = false
     this.newData = {}
@@ -55,7 +62,8 @@ export class RsvUpdateContactComponent implements OnInit {
       waCliente: e['user_fields']['whatsapp'],
       correoCliente: e['email'],
       languaje: e['user_fields']['idioma_cliente'],
-      zdUserId: e['id']
+      zdUserId: e['id'],
+      esNacional: e['user_fields']['nacionalidad'] == null ? null : (e['user_fields']['nacionalidad'] == 'nacional' ? '1' : '2')
     }
     let flag = false
 

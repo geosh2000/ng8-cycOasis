@@ -13,7 +13,9 @@ declare var jQuery: any;
 export class EditPrepayComponent implements OnInit {
 
   @Input() i:Object = {}
+  @Input() shown = true
   @Output() saveMonto = new EventEmitter()
+  @Output() err = new EventEmitter()
 
   loading:Object = {}
   editFlag = false
@@ -53,7 +55,7 @@ export class EditPrepayComponent implements OnInit {
     this.saveMontos( params )
   }
 
-  editTotalMonto( m, c, adv = false ){
+  editTotalMonto( m, c, adv = false, i = this.i ){
 
     console.log(m)
     console.log(c)
@@ -61,7 +63,7 @@ export class EditPrepayComponent implements OnInit {
     // return false
 
     let params = {
-      original: this.i,
+      original: i,
       newMonto: m,
       comment: c
     }
@@ -99,15 +101,18 @@ export class EditPrepayComponent implements OnInit {
                   this.advancedTotal = false
                   this.bufferedParams = {}
                   this.saveMonto.emit( {itemId: this.i['itemId'], isMontoTotal: true, newMonto: params['newMonto'], montoParcial: res['data']['montoParcial'], montoPagado: res['data']['montoPagado']} )
+                  return true
 
                 }, err => {
                   this.loading['editTotalMonto'] = false;
                   this.advancedTotal = false
                   this.bufferedParams = {}
+                  this.err.emit(true)
 
                   const error = err.error;
                   this.toastr.error( error.msg, err.status );
                   console.error(err.statusText, error.msg);
+                  return false
 
                 });
   }

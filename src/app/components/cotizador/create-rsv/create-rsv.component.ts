@@ -85,6 +85,8 @@ export class CreateRsvComponent implements OnInit {
       ['telCliente']:   new FormControl('', []),
       ['zdUserId']:   new FormControl('', [ Validators.required, Validators.pattern('^\\d+$')]),
       ['languaje']:   new FormControl('', [ Validators.required ]),
+      ['esNacional']:   new FormControl('', [  ]),
+      ['waCliente']:   new FormControl('', [  ]),
       ['userCreated']:   new FormControl(this._init.currentUser['hcInfo']['id'], [ Validators.required, Validators.pattern('^\\d+$')]),
       ['orLevel']:   new FormControl('', []),
       ['orId']:   new FormControl('', []),
@@ -122,6 +124,8 @@ export class CreateRsvComponent implements OnInit {
       this.newRsvForm.controls['telCliente'].setValue(e['telCliente'])
       this.newRsvForm.controls['zdUserId'].setValue(e['zdUserId'])
       this.newRsvForm.controls['languaje'].setValue(e['languaje'])
+      this.newRsvForm.controls['esNacional'].setValue(e['esNacional'])
+      this.newRsvForm.controls['waCliente'].setValue(e['languaje'])
       this.clientForm.controls['id'].setValue(e['zdUserId'])
       this.clientForm.controls['lang'].setValue(e['languaje'])
 
@@ -134,6 +138,8 @@ export class CreateRsvComponent implements OnInit {
       this.newRsvForm.controls['telCliente'].setValue(e['phone'])
       this.newRsvForm.controls['zdUserId'].setValue(e['id'])
       this.newRsvForm.controls['languaje'].setValue(e['user_fields']['idioma_cliente'])
+      this.newRsvForm.controls['esNacional'].setValue(e['user_fields']['nacionalidad'] == null ? null : (e['user_fields']['nacionalidad'] == 'nacional' ? 1 : 2))
+      this.newRsvForm.controls['waCliente'].setValue(e['user_fields']['whatsapp'])
 
       oruser['email'] = e['email']
       oruser['nombre'] = e['name']

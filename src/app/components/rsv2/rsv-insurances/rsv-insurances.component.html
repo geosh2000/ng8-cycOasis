@@ -1,0 +1,177 @@
+<div class="modal fade" id="insuranceManage" tabindex="-1" role="dialog" aria-labelledby="insuranceManageLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" [ngClass]="'modal-xl'" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="insuranceManageLabel">Administrar Seguros</h5>
+
+            </div>
+
+            <div class="modal-body">
+                <div class='container-fluid d-flex justify-content-center text-center'>
+                    <div>
+                        <ul class="list-group list-group-horizontal-xl">
+                            <li [style.width.px]="137" class="list-group-item-primary" style="list-style: none;"><b>Item Locator</b></li>
+                            <li [style.width.px]="395" class="list-group-item-primary" style="list-style: none;">Summary</li>
+                            <li [style.width.px]="370" class="list-group-item-primary" style="list-style: none;">Opciones</li>
+                            <li [style.width.px]="160" class="list-group-item-primary" style="list-style: none;">Actions</li>
+                        </ul>
+                        <ng-container *ngFor="let i of data['items']">
+                            <ul class="list-group list-group-horizontal-xl" *ngIf="i['itemType']=='1' && i['isCancel'] == '0'">
+                                <ng-container *ngIf="i['loading']">
+                                    <li [style.width.%]="100" class="d-flex align-items-center justify-content-center list-group-item">
+                                        <div class="container d-flex align-items-center justify-content-center">
+                                            <span>{{ i['itemLocatorId'] }}</span>
+                                            <mat-progress-bar mode="buffer"></mat-progress-bar>
+                                        </div>
+                                    </li>
+                                </ng-container>
+                                <ng-container *ngIf="!i['loading']">
+                                    <li [style.width.px]="137" class="d-flex align-items-center justify-content-center list-group-item">{{ i['itemLocatorId'] }}</li>
+                                    <li [style.width.px]="395" class="d-flex align-items-center justify-content-center list-group-item text-left" style="font-size: small;">
+                                        <div [style.width.px]="350">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <b>Fechas:</b>
+                                                </div>
+                                                <div class="col-9">
+                                                    <span>{{ i['llegada'] }} a {{i['salida']}} ({{dias(i['htlNoches'])}} dias)</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <b>Ocupación:</b>
+                                                </div>
+                                                <div class="col-9">
+                                                    <span>{{i['adultos']}}.{{i['juniors']}}.{{i['menores']}} pax</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <b>Hotel:</b>
+                                                </div>
+                                                <div class="col-9">
+                                                    <span> {{ i['hotelName'] }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <b>Titular:</b>
+                                                </div>
+                                                <div class="col-9">
+                                                    <span style="color: cornflowerblue"> {{ i['huesped1'] }}</span>
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="i['seguros']">
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <b>Seguro:</b>
+                                                    </div>
+                                                    <div class="col-9">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <span style="color: cornflowerblue"> {{ i['seguros']['itemLocatorId'] }}</span><br>
+                                                            </div>
+                                                            <div class="col-7 text-right">
+                                                                <span style="color:deeppink"> ({{ i['seguros']['isQuote'] == '1' ? 'Pago Pendiente' : ( i['seguros']['confirm'] == null ? 'Confirmación Pendiente' : i['seguros']['confirm'] ) }})</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <span style="color: cornflowerblue"> {{ i['seguros']['sg_mdo'] | capitalizado:true }} - {{ i['seguros']['sg_cobertura'] | capitalizado:true }}</span>
+                                                            </div>
+                                                        </div>                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="!consistentInsurance(i, true)">
+                                                    <div class="col-3 text-danger">
+                                                        <b>Errores:</b>
+                                                    </div>
+                                                    <div class="col-9">
+                                                        <span style="color:firebrick"> {{ consistentInsurance(i) }}</span>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </li>
+                                    <li [style.width.px]="370" class="d-flex align-items-center justify-content-center list-group-item" style="font-size: small;">
+                                        <div class=" container-fluid text-left">
+                                            <ng-container *ngIf="loading['cotizando']">
+                                                <div class="container d-flex align-items-center justify-content-center" [style.height.px]="20">
+                                                    <mat-progress-bar mode="buffer"></mat-progress-bar>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngIf="!loading['cotizando']">
+                                                <ng-container *ngIf="i['seguroId'] == null">
+                                                    <label id="example-radio-group-label" style="color:brown">Selecciona una opción de seguro</label>
+                                                    <br>
+                                                </ng-container>
+                                                <mat-radio-group
+                                                    aria-labelledby="example-radio-group-label"
+                                                    class="example-radio-group"
+                                                    [(ngModel)]="i['cobertura']">
+                                                    <mat-radio-button class="example-radio-button" style="margin-left: 16px;" value="">Sin seguro 
+                                                        <span *ngIf="i['seguros'] && !consistentInsurance(i, true)">
+                                                            (-{{ (0 - i['seguros']['monto']) | currency:'MXN':'symbol-narrow':'.2-2' }} {{ i['moneda'] }})
+                                                        </span>
+                                                    </mat-radio-button>
+                                                    <ng-container *ngIf="i['insuranceRelated'] == null || (i['insuranceRelated'] != null && !consistentInsurance(i, true))">
+                                                        <ng-container *ngFor="let mdo of insurancesQ[i['itemLocatorId']] | keys">
+                                                            <ng-container *ngIf="mdo == (data['master']['esNacional'] == '1' ? 'nacional' : 'internacional')">
+                                                                <mat-radio-button class="example-radio-button" [value]="tp" *ngFor="let tp of insurancesQ[i['itemLocatorId']][mdo] | keys">
+                                                                    {{ mdo | capitalizado:true }} {{ tp | capitalizado:true }} 
+                                                                    <span *ngIf="!i['seguros']">
+                                                                        ({{ (insurancesQ[i['itemLocatorId']][mdo][tp]['publico_ci'] * (i['moneda']=='MXN' ? insurancesQ[i['itemLocatorId']][mdo][tp]['tipoCambio'] : 1)) | currency:'MXN':'symbol-narrow':'.2-2' }} 
+                                                                    </span>
+                                                                    <span *ngIf="i['seguros'] && !consistentInsurance(i, true)">
+                                                                        ({{ ((insurancesQ[i['itemLocatorId']][mdo][tp]['publico_ci'] * (i['moneda']=='MXN' ? insurancesQ[i['itemLocatorId']][mdo][tp]['tipoCambio'] : 1)) - i['seguros']['monto']) > 0 ? '+' : '' }}{{ ((insurancesQ[i['itemLocatorId']][mdo][tp]['publico_ci'] * (i['moneda']=='MXN' ? insurancesQ[i['itemLocatorId']][mdo][tp]['tipoCambio'] : 1)) - i['seguros']['monto']) | currency:'MXN':'symbol-narrow':'.2-2' }} 
+                                                                    </span>
+                                                                    {{ i['moneda'] }})
+                                                                </mat-radio-button>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </mat-radio-group>
+                                                <ng-container *ngIf="i['insuranceRelated'] != null && 
+                                                                    (
+                                                                        (i['seguros']['montoPagado'] > 0 && i['cobertura'] == '') ||
+                                                                        ((i['cobertura'] != '' && i['cobertura'] != null) && 
+                                                                            (insurancesQ[i['itemLocatorId']][(data['master']['esNacional'] == '1' ? 'nacional' : 'internacional')][i['cobertura']]['publico_ci'] * (i['moneda']=='MXN' ? insurancesQ[i['itemLocatorId']][(data['master']['esNacional'] == '1' ? 'nacional' : 'internacional')][i['cobertura']]['tipoCambio'] : 1)) < i['seguros']['montoPagado']
+                                                                    ))">
+                                                    <hr>
+                                                    <mat-radio-group
+                                                        aria-labelledby="example-radio-group-label"
+                                                        class="example-radio-group"
+                                                        [(ngModel)]="i['traspaso']">
+                                                        <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Traspaso</mat-radio-button>
+                                                        <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Reembolso</mat-radio-button>
+                                                    </mat-radio-group>
+                                                </ng-container>
+                                            </ng-container>
+                                        </div>
+                                    </li>
+                                    <li [style.width.px]="160" class="d-flex align-items-center justify-content-center list-group-item">
+                                        <button mat-raised-button color="primary" (click)="genInsurance( i, insurancesQ[i['itemLocatorId']],  (data['master']['esNacional'] == '1' ? 'nacional' : 'internacional'), i['cobertura'] )" [disabled]="i['cobertura'] == null || i['cobertura'] == ''" *ngIf="i['insuranceRelated'] == null">Generar</button>
+                                        <button mat-raised-button [color]="i['cobertura'] == '' ? 'accent' : 'primary'" (click)="modifyInsurance( i, insurancesQ[i['itemLocatorId']],  (data['master']['esNacional'] == '1' ? 'nacional' : 'internacional'), i['cobertura'] )" [disabled]="!_init.checkSingleCredential('rsv_changes') || i['cobertura'] == null || ((
+                                            (i['seguros']['montoPagado'] > 0 && i['cobertura'] == '') ||
+                                            ((i['cobertura'] != '' && i['cobertura'] != null) && 
+                                                (insurancesQ[i['itemLocatorId']][(data['master']['esNacional'] == '1' ? 'nacional' : 'internacional')][i['cobertura']]['publico_ci'] * (i['moneda']=='MXN' ? insurancesQ[i['itemLocatorId']][(data['master']['esNacional'] == '1' ? 'nacional' : 'internacional')][i['cobertura']]['tipoCambio'] : 1)) < i['seguros']['montoPagado']
+                                        )) && i['traspaso'] == null)" *ngIf="i['insuranceRelated'] != null">{{ i['cobertura'] == '' ? 'Cancelar' : 'Ajustar' }}</button>
+                                    </li>
+                                </ng-container>
+                            </ul>
+                        </ng-container>
+                        
+                    </div>
+                </div>
+                <!-- <pre>{{ insurancesQ | json }}</pre>
+                <pre>{{ data | json }}</pre> -->
+            </div>
+       
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="close()">Cerrar</button>
+           </div>
+           
+        </div>
+    </div>
+</div>
