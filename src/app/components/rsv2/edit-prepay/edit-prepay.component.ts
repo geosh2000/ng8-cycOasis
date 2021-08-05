@@ -55,7 +55,7 @@ export class EditPrepayComponent implements OnInit {
     this.saveMontos( params )
   }
 
-  editTotalMonto( m, c, adv = false, i = this.i ){
+  editTotalMonto( m, c, adv = false, i = this.i, isR=!this.selectedRefound ){
 
     console.log(m)
     console.log(c)
@@ -79,7 +79,7 @@ export class EditPrepayComponent implements OnInit {
           this.bufferedParams = params
           return false
         }else{
-          params['isR'] =  !this.selectedRefound
+          params['isR'] =  isR
         }
 
       }else{

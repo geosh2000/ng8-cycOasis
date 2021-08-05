@@ -52,6 +52,12 @@ export class EditMontoParcialComponent implements OnInit {
     this.saveMonto.emit(e)
   }
 
+  openVouchers( i ){
+
+          window.open("https://cyc-oasishoteles.com/api/rf/index.php/Lists/voucherList?item="+i['itemLocatorId'], "_blank");
+
+  }
+
   editName(n, i){
     if( n.value == ''){
       this.toastr.error('El nombre no puede estar vacío', 'Error!')

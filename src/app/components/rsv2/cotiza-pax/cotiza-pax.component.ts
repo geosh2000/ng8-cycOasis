@@ -34,6 +34,7 @@ export class CotizaPaxComponent implements OnInit {
 
     // Original data
     this.original = JSON.parse(JSON.stringify(arr))
+    this.original['setTraspaso'] = {}
     this.changes = {}
 
     jQuery('#viewPrices').modal('show')
@@ -55,19 +56,20 @@ export class CotizaPaxComponent implements OnInit {
                 });
   }
 
-  apply(p,a,j,m){
-    // console.log('precio',p)
-    // console.log('adultos',a)
-    // console.log('juniors',j)
-    // console.log('menores',m)
-
+  apply(p,a,j,m,i = {}, flag = false){
+    
     this.changes = {
       'adultos': a,
       'juniors': j,
-      'menores': m,
+      'menores': m
     }
 
-    this.saveChanges(p, this.changes)
+    if( p < (parseFloat(this.original['montoPagado']) + parseFloat(this.original['montoEnValidacion'])) && flag == false){
+      this.original['setTraspaso'][`${a}.${j}.${m}`] = true
+      return true
+    }
+
+    this.saveChanges(p, this.changes, i['isR'])
   }
 
   close(){
@@ -78,7 +80,7 @@ export class CotizaPaxComponent implements OnInit {
     return parseFloat(n)
   }
 
-  saveChanges( p, c ){
+  saveChanges( p, c, isR ){
     this.loading['applying'] = true
 
     let mdfFields = [
@@ -126,7 +128,7 @@ export class CotizaPaxComponent implements OnInit {
 
                   // this.loading['applying'] = false;
                   this.toastr.success('Cambios detectados', `Se detectaron ${chgs.length} cambios... ${fields}`)
-                  this._epp.editTotalMonto(p,'Cambio desde cotizador de pax', true, this.original) 
+                  this._epp.editTotalMonto(p,'Cambio desde cotizador de pax', true, this.original, isR) 
 
                 }, err => {
                   this.loading['applying'] = false;

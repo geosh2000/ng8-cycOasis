@@ -492,9 +492,10 @@
     <div class="container d-flex justify-content-around">
 
         <div class="d-flex justify-content-start align-items-start" [style.width.px]="407">
-            <div class="clientConcept"><b>Vouchers:</b><button class="ml-3" mat-icon-button color="accent" (click)="uplImg.emit(i)">
-                <mat-icon>note_add</mat-icon>
-            </button></div>
+            <div class="clientConcept text-center" style="width: 140px!important"><b>Vouchers:</b><br>
+                <button mat-icon-button color="accent" (click)="uplImg.emit(i)"><mat-icon>note_add</mat-icon></button>
+                <button mat-icon-button color="primary" (click)="openVouchers(i)"><mat-icon>preview</mat-icon></button>
+            </div>
             <div class="clientInfo" [style.width.px]="350">
                 <ul>
                     <ng-container *ngFor="let v of i['referencias']">

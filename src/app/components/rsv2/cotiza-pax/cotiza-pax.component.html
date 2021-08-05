@@ -1,5 +1,5 @@
 <div class="modal fade" id="viewPrices" tabindex="-1" role="dialog" aria-labelledby="viewPricesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="viewPricesLabel">Precios de la Habitación <span *ngIf="loading['viewPrices']"><mat-progress-bar mode="buffer"></mat-progress-bar></span><span *ngIf="!loading['viewPrices']">{{ viewPricesData['categoria'] }} ({{ viewPricesData['hotel'] }})</span></h5>
@@ -29,104 +29,208 @@
                                     <td class="text-center">1.0</td>
                                     <td class="text-center">{{ viewPricesData['pax1'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax1']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax1'],1,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax1'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax1'],1,0,0,original)" *ngIf="!original['setTraspaso']['1.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['1.0.0']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax1'],1,0,0,original,true)" *ngIf="original['setTraspaso']['1.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.0.1', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">1.1</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,1,original)" *ngIf="!original['setTraspaso']['1.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['1.0.1']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,1,original,true)" *ngIf="original['setTraspaso']['1.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.0.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 2">
                                     <td class="text-center">1.2</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,2,original)" *ngIf="!original['setTraspaso']['1.0.2']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['1.0.2']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,0,2,original,true)" *ngIf="original['setTraspaso']['1.0.2']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '1.1.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 1 && viewPricesData['maxChild'] >= 3">
                                     <td class="text-center">1.3</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,1,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,1,2,original)" *ngIf="!original['setTraspaso']['1.1.2']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['1.1.2']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],1,1,2,original,true)" *ngIf="original['setTraspaso']['1.1.2']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.0', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2">
                                     <td class="text-center">2.0</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,0,original)" *ngIf="!original['setTraspaso']['2.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['2.0.0']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,0,original,true)" *ngIf="original['setTraspaso']['2.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.1', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">2.1</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,1,original)" *ngIf="!original['setTraspaso']['2.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['2.0.1']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,1,original,true)" *ngIf="original['setTraspaso']['2.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.0.2', 'table-danger': viewPricesData['pax2'] == null}" *ngIf="viewPricesData['pax2'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 2">
                                     <td class="text-center">2.2</td>
                                     <td class="text-center">{{ viewPricesData['pax2'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,2,original)" *ngIf="!original['setTraspaso']['2.0.2']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['2.0.2']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2'],2,0,2,original,true)" *ngIf="original['setTraspaso']['2.0.2']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '2.1.2', 'table-danger': viewPricesData['pax2_3'] == null}" *ngIf="viewPricesData['pax2_3'] != null && viewPricesData['maxAdults'] >= 2 && viewPricesData['maxChild'] >= 3">
                                     <td class="text-center">2.3</td>
                                     <td class="text-center">{{ viewPricesData['pax2_3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax2_3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2_3'],2,1,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax2_3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2_3'],2,1,2,original)" *ngIf="!original['setTraspaso']['2.1.2']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['2.1.2']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax2_3'],2,1,2,original,true)" *ngIf="original['setTraspaso']['2.1.2']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.0', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3">
                                     <td class="text-center">3.0</td>
                                     <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,0,original)" *ngIf="!original['setTraspaso']['3.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['3.0.0']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,0,original,true)" *ngIf="original['setTraspaso']['3.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.1', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">3.1</td>
                                     <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,1,original)" *ngIf="!original['setTraspaso']['3.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['3.0.1']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,1,original,true)" *ngIf="original['setTraspaso']['3.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '3.0.2', 'table-danger': viewPricesData['pax3'] == null}" *ngIf="viewPricesData['pax3'] != null && viewPricesData['maxAdults'] >= 3 && viewPricesData['maxChild'] >= 2">
                                     <td class="text-center">3.2</td>
                                     <td class="text-center">{{ viewPricesData['pax3'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax3']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,2)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax3'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,2,original)" *ngIf="!original['setTraspaso']['3.0.2']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['3.0.2']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax3'],3,0,2,original,true)" *ngIf="original['setTraspaso']['3.0.2']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '4.0.0', 'table-danger': viewPricesData['pax4'] == null}" *ngIf="viewPricesData['pax4'] != null && viewPricesData['maxAdults'] >= 4">
                                     <td class="text-center">4.0</td>
                                     <td class="text-center">{{ viewPricesData['pax4'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax4']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,0)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax4'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,0,original)" *ngIf="!original['setTraspaso']['4.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['4.0.0']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,0,original,true)" *ngIf="original['setTraspaso']['4.0.0']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                                 <tr [ngClass]="{'table-info': viewPricesData['occOriginal'] == '4.0.1', 'table-danger': viewPricesData['pax4'] == null}" *ngIf="viewPricesData['pax4'] != null && viewPricesData['maxAdults'] >= 4 && viewPricesData['maxChild'] >= 1">
                                     <td class="text-center">4.1</td>
                                     <td class="text-center">{{ viewPricesData['pax4'] | currency:'MXN':'symbol-narrow':'.2-2'}}</td>
                                     <td class="text-center">{{ viewPricesData['difPax4']  | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    <td *ngIf="_init.checkSingleCredential('rsv_changes')">
-                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,1)" *ngIf="n(viewPricesData['montoPagadoTotal']) <= n(viewPricesData['pax4'])" class="text-center"><mat-icon>done</mat-icon></button>
+                                    <td  class="text-center" *ngIf="_init.checkSingleCredential('rsv_changes')">
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes')" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,1,original)" *ngIf="!original['setTraspaso']['4.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="text-sm mr-2 example-radio-group"
+                                            [(ngModel)]="original['isR']" *ngIf="original['setTraspaso']['4.0.1']">
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="false">Traspaso</mat-radio-button>
+                                            <mat-radio-button class="example-radio-button" style="margin-left: 16px;" [value]="true">Reembolso</mat-radio-button>
+                                        </mat-radio-group>
+                                        <button [disabled]="!_init.checkSingleCredential('rsv_changes') || original['isR'] == null" type="button" mat-mini-fab  (click)="apply(viewPricesData['pax4'],4,0,1,original,true)" *ngIf="original['setTraspaso']['4.0.1']" class="text-center"><mat-icon>done</mat-icon></button>
                                     </td>
                                 </tr>
                             </tbody>
