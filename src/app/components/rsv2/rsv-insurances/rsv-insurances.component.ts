@@ -59,6 +59,24 @@ export class RsvInsurancesComponent implements OnInit {
 
   }
 
+  getDif(i){
+
+    let newM = 0
+    let mdo = this.data['master']['esNacional'] == '1' ? 'nacional' : 'internacional'
+    
+    
+    if(i['cobertura'] == ''){
+      newM = 0
+    }else{
+      let ins = this.insurancesQ[i['itemLocatorId']][mdo][i['cobertura']]
+      
+      newM = ins['publico_ci'] * (i['moneda']=='MXN' ? ins['tipoCambio'] : 1)
+
+    }
+
+    return newM < i['seguros']['montoPagado']
+  }
+
   consistentInsurance(i, bl = false){
     let s = i['seguros']
 

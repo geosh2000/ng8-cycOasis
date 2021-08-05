@@ -152,7 +152,8 @@
                                     </li>
                                     <li [style.width.px]="160" class="d-flex align-items-center justify-content-center list-group-item">
                                         <button mat-raised-button color="primary" (click)="genInsurance( i, insurancesQ[i['itemLocatorId']],  (data['master']['esNacional'] == '1' ? 'nacional' : 'internacional'), i['cobertura'] )" [disabled]="i['cobertura'] == null || i['cobertura'] == ''" *ngIf="i['insuranceRelated'] == null">Generar</button>
-                                        <button mat-raised-button [color]="i['cobertura'] == '' ? 'accent' : 'primary'" (click)="modifyInsurance( i, insurancesQ[i['itemLocatorId']],  (data['master']['esNacional'] == '1' ? 'nacional' : 'internacional'), i['cobertura'] )" [disabled]="!_init.checkSingleCredential('rsv_changes') || i['cobertura'] == null || ((
+                                        <button mat-raised-button [color]="i['cobertura'] == '' ? 'accent' : 'primary'" (click)="modifyInsurance( i, insurancesQ[i['itemLocatorId']],  (data['master']['esNacional'] == '1' ? 'nacional' : 'internacional'), i['cobertura'] )" 
+                                        [disabled]="!(_init.checkSingleCredential('rsv_changes') || i['seguros']['montoPagado'] == 0 || !getDif(i)) || i['cobertura'] == null || ((
                                             (i['seguros']['montoPagado'] > 0 && i['cobertura'] == '') ||
                                             ((i['cobertura'] != '' && i['cobertura'] != null) && 
                                                 (insurancesQ[i['itemLocatorId']][(data['master']['esNacional'] == '1' ? 'nacional' : 'internacional')][i['cobertura']]['publico_ci'] * (i['moneda']=='MXN' ? insurancesQ[i['itemLocatorId']][(data['master']['esNacional'] == '1' ? 'nacional' : 'internacional')][i['cobertura']]['tipoCambio'] : 1)) < i['seguros']['montoPagado']

@@ -137,7 +137,9 @@
                     </div>
                     <div class="col-1"></div>
                 </div>
-
+                <div class="alert alert-danger" role="alert" *ngIf="i['insuranceRelated'] != null">
+                    <p>Este item tiene ligado un seguro. Después de realizar los cambios, asegúrate de modificar el seguro desde el <b>Gestor de Seguros</b></p>
+                </div>
 
             </div>
             <div class="modal-footer">

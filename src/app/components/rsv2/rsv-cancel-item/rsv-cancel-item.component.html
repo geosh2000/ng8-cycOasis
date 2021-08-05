@@ -6,10 +6,14 @@
 
             </div>
             <div class="modal-body" *ngIf="!penaltiesFlag">
-                <div>
+                <div *ngIf="item['insuranceRelated'] == null">
                     Estás seguro que deseas cancelar este item?
                 </div>
+                <div class="alert alert-danger" role="alert" *ngIf="item['insuranceRelated'] != null">
+                    <p>Este item tiene ligado un seguro. Para poder cancelarlo, debes anular primero el seguro desde el <b>Gestor de Seguros</b></p>
+                </div>
                 <br>
+                <!-- <pre>{{ item | json }}</pre> -->
             </div>
             <div class="modal-body" *ngIf="penaltiesFlag && !loading['cancel']">
                 <ng-container *ngIf="loading['policies']">
@@ -101,7 +105,7 @@
             </div>
             <div class="modal-footer" *ngIf="!penaltiesFlag">
                 <button type="button" class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="loading['cancel']">Cerrar</button>
-                <button type="button" class="btn btn-success" (click)="confirmCancel()" [disabled]="loading['cancel']"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                <button type="button" class="btn btn-success" (click)="confirmCancel()" [disabled]="loading['cancel'] || item['insuranceRelated'] != null"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
             </div>
             <div class="modal-footer" *ngIf="penaltiesFlag && !loading['cancel']">
                 <button type="button" class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="loading['cancel']">Cerrar</button>
