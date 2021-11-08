@@ -179,6 +179,7 @@ export class CreateRsvComponent implements OnInit {
       master: this.newRsvForm.value,
       item: this.data,
       habs: [],
+      tours: [],
       type: this.tipo,
       moneda: this.moneda,
       hasTransfer: this.hasTransfer
@@ -231,10 +232,44 @@ export class CreateRsvComponent implements OnInit {
 
         arr['habs'].push(hab)
       }
+
+      if( this.all['isPaq'] ){
+
+        for( let h of arr['item']['paq']['controlls']['paq' + this.data['lSelected']]['tours'] ){
+  
+          let tours = {
+              tour: {
+                tourId: h['id'],
+                adultos: arr['item']['adults'],
+                menores: 0
+              },
+              monto: {
+                montoOriginal: this.moneda ? h['priceMXN'] : h['priceUSD'],
+                lv: this.data['lSelected'],
+                promo: 'C',
+                monto: this.moneda ? h['priceMXN'] : h['priceUSD'],
+                moneda: this.moneda ? 'MXN' : 'USD',
+                isPagoHotel: 0
+              },
+              item: {
+                itemType: 4,
+                isQuote: h['fdp'] == 1 ? 0 : 1,
+                userCreated: this._init.currentUser.hcInfo.id
+              }
+          }
+  
+          arr['tours'].push(tours)
+        }
+
+      }
     }
 
-    // console.log(arr)
+    this.showConsole(arr, 'Datos para crear rsva')
     this.saveRsvPut( arr )
+  }
+
+  showConsole( a, title = 'Datos' ){
+    console.log(title, a)
   }
 
   saveRsvPut( a ){

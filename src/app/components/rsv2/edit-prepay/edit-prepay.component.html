@@ -12,7 +12,7 @@
             </mat-form-field>
             <button style="zoom: 0.8" mat-icon-button color='warn' (click)="editFlag = false" [disabled]="loading['editMonto']"><mat-icon *ngIf="!loading['editMonto']">cancel</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
             <button style="zoom: 0.8" mat-icon-button color='primary' (click)="editMonto(monto5)" [disabled]="loading['editMonto']"><mat-icon *ngIf="!loading['editMonto']">done</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
-            <button style="zoom: 0.8" mat-icon-button color='primary' (click)="sfFlag = true" [disabled]="loading['editMonto']" *ngIf="i['itemType'] == 5 && i['montoPagado'] == 0"><mat-icon *ngIf="!loading['editMonto']">money_off</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+            <button style="zoom: 0.8" mat-icon-button color='primary' (click)="sfFlag = true" [disabled]="loading['editMonto']" *ngIf="(i['itemType'] == 5 || i['itemType'] == 11) && i['montoPagado'] == 0"><mat-icon *ngIf="!loading['editMonto']">money_off</mat-icon><span *ngIf="loading['editMonto']"><i class="fa fa-spinner fa-pulse"></i></span></button>
         </ng-container>
         <ng-container *ngIf="sfFlag">
             <div class="alert alert-danger" role="alert">

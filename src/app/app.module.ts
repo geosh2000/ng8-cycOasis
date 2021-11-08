@@ -210,6 +210,7 @@ import { CieloChangesComponent } from './components/cielo/cielo-changes/cielo-ch
 import { RbLoyaltyComponent } from './config/upload-files/rb-loyalty/rb-loyalty.component';
 import { CotizaPaxComponent } from './components/rsv2/cotiza-pax/cotiza-pax.component';
 import { RsvInsurancesComponent } from './components/rsv2/rsv-insurances/rsv-insurances.component';
+import { CotPaqDetailComponent } from './components/cotizador/cot-paq-detail/cot-paq-detail.component';
 
 
 @NgModule({
@@ -353,7 +354,8 @@ import { RsvInsurancesComponent } from './components/rsv2/rsv-insurances/rsv-ins
     CieloChangesComponent,
     RbLoyaltyComponent,
     CotizaPaxComponent,
-    RsvInsurancesComponent
+    RsvInsurancesComponent,
+    CotPaqDetailComponent
 
   ],
   imports: [

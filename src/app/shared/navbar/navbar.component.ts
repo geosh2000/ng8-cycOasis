@@ -271,5 +271,9 @@ export class NavbarComponent implements OnInit {
     this.globalAdv.emit( !this.advStatus )
   }
 
+  goToCotizar(){
+      this.route.navigateByUrl('https://cyc-oasishoteles.com/cyc12/#/cotizar');
+  }
+
 
 }

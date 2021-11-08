@@ -1,11 +1,13 @@
 
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Title, DomSanitizer } from '@angular/platform-browser';
 import { CotCreateRsvComponent } from './cot-create-rsv/cot-create-rsv.component';
 import { ApiService, InitService } from 'src/app/services/service.index';
 import { OrderPipe } from 'ngx-order-pipe';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 
 declare var jQuery: any;
 
@@ -23,16 +25,21 @@ export class MainCotizadorComponent implements OnInit {
   dataRsv = {}
   loading:Object = {}
   constructor(private titleService: Title,
+              @Inject(DOCUMENT) private document: Document,
               public _api: ApiService,
               public _init: InitService,
               private orderPipe: OrderPipe,
               private sanitization:DomSanitizer,
+              private route:Router,
               public toastr: ToastrService) { }
 
 
   ngOnInit() {
     this.titleService.setTitle('CyC - Cotizador');
     this.getServices()
+
+    console.log('Redirect... ')
+    this.document.location.href = 'https://cyc-oasishoteles.com/cyc12/#/cotizar';
   }
 
   getServices(){

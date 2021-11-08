@@ -313,7 +313,7 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
 
                   let defaultLevel = res['data']['gen']['levels']['l2']['l2_activo'] && res['data']['gen']['levels']['l2']['l2_allEnabled'] ? '2' : '1'
 
-                  this.resultCot['habs'] = this.buildData(res['data'], defaultLevel)
+                  this.resultCot['habs'] = this.buildData(res['builtData'])
                   this.resTours = res['tours']
                   if( this.selectedHasIns == '1' ){
                     this.getAssistcard(this.resultCot['gen']['totalPax'], this.resultCot['gen']['inicio'], this.resultCot['gen']['fin'])
@@ -358,200 +358,204 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
     }
   }
 
-  buildData( data, dfLevel = '2' ){
+  buildData( data ){
 
-    this.activePaqs = false;
+    this.activePaqs = data['hasPaq'];
 
-    let result = []
-    // let inicio = data['gen']['inicio']
-    // let fin = data['gen']['fin']
-    // let noches = data['gen']['noches']
-    let paq = data['paq']
-    let tours = {
-      l1: [],
-      l2: [],
-      l3: [],
-      l4: []
+    for( let h of data['data'] ){
+      h['hotelUrl'] = this.sanitization.bypassSecurityTrustStyle(`url(${h['hotelUrl']})`)
     }
 
-    for( let t of paq ){
-      if( t['activo'] == '1' ){
-        tours['l'+t['pqLv']].push(t)
-      }
-    }
+    // let result = []
+    // // let inicio = data['gen']['inicio']
+    // // let fin = data['gen']['fin']
+    // // let noches = data['gen']['noches']
+    // let paq = data['paq']
+    // let tours = {
+    //   l1: [],
+    //   l2: [],
+    //   l3: [],
+    //   l4: []
+    // }
 
-    tours = this.orderPipe.transform(tours, 'pqOrder')
+    // for( let t of paq ){
+    //   if( t['activo'] == '1' ){
+    //     tours['l'+t['pqLv']].push(t)
+    //   }
+    // }
 
-    for( let c in this.hotelList ){
-      if( this.hotelList.hasOwnProperty(c) ){
-        for( let h of this.hotelList[c] ){
-          if( data['habs'][h['code']] ){
-            for(let cat in data['habs'][h['code']]['cot'] ){
-              if( data['habs'][h['code']]['cot'].hasOwnProperty(cat) ){
-                let arr = {
-                  inicio: data['gen']['inicio'],
-                  fin: data['gen']['fin'],
-                  complejo: c,
-                  hotel: h['hotelName'],
-                  hotelCode: h['code'],
-                  hotelOrder: parseInt(h['displayOrder']),
-                  hotelUrl: this.sanitization.bypassSecurityTrustStyle(`url('assets/img/logos/logo_${h['code'].toLowerCase()}.jpg')`),
-                  categoria: cat,
-                  usd_total: 0,
-                  mxn_total: 0,
-                  l1usd_totalDisc: 0,
-                  l1mxn_totalDisc: 0,
-                  l2usd_totalDisc: 0,
-                  l2mxn_totalDisc: 0,
-                  l3usd_totalDisc: 0,
-                  l3mxn_totalDisc: 0,
-                  l4usd_totalDisc: 0,
-                  l4mxn_totalDisc: 0,
-                  usd_totalDisc: 0,
-                  mxn_totalDisc: 0,
-                  totalOpaque: 0,
-                  desc: 0.0,
-                  isOk: true,
-                  habs: [],
-                  adults: 0,
-                  minors: 0,
-                  lSelected: null,
-                  bo: data['habs'][h['code']]['disp'],
-                  paq: {
-                    active: false,
-                    adults: 0,
-                    minPriceMXN: 0,
-                    minPriceUSD: 0,
-                    controlls: {
-                      paq1: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
-                      paq2: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
-                      paq3: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
-                      paq4: {name: '', difUSD: 0, difMXN: 0, levelRef: 4}
-                    }
-                  }
-                }
-                for(let hab in data['habs'][h['code']]['cot'][cat] ){
-                  if( data['habs'][h['code']]['cot'][cat].hasOwnProperty(hab) ){
+    // tours = this.orderPipe.transform(tours, 'pqOrder')
 
-                    // PAQS CONFIG
+    // for( let c in this.hotelList ){
+    //   if( this.hotelList.hasOwnProperty(c) ){
+    //     for( let h of this.hotelList[c] ){
+    //       if( data['habs'][h['code']] ){
+    //         for(let cat in data['habs'][h['code']]['cot'] ){
+    //           if( data['habs'][h['code']]['cot'].hasOwnProperty(cat) ){
+    //             let arr = {
+    //               inicio: data['gen']['inicio'],
+    //               fin: data['gen']['fin'],
+    //               complejo: c,
+    //               hotel: h['hotelName'],
+    //               hotelCode: h['code'],
+    //               hotelOrder: parseInt(h['displayOrder']),
+    //               hotelUrl: this.sanitization.bypassSecurityTrustStyle(`url('assets/img/logos/logo_${h['code'].toLowerCase()}.jpg')`),
+    //               categoria: cat,
+    //               usd_total: 0,
+    //               mxn_total: 0,
+    //               l1usd_totalDisc: 0,
+    //               l1mxn_totalDisc: 0,
+    //               l2usd_totalDisc: 0,
+    //               l2mxn_totalDisc: 0,
+    //               l3usd_totalDisc: 0,
+    //               l3mxn_totalDisc: 0,
+    //               l4usd_totalDisc: 0,
+    //               l4mxn_totalDisc: 0,
+    //               usd_totalDisc: 0,
+    //               mxn_totalDisc: 0,
+    //               totalOpaque: 0,
+    //               desc: 0.0,
+    //               isOk: true,
+    //               habs: [],
+    //               adults: 0,
+    //               minors: 0,
+    //               lSelected: null,
+    //               bo: data['habs'][h['code']]['disp'],
+    //               paq: {
+    //                 active: false,
+    //                 adults: 0,
+    //                 minPriceMXN: 0,
+    //                 minPriceUSD: 0,
+    //                 controlls: {
+    //                   paq1: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
+    //                   paq2: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
+    //                   paq3: {name: '', difUSD: 0, difMXN: 0, levelRef: 4},
+    //                   paq4: {name: '', difUSD: 0, difMXN: 0, levelRef: 4}
+    //                 }
+    //               }
+    //             }
+    //             for(let hab in data['habs'][h['code']]['cot'][cat] ){
+    //               if( data['habs'][h['code']]['cot'][cat].hasOwnProperty(hab) ){
 
-                    if( data['habs'][h['code']]['cot'][cat][hab][0]['p1Name'] != null && this.selectedHasPaq == '1' ){
-                      arr['paq']['active'] = true;
-                      arr['paq']['adults'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['adults']);                      
-                      arr['paq']['minPriceMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l'+data['habs'][h['code']]['cot'][cat][hab][0]['paqLevelRef']+'MXN_total']);                      
-                      arr['paq']['minPriceUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l'+data['habs'][h['code']]['cot'][cat][hab][0]['paqLevelRef']+'USD_total']);                      
-                      arr['paq']['controlls']['paq1']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p1Name'];                      
-                      arr['paq']['controlls']['paq1']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif1']);
-                      arr['paq']['controlls']['paq1']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif1_MXN']);
-                      arr['paq']['controlls']['paq1']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
-                      arr['paq']['controlls']['paq2']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p2Name'];                      
-                      arr['paq']['controlls']['paq2']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif2']);
-                      arr['paq']['controlls']['paq2']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif2_MXN']);
-                      arr['paq']['controlls']['paq2']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
-                      arr['paq']['controlls']['paq3']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p3Name'];                      
-                      arr['paq']['controlls']['paq3']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif3']);
-                      arr['paq']['controlls']['paq3']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif3_MXN']);
-                      arr['paq']['controlls']['paq3']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
-                      arr['paq']['controlls']['paq4']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p4Name'];                      
-                      arr['paq']['controlls']['paq4']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif4']);
-                      arr['paq']['controlls']['paq4']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif4_MXN']);
-                      arr['paq']['controlls']['paq4']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
-                    }
+    //                 // PAQS CONFIG
+
+    //                 if( data['habs'][h['code']]['cot'][cat][hab][0]['p1Name'] != null && this.selectedHasPaq == '1' ){
+    //                   arr['paq']['active'] = true;
+    //                   arr['paq']['adults'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['adults']);                      
+    //                   arr['paq']['minPriceMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l'+data['habs'][h['code']]['cot'][cat][hab][0]['paqLevelRef']+'MXN_total']);                      
+    //                   arr['paq']['minPriceUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l'+data['habs'][h['code']]['cot'][cat][hab][0]['paqLevelRef']+'USD_total']);                      
+    //                   arr['paq']['controlls']['paq1']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p1Name'];                      
+    //                   arr['paq']['controlls']['paq1']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif1']);
+    //                   arr['paq']['controlls']['paq1']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif1_MXN']);
+    //                   arr['paq']['controlls']['paq1']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+    //                   arr['paq']['controlls']['paq2']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p2Name'];                      
+    //                   arr['paq']['controlls']['paq2']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif2']);
+    //                   arr['paq']['controlls']['paq2']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif2_MXN']);
+    //                   arr['paq']['controlls']['paq2']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+    //                   arr['paq']['controlls']['paq3']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p3Name'];                      
+    //                   arr['paq']['controlls']['paq3']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif3']);
+    //                   arr['paq']['controlls']['paq3']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif3_MXN']);
+    //                   arr['paq']['controlls']['paq3']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+    //                   arr['paq']['controlls']['paq4']['name'] = data['habs'][h['code']]['cot'][cat][hab][0]['p4Name'];                      
+    //                   arr['paq']['controlls']['paq4']['difUSD'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif4']);
+    //                   arr['paq']['controlls']['paq4']['difMXN'] += parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['paqDif4_MXN']);
+    //                   arr['paq']['controlls']['paq4']['levelRef'] = data['habs'][h['code']]['cot'][cat][hab][0]['paqLevel'];
+    //                 }
                     
-                    if( data['habs'][h['code']]['cot'][cat][hab][0]['isOk'] == '0' ){
-                      arr['paq']['active'] = false;
-                    }
+    //                 if( data['habs'][h['code']]['cot'][cat][hab][0]['isOk'] == '0' ){
+    //                   arr['paq']['active'] = false;
+    //                 }
 
-                    arr['adults'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['adults'])
-                    arr['minors'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['minors'])
-                    arr['isNR'] = data['habs'][h['code']]['cot'][cat][hab][0]['isNR']
-                    arr['totalOpaque'] = arr['totalOpaque'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD'])
-                    arr['mxn_total'] = arr['mxn_total'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['MXN'])
-                    arr['usd_total'] = arr['usd_total'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD'])
-                    arr['l1mxn_totalDisc'] = arr['l1mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l1MXN_total'])
-                    arr['l1usd_totalDisc'] = arr['l1usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l1USD_total'])
-                    arr['l2mxn_totalDisc'] = arr['l2mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['MXN_total'])
-                    arr['l2usd_totalDisc'] = arr['l2usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD_total'])
-                    arr['l3mxn_totalDisc'] = arr['l3mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l3MXN_total'])
-                    arr['l3usd_totalDisc'] = arr['l3usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l3USD_total'])
-                    arr['l4mxn_totalDisc'] = arr['l4mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l4MXN_total'])
-                    arr['l4usd_totalDisc'] = arr['l4usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l4USD_total'])
-                    arr['mxn_totalDisc'] = arr['mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['MXN_total'])
-                    arr['usd_totalDisc'] = arr['usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD_total'])
-                    if( parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['isOk']) == 0 ){
-                      arr['isOk'] = false
-                      arr['reasonNot'] = data['habs'][h['code']]['cot'][cat][hab][0]['reasonNot']
-                      if( data['habs'][h['code']]['cot'][cat][hab][0]['r5'] ){
-                        arr['no_disp'] = data['habs'][h['code']]['cot'][cat][hab][0]['r5']
-                      }
-                      if( data['habs'][h['code']]['cot'][cat][hab][0]['r1'] ){
-                        arr['no_occ'] = data['habs'][h['code']]['cot'][cat][hab][0]['r1']
-                      }
-                      if( data['habs'][h['code']]['cot'][cat][hab][0]['r2'] ){
-                        arr['no_adl'] = data['habs'][h['code']]['cot'][cat][hab][0]['r2']
-                      }
-                      if( data['habs'][h['code']]['cot'][cat][hab][0]['r3'] ){
-                        arr['no_min'] = data['habs'][h['code']]['cot'][cat][hab][0]['r3']
-                      }
-                      if( data['habs'][h['code']]['cot'][cat][hab][0]['r4'] ){
-                        arr['no_comb'] = data['habs'][h['code']]['cot'][cat][hab][0]['r4']
-                      }
-                    }
-                    if( !arr['isOk'] ){
-                      arr['mxn_total'] = 0
-                      arr['usd_total'] = 0
-                      arr['mxn_totalDisc'] = 0
-                      arr['usd_totalDisc'] = 0
-                      arr['l1mxn_totalDisc'] = 0
-                      arr['l1usd_totalDisc'] = 0
-                      arr['l2mxn_totalDisc'] = 0
-                      arr['l2usd_totalDisc'] = 0
-                      arr['l3mxn_totalDisc'] = 0
-                      arr['l3usd_totalDisc'] = 0
-                      arr['l4mxn_totalDisc'] = 0
-                      arr['l4usd_totalDisc'] = 0
-                    }
-                    arr['desc'] = parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['lv'])
-                    arr['habitacion'] = data['habs'][h['code']]['cot'][cat][hab][0]['habName']
-                    arr['habCat'] = data['habs'][h['code']]['cot'][cat][hab][0]['cat']
-                    arr['habs'].push(data['habs'][h['code']]['cot'][cat][hab][0])
-                    arr['spl3'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl3']
-                    arr['spl4'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl4']
-                    arr['spl3Desc'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl3Desc']
-                    arr['spl4Desc'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl4Desc']
+    //                 arr['adults'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['adults'])
+    //                 arr['minors'] += parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['minors'])
+    //                 arr['isNR'] = data['habs'][h['code']]['cot'][cat][hab][0]['isNR']
+    //                 arr['totalOpaque'] = arr['totalOpaque'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD'])
+    //                 arr['mxn_total'] = arr['mxn_total'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['MXN'])
+    //                 arr['usd_total'] = arr['usd_total'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD'])
+    //                 arr['l1mxn_totalDisc'] = arr['l1mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l1MXN_total'])
+    //                 arr['l1usd_totalDisc'] = arr['l1usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l1USD_total'])
+    //                 arr['l2mxn_totalDisc'] = arr['l2mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['MXN_total'])
+    //                 arr['l2usd_totalDisc'] = arr['l2usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD_total'])
+    //                 arr['l3mxn_totalDisc'] = arr['l3mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l3MXN_total'])
+    //                 arr['l3usd_totalDisc'] = arr['l3usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l3USD_total'])
+    //                 arr['l4mxn_totalDisc'] = arr['l4mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l4MXN_total'])
+    //                 arr['l4usd_totalDisc'] = arr['l4usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['l4USD_total'])
+    //                 arr['mxn_totalDisc'] = arr['mxn_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['MXN_total'])
+    //                 arr['usd_totalDisc'] = arr['usd_totalDisc'] + parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['USD_total'])
+    //                 if( parseInt(data['habs'][h['code']]['cot'][cat][hab][0]['isOk']) == 0 ){
+    //                   arr['isOk'] = false
+    //                   arr['reasonNot'] = data['habs'][h['code']]['cot'][cat][hab][0]['reasonNot']
+    //                   if( data['habs'][h['code']]['cot'][cat][hab][0]['r5'] ){
+    //                     arr['no_disp'] = data['habs'][h['code']]['cot'][cat][hab][0]['r5']
+    //                   }
+    //                   if( data['habs'][h['code']]['cot'][cat][hab][0]['r1'] ){
+    //                     arr['no_occ'] = data['habs'][h['code']]['cot'][cat][hab][0]['r1']
+    //                   }
+    //                   if( data['habs'][h['code']]['cot'][cat][hab][0]['r2'] ){
+    //                     arr['no_adl'] = data['habs'][h['code']]['cot'][cat][hab][0]['r2']
+    //                   }
+    //                   if( data['habs'][h['code']]['cot'][cat][hab][0]['r3'] ){
+    //                     arr['no_min'] = data['habs'][h['code']]['cot'][cat][hab][0]['r3']
+    //                   }
+    //                   if( data['habs'][h['code']]['cot'][cat][hab][0]['r4'] ){
+    //                     arr['no_comb'] = data['habs'][h['code']]['cot'][cat][hab][0]['r4']
+    //                   }
+    //                 }
+    //                 if( !arr['isOk'] ){
+    //                   arr['mxn_total'] = 0
+    //                   arr['usd_total'] = 0
+    //                   arr['mxn_totalDisc'] = 0
+    //                   arr['usd_totalDisc'] = 0
+    //                   arr['l1mxn_totalDisc'] = 0
+    //                   arr['l1usd_totalDisc'] = 0
+    //                   arr['l2mxn_totalDisc'] = 0
+    //                   arr['l2usd_totalDisc'] = 0
+    //                   arr['l3mxn_totalDisc'] = 0
+    //                   arr['l3usd_totalDisc'] = 0
+    //                   arr['l4mxn_totalDisc'] = 0
+    //                   arr['l4usd_totalDisc'] = 0
+    //                 }
+    //                 arr['desc'] = parseFloat(data['habs'][h['code']]['cot'][cat][hab][0]['lv'])
+    //                 arr['habitacion'] = data['habs'][h['code']]['cot'][cat][hab][0]['habName']
+    //                 arr['habCat'] = data['habs'][h['code']]['cot'][cat][hab][0]['cat']
+    //                 arr['habs'].push(data['habs'][h['code']]['cot'][cat][hab][0])
+    //                 arr['spl3'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl3']
+    //                 arr['spl4'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl4']
+    //                 arr['spl3Desc'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl3Desc']
+    //                 arr['spl4Desc'] = data['habs'][h['code']]['cot'][cat][hab][0]['spl4Desc']
 
-                    if( data['habs'][h['code']]['cot'][cat][hab][0]['promoAplicada'] ){
-                      arr['promoAplicada'] = data['habs'][h['code']]['cot'][cat][hab][0]['promoAplicada']
-                    }
-                  }
-                }
+    //                 if( data['habs'][h['code']]['cot'][cat][hab][0]['promoAplicada'] ){
+    //                   arr['promoAplicada'] = data['habs'][h['code']]['cot'][cat][hab][0]['promoAplicada']
+    //                 }
+    //               }
+    //             }
 
-                if( arr['paq']['active'] == true && this.selectedHasPaq == '1' ){
-                  this.activePaqs = true;
-                  let tmpPaq = this.buildPackage(tours, arr['paq']['controlls'])
+    //             if( arr['paq']['active'] == true && this.selectedHasPaq == '1' ){
+    //               this.activePaqs = true;
+    //               let tmpPaq = this.buildPackage(tours, arr['paq']['controlls'])
   
-                  for(let pqi in arr['paq']['controlls'] ){
-                    arr['paq']['controlls'][pqi]['tours'] = tmpPaq[pqi]['tours']
-                    arr['paq']['controlls'][pqi]['totalUSD'] = tmpPaq[pqi]['totalUSD']
-                    arr['paq']['controlls'][pqi]['totalMXN'] = tmpPaq[pqi]['totalMXN']
-                    arr['paq']['controlls'][pqi]['paqTotalPriceMXN'] = tmpPaq[pqi]['totalMXN'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'mxn_totalDisc'] < arr['paq']['minPriceMXN'] ? arr['paq']['minPriceMXN'] : tmpPaq[pqi]['totalMXN'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'mxn_totalDisc']
-                    arr['paq']['controlls'][pqi]['paqTotalPriceUSD'] = tmpPaq[pqi]['totalUSD'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'usd_totalDisc'] < arr['paq']['minPriceUSD'] ? arr['paq']['minPriceUSD'] : tmpPaq[pqi]['totalUSD'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'usd_totalDisc']
-                  }
-                }
+    //               for(let pqi in arr['paq']['controlls'] ){
+    //                 arr['paq']['controlls'][pqi]['tours'] = tmpPaq[pqi]['tours']
+    //                 arr['paq']['controlls'][pqi]['totalUSD'] = tmpPaq[pqi]['totalUSD']
+    //                 arr['paq']['controlls'][pqi]['totalMXN'] = tmpPaq[pqi]['totalMXN']
+    //                 arr['paq']['controlls'][pqi]['paqTotalPriceMXN'] = tmpPaq[pqi]['totalMXN'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'mxn_totalDisc'] < arr['paq']['minPriceMXN'] ? arr['paq']['minPriceMXN'] : tmpPaq[pqi]['totalMXN'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'mxn_totalDisc']
+    //                 arr['paq']['controlls'][pqi]['paqTotalPriceUSD'] = tmpPaq[pqi]['totalUSD'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'usd_totalDisc'] < arr['paq']['minPriceUSD'] ? arr['paq']['minPriceUSD'] : tmpPaq[pqi]['totalUSD'] + arr['l'+arr['paq']['controlls'][pqi]['levelRef']+'usd_totalDisc']
+    //               }
+    //             }
 
 
-                result.push(arr)
-              }
-            }
-          }
-        }
-      }
-    }
+    //             result.push(arr)
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
-    result = this.orderPipe.transform(result, 'totalOpaque')
+    let result = this.orderPipe.transform(data['data'], 'totalOpaque')
     result = this.orderPipe.transform(result, 'hotelOrder')
 
-    // console.log(result);
+    console.log(result);
     // console.log(tours);
     return result
 
@@ -653,7 +657,8 @@ export class CotizadorV2Component implements OnInit, OnDestroy {
     this.rsv.emit({
       data: h,
       moneda: this.moneda,
-      tipo: 'hotel'
+      tipo: 'hotel',
+      isPaq: this.showPaqs
     })
   }
 
