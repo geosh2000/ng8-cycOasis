@@ -25,60 +25,84 @@
                 <ng-container *ngIf="!loading['policies']">
                     <div class='continer text-left'>
                         <h5>Reservación de tarifa {{ item['isNR'] == 1 ? 'No Reembolsable' : 'Flexible' }}</h5>
-                        <div class="container d-flex justify-content-center">
+                        <div class="container d-flex justify-content-center" *ngIf="!isCortesia">
                             <table class="table table-hover">
                                 <tbody>
-                                    <tr>
-                                        <th class="category">Travel Window</th>
-                                        <td class="value">{{ policies['inicioTW'] }} a {{ policies['finTW'] }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category">Temporada</th>
-                                        <td class="value">{{ policies['hs'] == 1 ? 'Alta' : 'Baja' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category">Tipo de Cancelación</th>
-                                        <td class="value">{{ policies['isBusy'] == 1 ? 'Salida Anticipada / No Show' : 'Anticipado' }}</td>
-                                    </tr>
-                                    <tr *ngIf="policies['isBusy'] != 1">
-                                        <th class="category">Tiempo para cancelar</th>
-                                        <td class="value">{{ policies['policyDays'] }} días</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category">Penalidad por Política</th>
-                                        <td class="value" *ngIf="policies['isNights'] == 1">{{ policies['penalty'] }} noches</td>
-                                        <td class="value" *ngIf="policies['isNights'] != 1">{{ policies['penalty'] | percent:'.0-0' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category">Monto Pagado</th>
-                                        <td class="value">{{ policies['montoPagado'] | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category">Noches dormidas</th>
-                                        <td class="value">{{ policies['nochesDormidas'] }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category">Penalidad Aplicable</th>
-                                        <td class="value text-danger"><b>{{ policies['penalidadTotal'] | currency:'MXN':'symbol-narrow':'.2-2' }} <span *ngIf="policies['isNights']==1">( {{ policies['penalty'] }} noches )</span></b></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category">Penalidad Sugerida</th>
-                                        <td class="value">{{ policies['penalidad'] | currency:'MXN':'symbol-narrow':'.2-2' }} <span *ngIf="policies['isNights']==1">( {{ policies['penalty'] + policies['nochesDormidas'] }} noches )</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="category" [ngClass]="{'invalid-field': item['penalidad'] < (item['xldType'] != 'reembolso' ? policies['minimumPenalty'] : item['omit10'] ? 0 : policies['minimumPenalty']), 'invalid-field': item['penalidad'] > item['montoPagado']}">
-                                            Penalidad a Aplicar<br>
-                                            <span style="font-size: smaller; color: black; font-weight: normal;">Rango: {{ (item['xldType'] != 'reembolso' ? 0 : item['omit10'] ? 0 : policies['minimumPenalty']) | currency:'MXN':'symbol-narrow':'.2-2' }} ~ {{ (item['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</span>
-                                        </th>
-                                        <td class="value">
-                                            <mat-form-field class="penaltyInput">
-                                                <mat-label>Monto Manual de Penalidad</mat-label>
-                                                <span matPrefix>$ &nbsp;</span>
-                                                <input autocomplete="off" type="number" matInput [placeholder]="policies['penalidad']" [(ngModel)]="item['penalidad']">
-                                                <mat-icon matSuffix>mode_edit</mat-icon>
-                                            </mat-form-field>
-                                        </td>
-                                    </tr>
+                                    <ng-container *ngIf="isHotel">
+                                        <tr>
+                                            <th class="category">Travel Window</th>
+                                            <td class="value">{{ policies['inicioTW'] }} a {{ policies['finTW'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="category">Temporada</th>
+                                            <td class="value">{{ policies['hs'] == 1 ? 'Alta' : 'Baja' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="category">Tipo de Cancelación</th>
+                                            <td class="value">{{ policies['isBusy'] == 1 ? 'Salida Anticipada / No Show' : 'Anticipado' }}</td>
+                                        </tr>
+                                        <tr *ngIf="policies['isBusy'] != 1">
+                                            <th class="category">Tiempo para cancelar</th>
+                                            <td class="value">{{ policies['policyDays'] }} días</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="category">Penalidad por Política</th>
+                                            <td class="value" *ngIf="policies['isNights'] == 1">{{ policies['penalty'] }} noches</td>
+                                            <td class="value" *ngIf="policies['isNights'] != 1">{{ policies['penalty'] | percent:'.0-0' }}</td>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-container *ngIf="isHotel">
+                                        <tr>
+                                            <th class="category">Monto Pagado</th>
+                                            <td class="value">{{ policies['montoPagado'] | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="category">Noches dormidas</th>
+                                            <td class="value">{{ policies['nochesDormidas'] }}</td>
+                                        </tr>
+                                        <tr >
+                                            <th class="category">Penalidad Aplicable</th>
+                                            <td class="value text-danger"><b>{{ policies['penalidadTotal'] | currency:'MXN':'symbol-narrow':'.2-2' }} <span *ngIf="policies['isNights']==1">( {{ policies['penalty'] }} noches )</span></b></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="category">Penalidad Sugerida</th>
+                                            <td class="value">{{ policies['penalidad'] | currency:'MXN':'symbol-narrow':'.2-2' }} <span *ngIf="policies['isNights']==1">( {{ policies['penalty'] + policies['nochesDormidas'] }} noches )</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="category" [ngClass]="{'invalid-field': item['penalidad'] < (item['xldType'] != 'reembolso' ? policies['minimumPenalty'] : item['omit10'] ? 0 : policies['minimumPenalty']), 'invalid-field': item['penalidad'] > item['montoPagado']}">
+                                                Penalidad a Aplicar<br>
+                                                <span style="font-size: smaller; color: black; font-weight: normal;">Rango: {{ (item['xldType'] != 'reembolso' ? 0 : item['omit10'] ? 0 : policies['minimumPenalty']) | currency:'MXN':'symbol-narrow':'.2-2' }} ~ {{ (item['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</span>
+                                            </th>
+                                            <td class="value">
+                                                <mat-form-field class="penaltyInput">
+                                                    <mat-label>Monto Manual de Penalidad</mat-label>
+                                                    <span matPrefix>$ &nbsp;</span>
+                                                    <input autocomplete="off" type="number" matInput [placeholder]="policies['penalidad']" [(ngModel)]="item['penalidad']">
+                                                    <mat-icon matSuffix>mode_edit</mat-icon>
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-container *ngIf="!isHotel">
+                                        <tr>
+                                            <th class="category">Monto Pagado</th>
+                                            <td class="value">{{ item['montoPagado'] | currency:'MXN':'symbol-narrow':'.2-2' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="category" [ngClass]="{'invalid-field': item['penalidad'] > item['montoPagado']}">
+                                                Penalidad a Aplicar<br>
+                                                <span style="font-size: smaller; color: black; font-weight: normal;">Rango: {{ (item['xldType'] != 'reembolso' ? 0 : item['omit10'] ? 0 : (item['montoPagado']) * .1) | currency:'MXN':'symbol-narrow':'.2-2' }} ~ {{ (item['montoPagado']) | currency:'MXN':'symbol-narrow':'.2-2' }}</span>
+                                            </th>
+                                            <td class="value">
+                                                <mat-form-field class="penaltyInput">
+                                                    <mat-label>Monto Manual de Penalidad</mat-label>
+                                                    <span matPrefix>$ &nbsp;</span>
+                                                    <input autocomplete="off" type="number" matInput [(ngModel)]="item['penalidad']">
+                                                    <mat-icon matSuffix>mode_edit</mat-icon>
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
                                     <tr>
                                         <th class="category">Tipo de Operación</th>
                                         <td class="value">

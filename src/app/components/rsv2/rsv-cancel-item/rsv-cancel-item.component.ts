@@ -23,6 +23,8 @@ export class RsvCancelItemComponent implements OnInit {
   item:Object = {}
   policies:Object = {}
   isRefound = false
+  isHotel = false
+  isCortesia = false
 
   constructor(public _api: ApiService,
               public _init: InitService,
@@ -49,18 +51,31 @@ export class RsvCancelItemComponent implements OnInit {
   }
 
   confirmCancel(){
-    if( this.cancelItemData['isQuote'] == 1 && this.cancelItemData['isConfirmable'] == 0 ){
+
+    
+    let iData = this.cancelItemData
+
+    if( (iData['isQuote'] == 1 && iData['isConfirmable'] == 0) ){
       this.sendCancellation( true )
     }else{
+
       if( this._init.currentUser.credentials['rsv_cancelAll'] != 1 ){
         // this.sendCancellation( true )
         this.toastr.error( 'La reserva ya cuenta con pagos, solicita a tu gerente realizar la cancelación', 'No es podible cancelar' )
         return false
       }
 
-      this.penaltiesFlag = true
-      this.loadPenalties( this.item )
+      if( iData['itemType'] == 1 ){
+        this.penaltiesFlag = true
+        this.isHotel = true
+        this.loadPenalties( this.item )
+      }else{
+        this.isCortesia = iData['itemType'] == 11 && iData['grupo']=='ohr'
+        this.penaltiesFlag = true
+        this.isHotel = false
+      }
 
+        console.log(iData,this.isHotel)
     }
   }
 
@@ -87,14 +102,20 @@ export class RsvCancelItemComponent implements OnInit {
 
   sendCancellation( flag = false ){
 
-    if( this.item['penalidad'] < (this.item['xldType'] != 'reembolso' ? 0 : this.item['omit10'] ? 0 : this.policies['minimumPenalty']) ){
-      this.toastr.error('La tarifa de penalidad establecida es menor a la permitida por el sistema. Revisa las políticas y parámetros seleccionados', 'Penalidad Incorrecta')
-      return false
+    if( this.isCortesia ){
+      this.item['penalidad'] = 0;
     }
 
-    if( this.item['penalidad'] > this.item['montoPagado'] ){
-      this.toastr.error('La tarifa de penalidad establecida es mayor al monto pagado por este item. Por favor revisa nuevamente el monto de penalidad', 'Penalidad Incorrecta')
-      return false
+    if( this.item['itemType'] == 1){
+      if( this.item['penalidad'] < (this.item['xldType'] != 'reembolso' ? 0 : this.item['omit10'] ? 0 : this.policies['minimumPenalty']) ){
+        this.toastr.error('La tarifa de penalidad establecida es menor a la permitida por el sistema. Revisa las políticas y parámetros seleccionados', 'Penalidad Incorrecta')
+        return false
+      }
+  
+      if( this.item['penalidad'] > this.item['montoPagado'] ){
+        this.toastr.error('La tarifa de penalidad establecida es mayor al monto pagado por este item. Por favor revisa nuevamente el monto de penalidad', 'Penalidad Incorrecta')
+        return false
+      }
     }
 
     this.loading['cancel'] = true

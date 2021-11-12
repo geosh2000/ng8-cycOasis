@@ -23,12 +23,31 @@ export class LoginService {
                           tokenExpire: res['tokenExpire'],
                           username: res['username'],
                           hcInfo: res['hcInfo'],
+                          creds: btoa( JSON.stringify(res['credentials'])),
                           credentials: res['credentials']
                         })
         );
+        localStorage.setItem('token', res['token'])
+        localStorage.setItem('nombre', res['hcInfo']['Nombre_Corto'])
         this.ws.cargarStorage()
         this._init.getPreferences()
+
         return { status: true, msg: 'Logueo Correcto', err: 'NA', isAffiliate: res['credentials']['viewOnlyAffiliates'] == '1' ? true : false}
+
+        // CYC4
+        // localStorage.setItem(
+        //   'currentUser',
+        //   JSON.stringify({
+        //                   token: res['token'],
+        //                   tokenExpire: res['tokenExpire'],
+        //                   username: res['username'],
+        //                   hcInfo: res['hcInfo'],
+        //                   credentials: res['credentials']
+        //                 })
+        // );
+        // this.ws.cargarStorage()
+        // this._init.getPreferences()
+        // return { status: true, msg: 'Logueo Correcto', err: 'NA', isAffiliate: res['credentials']['viewOnlyAffiliates'] == '1' ? true : false}
       }, err => {
 
         if(err){
