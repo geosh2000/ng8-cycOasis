@@ -4,6 +4,8 @@ import { ApiService, InitService } from 'src/app/services/service.index';
 import { ToastrService } from 'ngx-toastr';
 declare var jQuery: any;
 
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-rsv-insurances',
@@ -25,21 +27,10 @@ export class RsvInsurancesComponent implements OnInit {
   ngOnInit() {
   }
 
-  open( d ){
+  async open( d ){
     console.log('called open insurance')
-    this.loading['cotizando'] = false
-    this.data = d
-
-    for( let i of this.data['items'] ){
-      if( i['itemType'] == '1' ){
-        let tmpIns = this.getRelatedInsurance(d['items'], i['itemLocatorId'])
-        i['seguros'] = tmpIns
-        i['monto'] = parseFloat(i['monto'])
-        i['traspaso'] = null
-      }
-    }
-
-    this.getQuote()
+    
+    await this.getInsuranceData( d )
 
     jQuery('#insuranceManage').modal('show')
   }
@@ -47,6 +38,28 @@ export class RsvInsurancesComponent implements OnInit {
   close(){
     jQuery('#insuranceManage').modal('hide')
     this.data = {}
+  }
+
+  getInsuranceData( d ){
+
+    return new Promise( async resolve => {
+
+        this.loading['cotizando'] = false
+        this.data = d
+    
+        for( let i of this.data['items'] ){
+          if( i['itemType'] == '1' ){
+            let tmpIns = this.getRelatedInsurance(d['items'], i['itemLocatorId'])
+            i['seguros'] = tmpIns
+            i['monto'] = parseFloat(i['monto'])
+            i['traspaso'] = null
+          }
+        }
+    
+        await this.getQuote()
+
+        resolve(true) 
+    })
   }
 
   getRelatedInsurance( d, i ){
@@ -57,6 +70,17 @@ export class RsvInsurancesComponent implements OnInit {
     }
     return resultado
 
+  }
+
+  async reviewConsistence( d ){
+    
+    await this.getInsuranceData( d )
+
+    for( let i of this.data['items'] ){
+      if( !this.consistentInsurance( i, true ) ){
+        jQuery('#insuranceManage').modal('show')
+      }
+    }
   }
 
   getDif(i){
@@ -136,23 +160,30 @@ export class RsvInsurancesComponent implements OnInit {
   }
 
   getQuote(){
-    console.log('called get quote')
-    this.loading['cotizando'] = true
 
-    this._api.restfulPut( this.data, 'Assistcard/multiQuote' )
-                .subscribe( res => {
+    return new Promise( async resolve => {
+      console.log('called get quote')
+      this.loading['cotizando'] = true
 
-                  this.loading['cotizando'] = false;
-                  this.insurancesQ = res['data']
+      this._api.restfulPut( this.data, 'Assistcard/multiQuote' )
+                  .subscribe( res => {
 
-                }, err => {
-                  this.loading['cotizando'] = false;
+                    this.loading['cotizando'] = false;
+                    this.insurancesQ = res['data']
 
-                  const error = err.error;
-                  this.toastr.error( error.msg, err.status );
-                  console.error(err.statusText, error.msg);
+                    resolve(true)
 
-                });
+                  }, err => {
+                    this.loading['cotizando'] = false;
+
+                    const error = err.error;
+                    this.toastr.error( error.msg, err.status );
+                    console.error(err.statusText, error.msg);
+
+                    resolve(false)
+
+                  });
+    })
   }
 
   dias(n){
@@ -240,7 +271,7 @@ export class RsvInsurancesComponent implements OnInit {
                   i['loading'] = false;
 
                   const error = err.error;
-                  
+                  Swal.fire(err.statusText, error.msg, 'error');
                   console.error(err.statusText, error.msg);
 
                 });

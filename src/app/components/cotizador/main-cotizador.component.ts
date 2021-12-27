@@ -38,8 +38,10 @@ export class MainCotizadorComponent implements OnInit {
     this.titleService.setTitle('CyC - Cotizador');
     this.getServices()
 
-    console.log('Redirect... ')
-    this.document.location.href = 'https://cyc-oasishoteles.com/cyc12/#/cotizar';
+    if( !this._init.checkSingleCredential('allmighty') ){
+      console.log('Redirect... ')
+      this.document.location.href = 'https://cyc-oasishoteles.com/cyc12/#/cotizar';
+    }
   }
 
   getServices(){

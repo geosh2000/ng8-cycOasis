@@ -288,6 +288,13 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
                     }
                   }
 
+                  for( let i of this.data['items'] ){
+                    if( i['itemType'] == 1 && i['insuranceRelated'] != null){
+                      this._ins.reviewConsistence( this.data )
+                      return 
+                    }
+                  }
+
                   f()
 
 
@@ -327,6 +334,11 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
 
   saveMonto( e ){
     this.toastr.success('Monto Actuaizado','Success')
+
+    if( e['reload'] ){
+      this.getLoc( this.data['master']['masterlocatorid'] )
+    }
+
     for( let i of this.data['items'] ){
 
       if( e['itemId'] == i['itemId'] ){

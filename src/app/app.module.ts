@@ -211,6 +211,7 @@ import { RbLoyaltyComponent } from './config/upload-files/rb-loyalty/rb-loyalty.
 import { CotizaPaxComponent } from './components/rsv2/cotiza-pax/cotiza-pax.component';
 import { RsvInsurancesComponent } from './components/rsv2/rsv-insurances/rsv-insurances.component';
 import { CotPaqDetailComponent } from './components/cotizador/cot-paq-detail/cot-paq-detail.component';
+import { NoDobuleClickDirective } from './directives/no-dobule-click.directive';
 
 
 @NgModule({
@@ -355,7 +356,8 @@ import { CotPaqDetailComponent } from './components/cotizador/cot-paq-detail/cot
     RbLoyaltyComponent,
     CotizaPaxComponent,
     RsvInsurancesComponent,
-    CotPaqDetailComponent
+    CotPaqDetailComponent,
+    NoDobuleClickDirective
 
   ],
   imports: [

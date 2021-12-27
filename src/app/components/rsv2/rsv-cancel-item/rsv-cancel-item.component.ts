@@ -71,6 +71,12 @@ export class RsvCancelItemComponent implements OnInit {
         this.loadPenalties( this.item )
       }else{
         this.isCortesia = iData['itemType'] == 11 && iData['grupo']=='ohr'
+
+        if( this.isCortesia ){
+          this.item['xldType'] = 'traspaso'
+          this.item['penalidad'] = 0
+        }
+
         this.penaltiesFlag = true
         this.isHotel = false
       }

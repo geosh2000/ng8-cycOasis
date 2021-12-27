@@ -44,6 +44,17 @@ export class CotizaPaxComponent implements OnInit {
 
                   this.loading['viewPrices'] = false;
                   this.viewPricesData = res['data']
+                  this.viewPricesData['seguro'] = parseFloat(res['assist']['price']) * (res['data']['moneda'].toLowerCase() == 'usd' ? 1 : parseFloat(res['assist']['tipocambio']))
+                  this.viewPricesData['hasInsurance'] = res['assist'] > 0
+                  this.viewPricesData['pax1'] = parseFloat( this.viewPricesData['pax1'] )
+                  this.viewPricesData['difPax1'] = parseFloat( this.viewPricesData['difPax1'] )
+                  this.viewPricesData['pax2'] = parseFloat( this.viewPricesData['pax2'] )
+                  this.viewPricesData['difPax2'] = parseFloat( this.viewPricesData['difPax2'] )
+                  this.viewPricesData['pax3'] = parseFloat( this.viewPricesData['pax3'] )
+                  this.viewPricesData['difPax3'] = parseFloat( this.viewPricesData['difPax3'] )
+                  this.viewPricesData['pax4'] = parseFloat( this.viewPricesData['pax4'] )
+                  this.viewPricesData['difPax4'] = parseFloat( this.viewPricesData['difPax4'] )
+
 
                 }, err => {
                   this.loading['viewPrices'] = false;

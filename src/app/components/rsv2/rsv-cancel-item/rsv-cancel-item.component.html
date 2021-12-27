@@ -6,12 +6,12 @@
 
             </div>
             <div class="modal-body" *ngIf="!penaltiesFlag">
-                <div *ngIf="item['insuranceRelated'] == null">
+                <div>
                     Estás seguro que deseas cancelar este item?
                 </div>
-                <div class="alert alert-danger" role="alert" *ngIf="item['insuranceRelated'] != null">
+                <!-- <div class="alert alert-danger" role="alert" *ngIf="item['insuranceRelated'] != null">
                     <p>Este item tiene ligado un seguro. Para poder cancelarlo, debes anular primero el seguro desde el <b>Gestor de Seguros</b></p>
-                </div>
+                </div> -->
                 <br>
                 <!-- <pre>{{ item | json }}</pre> -->
             </div>
@@ -129,11 +129,12 @@
             </div>
             <div class="modal-footer" *ngIf="!penaltiesFlag">
                 <button type="button" class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="loading['cancel']">Cerrar</button>
-                <button type="button" class="btn btn-success" (click)="confirmCancel()" [disabled]="loading['cancel'] || item['insuranceRelated'] != null"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                <!-- <button type="button" class="btn btn-success" (click)="confirmCancel()" [disabled]="loading['cancel'] || item['insuranceRelated'] != null"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button> -->
+                <button type="button" class="btn btn-success" (click)="confirmCancel()" [disabled]="loading['cancel']"><span *ngIf="!loading['cancel']">Aceptar</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
             </div>
             <div class="modal-footer" *ngIf="penaltiesFlag && !loading['cancel']">
                 <button type="button" class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="loading['cancel']">Cerrar</button>
-                <button type="button" class="btn btn-danger" (click)="sendCancellation()" [disabled]="!item['xldType']"><span *ngIf="!loading['cancel']">Aplicar Cancelación</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
+                <button type="button" class="btn btn-danger" (click)="sendCancellation()" [disabled]="!item['xldType'] || item['penalidad'] == null"><span *ngIf="!loading['cancel']">Aplicar Cancelación</span><span *ngIf="loading['cancel']"><i class="fa fa-spinner fa-pulse"></i></span></button>
             </div>
             <mat-progress-bar mode="buffer" *ngIf="penaltiesFlag && loading['cancel']"></mat-progress-bar>
         </div>

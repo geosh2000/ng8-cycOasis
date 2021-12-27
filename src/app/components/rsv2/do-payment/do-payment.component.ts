@@ -305,7 +305,7 @@ export class DoPaymentComponent implements OnInit {
       return false
     }
 
-    if( this.paymentType == 'deposito' && i['itemType'] == '10'){
+    if( this.paymentType == 'deposito' && i['itemType'] == '10' && !this._init.checkSingleCredential('allmighty')){
       return false
     }
 

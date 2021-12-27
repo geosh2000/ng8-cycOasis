@@ -16,7 +16,7 @@
                             <li [style.width.px]="160" class="list-group-item-primary" style="list-style: none;">Actions</li>
                         </ul>
                         <ng-container *ngFor="let i of data['items']">
-                            <ul class="list-group list-group-horizontal-xl" *ngIf="i['itemType']=='1' && i['isCancel'] == '0'">
+                            <ul class="list-group list-group-horizontal-xl" *ngIf="i['itemType']=='1' && (i['isCancel'] == '0' || i['insuranceRelated'] != null)">
                                 <ng-container *ngIf="i['loading']">
                                     <li [style.width.%]="100" class="d-flex align-items-center justify-content-center list-group-item">
                                         <div class="container d-flex align-items-center justify-content-center">

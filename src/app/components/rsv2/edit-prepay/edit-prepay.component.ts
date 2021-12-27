@@ -22,7 +22,9 @@ export class EditPrepayComponent implements OnInit {
   editTotalFlag = false
   sfFlag = false
   selectedRefound = true
+  selectedParcialRefound = true
   advancedTotal = false
+  advancedParcial = false
   bufferedParams = {}
 
   constructor(public _api: ApiService,
@@ -32,7 +34,7 @@ export class EditPrepayComponent implements OnInit {
   ngOnInit() {
   }
 
-  editMonto( m ){
+  editMonto( m, adv = false, i = this.i, isR = !this.selectedParcialRefound){
 
     if( this.i['isNR'] == '1' && !this._init.checkSingleCredential('rsv_cancelAll') && moment().format('YYYY-MM-DD') != moment(this.i['llegada']).format('YYYY-MM-DD') ){
       this.toastr.error('No es posible modificar el monto a prepagar de una reserva "No Reembolsable". El prepago debe hacerse al 100%', 'ERROR!')
@@ -45,11 +47,31 @@ export class EditPrepayComponent implements OnInit {
     }
 
     let params = {
-      original: this.i,
+      original: i,
       new: {
-        montoParcial: m.value
+        montoParcial: m
       },
-      itemId: this.i['itemId']
+      itemId: i['itemId']
+    }
+
+    if( parseFloat(params['new']['montoParcial']) < parseFloat(this.i['montoPagado']) ){
+      
+      // Ajuste permitido solo a administrador
+      if( this._init.checkSingleCredential('allmighty')){
+        
+        this.advancedParcial = true
+        
+        if( !adv ){
+          this.bufferedParams = params
+          return false
+        }else{
+          params['isR'] =  isR
+        }
+
+      }else{
+              this.toastr.error('El monto pagado es mayor al monto total indicado. Esta operación no es válida', 'Error!')
+              return false
+      }
     }
 
     this.saveMontos( params )
@@ -126,6 +148,12 @@ export class EditPrepayComponent implements OnInit {
                   this.loading['editMonto'] = false;
                   this.i['montoParcialOriginal'] = this.i['montoParcial']
                   this.i['montoParcial'] = e['new']['montoParcial']
+
+                  if( res['val'] && res['val'][2] ){
+                    res['data']['reload'] = res['val'][2]
+                  }else{
+                    res['data']['reload'] = false
+                  }
                   this.saveMonto.emit( res['data'] )
                   this.editFlag = false
 
