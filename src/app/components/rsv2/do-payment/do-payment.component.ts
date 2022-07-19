@@ -221,6 +221,7 @@ export class DoPaymentComponent implements OnInit {
 
   buildCheckOut( el ){
     let totals = {
+      account: this.selectAccount.controls['selectedAccount'].value,
       remain: this.accSaldo,
       totalUsed: this.accSaldo - this.remaining,
       balance: this.remaining,

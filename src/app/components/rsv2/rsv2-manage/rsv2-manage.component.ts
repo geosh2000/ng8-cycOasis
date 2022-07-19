@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ViewContainerRef, Input, SimpleChanges, HostListener, ElementRef, OnDestroy, ViewChildren } from '@angular/core';
 import { ApiService, InitService, TokenCheckService } from '../../../services/service.index';
 import { ToastrService } from 'ngx-toastr';
-import { Title } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { CompleterService, CompleterData } from 'ng2-completer';
 
 import { Router, ActivatedRoute } from '@angular/router';
@@ -99,6 +99,7 @@ export class Rsv2ManageComponent implements OnInit, OnDestroy {
               private _formBuilder: FormBuilder,
               private titleService: Title,
               private _tokenCheck: TokenCheckService,
+              public domSanitizer: DomSanitizer,
               private route: Router,
               private orderPipe: OrderPipe,
               private _zh:ZonaHorariaService,

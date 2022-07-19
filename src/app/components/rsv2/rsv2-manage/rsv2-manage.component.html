@@ -158,7 +158,7 @@
                                     <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="_cp.viewPricesLoad(i)" *ngIf="i['itemType'] == 1 && i['isCancel'] == 0 && i['isOpen'] == 0"><mat-icon>request_quote</mat-icon> Ver Precios</button>
                                     <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openOD(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isQuote'] == 0 && i['isCancel'] == 0  && i['itemType'] != '10'"><mat-icon>meeting_room</mat-icon> Fechas Abiertas</button>
                                     <button class='p-1' mat-button style="zoom: 0.8" color="primary" (click)="openODSet(i)" *ngIf="_init.checkSingleCredential('rsv_open_dates') && i['isOpen'] == 1 && i['isCancel'] == 0 && i['isQuote'] == 0"><mat-icon>beach_access</mat-icon> Establecer Fechas</button>
-                                    <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)" *ngIf="_init.checkSingleCredential('app_cotizador') && i['itemType'] != '10'"><mat-icon>remove_circle</mat-icon> Cancelar</button>
+                                    <button class='p-1' mat-button style="zoom: 0.8" color="danger" (click)="cancelItem(i)" *ngIf="_init.checkSingleCredential('app_cotizador') && i['itemType'] != '10' && i['itemType'] != '1' && i['itemType'] != '15'"><mat-icon>remove_circle</mat-icon> Cancelar</button>
                                     <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="changeItem(i)" *ngIf="_init.checkSingleCredential('rsv_changes') && i['isOpen'] == 0  && i['isCancel'] == 0  && i['itemType'] != '10'"><mat-icon>swap_horizontal_circle</mat-icon> Modificar</button>
                                     <button class='p-1' mat-button style="zoom: 0.8" color="success" (click)="validateCert(i)" *ngIf="_init.checkSingleCredential('rsv_validateCert') && i['grupo']=='CORT' && i['isQuote']==1"><mat-icon>done_outline</mat-icon> Validar Certificado</button>
                                     <button class='p-1' mat-button style="zoom: 0.8" color="alert" (click)="reactivate(i)" *ngIf="_init.checkSingleCredential('rsv_reactivate') && !isVigente(i['vigencia']) && i['isQuote'] == 1 && i['isCancel'] == 0"><ng-container *ngIf="loading['reactivate']"><span><i class="fas fa-spinner fa-pulse"></i></span></ng-container><ng-container *ngIf="!loading['reactivate']"><mat-icon>alarm_add</mat-icon> Reactivar</ng-container></button>
@@ -217,6 +217,12 @@
                         <button style="zoom: 0.8" mat-button color="primary" (click)="_init.copyToClipboard(urlCopy(data['master']))"><mat-icon>file_copy</mat-icon> Copiar link de confirmación</button>
                     </div>
                 </div>
+                <div class="d-flex justify-content-start align-items-center">
+                    <button mat-button style="zoom: 0.8" color="primary" (click)="getLoc( data['master']['masterlocatorid'] )"><mat-icon>refresh</mat-icon> Volver a cargar</button> 
+                </div>
+                <div class="pl-3 d-flex justify-content-start align-items-center">
+                    <a style="zoom: 0.8" class="ms-2" mat-icon-button color="primary" target="_blank" [href]=" domSanitizer.bypassSecurityTrustResourceUrl( 'https://cyc-oasishoteles.com/cyc12/#/rsv/' + data['master']['masterlocatorid'] )"><mat-icon>open_in_new</mat-icon> Rsv v12</a>
+                </div>
                 
                 <!-- GESTIONAR SEGUROS -->
                 <hr>
@@ -229,7 +235,7 @@
                             <span class='ml-1' [style.color]="'#3f51b5'"><small>Hide Xld</small></span>
                     </div>
                 </div>
-                <hr>
+                <hr>  
                 <div class="d-flex justify-content-start align-items-center">
                     <div class="clientConcept"><b>Titular:</b></div>
                     <div class="clientInfo">{{ data['master']['nombreCliente'] }}</div>
@@ -329,7 +335,7 @@
                                             <button style="zoom: 0.8" mat-button color="primary" (click)="showMore = true">Mostrar {{ rsvHistory.length - 5 }} más...</button>
                                         </div>
                                     </ng-container>
-                                </ng-container>
+                                </ng-container> 
                             </ul>
                             <ng-container *ngIf="loading['rsvHistory']">
                                 <mat-progress-bar mode="buffer"></mat-progress-bar>
