@@ -33,7 +33,7 @@
         "highcharts": "^7.1.2",
         "html2canvas": "^1.0.0-alpha.12",
         "jspdf": "^1.5.3",
-        "moment-timezone": "^0.5.25",
+        "moment-timezone": "^0.5.35",
         "ng-drag-drop": "^5.0.0",
         "ng2-completer": "^3.0.2",
         "ng2-daterangepicker": "^2.0.12",
